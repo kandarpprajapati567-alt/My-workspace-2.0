@@ -6,18 +6,36 @@
     <title>K.K. Command Center | Pro Ultra</title>
     <style>
         :root { 
-            --glow-focus: #00ff88; 
+            --glow-focus: #00ff88; /* Default Neon Green */
             --glow-break: #00d4ff; 
             --glow-trade: #ffaa00;
             --bg-alpha: 0.85;
             --main-transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+        
         body { 
+            background-color: #050505; /* Deep dark base */
+            color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        /* Cinematic Background Elements */
+        #canvas-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;
+        }
+        .cinematic-vignette {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.95) 100%);
+            z-index: 1; pointer-events: none;
+        }
+        .bg-image-mode {
             background: linear-gradient(rgba(5, 5, 5, var(--bg-alpha)), rgba(5, 5, 5, var(--bg-alpha))), 
                         url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
             background-size: cover; background-position: center; background-attachment: fixed;
-            color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden;
         }
+
+        /* Z-index adjustments to sit above background */
+        .left-sidebar, .main-wrapper, .header-bar { position: relative; z-index: 10; }
 
         /* LEFT TOOLBAR */
         .left-sidebar {
@@ -34,7 +52,6 @@
         /* Main Content Wrapper */
         .main-wrapper {
             margin-left: 65px; flex: 1; display: flex; flex-direction: column; height: 100vh; width: calc(100% - 65px); position: relative;
-            transition: box-shadow 1s ease-in-out;
         }
         
         /* Header & Timer */
@@ -80,338 +97,5 @@
         .icon { font-size: 40px; display: block; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
         .input-field { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid #444; border-radius: 8px; color: white; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; }
         
-        /* Popup Modal (for Settings & Add Link) */
-        .popup-modal { display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #111; padding: 30px; border-radius: 20px; border: 1px solid #333; z-index: 3000; box-shadow: 0 20px 40px rgba(0,0,0,0.8); max-height: 80vh; overflow-y: auto; }
-
-        /* Tasks & Layouts */
-        .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-item { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--glow-focus); flex-wrap: wrap; gap: 10px; }
-        .del-btn { background: #ff4444; border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        
-        /* TRADING AREA SPECIFIC STYLES */
-        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; align-items: stretch; }
-        .flex-col { display: flex; flex-direction: column; }
-        .chart-col { flex: 100%; min-width: 0; } 
-        .side-col-wrapper { display: flex; gap: 20px; width: 100%; flex-wrap: wrap;} 
-        .side-col { flex: 1; min-width: 300px; display: flex; flex-direction: column; }
-        .panel { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; border: 1px solid #333; display: flex; flex-direction: column; box-sizing: border-box; flex-grow: 1; }
-        .chart-container { width: 100%; height: 55vh; min-height: 400px; border-radius: 10px; overflow: hidden; border: 1px solid #444; flex-grow: 1; position: relative; }
-        .trade-item { border-left-color: var(--glow-trade); }
-        .ai-output-box { margin-top:15px; font-size:0.9em; color:#ddd; background:rgba(0,0,0,0.4); padding:15px; border-radius:8px; display:none; border-left: 3px solid var(--glow-focus); line-height: 1.5; max-height: 200px; overflow-y: auto;}
-
-        /* Mobile Optimization */
-        @media (max-width: 768px) {
-            .left-sidebar { width: 50px; }
-            .main-wrapper { margin-left: 50px; width: calc(100% - 50px); }
-            .header-bar { padding: 0 10px; height: 60px; }
-            .timer-controls { gap: 10px; }
-            .mode-badge { padding: 5px 10px; font-size: 0.7em; letter-spacing: 0; }
-            #timer-display { font-size: 1.4em !important; }
-            .btn-timer { padding: 5px 10px; font-size: 0.8em; }
-            #desktop-logo { display: none; }
-            .module-overlay { padding: 15px; top: 60px; }
-            .home-screen h1 { font-size: 1.8em; }
-            .grid-container { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .card { padding: 15px 10px; border-radius: 12px; }
-            .icon { font-size: 30px; margin-bottom: 8px; }
-            .card h3 { font-size: 0.9em; margin: 0; }
-            .flex-row { flex-direction: column; gap: 15px; }
-            .chart-col, .side-col { flex: none; width: 100%; min-width: unset; }
-            .chart-container { height: 45vh; min-height: 350px; } 
-        }
-    </style>
-</head>
-<body>
-
-    <div class="left-sidebar" id="sidebar">
-        <div class="icon-btn" onclick="openModule('workspace', this)" title="Digital Workspace">🚀</div>
-        <div class="icon-btn" onclick="openModule('trading', this)" title="Live Trading Terminal" style="color:var(--glow-trade);">📈</div>
-        <div class="icon-btn" onclick="openModule('academic', this)" title="BAMS Academic Hub">📖</div>
-        <div class="icon-btn" onclick="openModule('ai-hub', this)" title="AI Intelligence">🤖</div>
-        <div class="icon-btn" onclick="openModule('tasks', this)" title="Master Tasks">📝</div>
-        <div class="icon-btn" onclick="openModule('chill', this)" title="Chill Zone (Games)" style="color:var(--glow-break);">🎮</div>
-        
-        <div class="icon-btn" onclick="togglePopup('settings-modal')" title="Settings & Backup" style="color:#aaa;">⚙️</div>
-        
-        <div style="flex-grow: 1;"></div>
-    </div>
-
-    <div class="main-wrapper" id="main-wrapper">
-        
-        <div class="header-bar" id="header">
-            <div class="timer-controls">
-                <span id="mode-badge" class="mode-badge">FOCUS MODE</span>
-                <span id="timer-display" style="font-size:2.2em; font-family:monospace; font-weight:bold; letter-spacing: 2px; transition: color 0.3s;">25:00</span>
-                <button onclick="toggleTimer()" id="start-btn" class="btn-timer">START</button>
-            </div>
-            <div id="desktop-logo" style="font-size: 1.2em; font-weight: 300;">K.K. HQ</div>
-        </div>
-
-        <div class="home-screen" id="home-screen">
-            <h1>Welcome to <b style="color:var(--glow-focus)">Command Center</b></h1>
-            <p>Select a module from the sidebar to begin.</p>
-        </div>
-
-        <div id="workspace" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Digital <b style="color:var(--glow-focus)">Operations</b></h2>
-            <div class="grid-container" id="grid-workspace">
-                <div class="card" onclick="window.open('https://docs.google.com/')"><span class="icon">📄</span><h3>Docs</h3></div>
-                <div class="card" onclick="window.open('https://drive.google.com/')"><span class="icon">☁️</span><h3>Drive</h3></div>
-            </div>
-        </div>
-
-        <div id="trading" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Live <b style="color:var(--glow-trade)">Trading Terminal</b></h2>
-            
-            <div class="flex-row">
-                <div class="flex-col chart-col">
-                    <div class="panel" style="padding:10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 10px;">
-                            <h3 style="margin: 0; color: var(--glow-trade);">📊 Advanced Market Chart</h3>
-                            <small style="color: #aaa;">Crypto, SIP, Stocks - Full Symbol Access Enabled</small>
-                        </div>
-                        <div class="chart-container">
-                            <div class="tradingview-widget-container" style="height:100%;width:100%">
-                              <div id="tradingview_advanced" style="height:100%;width:100%"></div>
-                              <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                              <script type="text/javascript">
-                              new TradingView.widget({
-                                "autosize": true,
-                                "symbol": "BSE:SENSEX",
-                                "interval": "15",
-                                "timezone": "Asia/Kolkata",
-                                "theme": "dark",
-                                "style": "1",
-                                "locale": "en",
-                                "enable_publishing": false,
-                                "allow_symbol_change": true,
-                                "hide_side_toolbar": false,  
-                                "hide_top_toolbar": false,
-                                "withdateranges": true,      
-                                "backgroundColor": "rgba(0, 0, 0, 1)",
-                                "gridColor": "rgba(68, 68, 68, 0.06)",
-                                "container_id": "tradingview_advanced"
-                              });
-                              </script>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="side-col-wrapper">
-                <div class="side-col">
-                    <div class="panel" style="flex-grow: 0;">
-                        <h3 style="margin: 0 0 10px 0; color: var(--glow-focus);">🤖 AI Market Analyzer</h3>
-                        <textarea id="ai-market-input" class="input-field" style="resize:vertical; height:70px; margin-bottom: 10px;" placeholder="Ask AI about trends or setups..."></textarea>
-                        <button onclick="simulateAIAnalysis()" style="width:100%; background:rgba(0, 255, 136, 0.1); color:var(--glow-focus); border:1px solid var(--glow-focus); padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">Ask AI ⚡</button>
-                        <div id="ai-market-output" class="ai-output-box"></div>
-                    </div>
-                </div>
-
-                <div class="side-col">
-                    <div class="panel">
-                        <h3 style="margin: 0 0 10px 0; color: var(--glow-trade);">📝 Paper Log</h3>
-                        <div style="display:flex; gap:10px;">
-                             <input type="text" id="trade-entry" class="input-field" placeholder="Entry" style="padding:10px; margin-bottom:8px; flex:1;">
-                             <input type="text" id="trade-sl" class="input-field" placeholder="Stop Loss" style="padding:10px; margin-bottom:8px; flex:1;">
-                        </div>
-                        <input type="text" id="trade-reason" class="input-field" placeholder="Reason (Optional)" style="padding:10px; margin-bottom:10px;">
-                        <button onclick="savePaperTrade()" style="width:100%; background:var(--glow-trade); color:black; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">Log Trade</button>
-                        
-                        <ul id="tradeList" class="task-list" style="margin-top: 15px; flex-grow: 1; overflow-y: auto; max-height: 150px;"></ul>
-                    </div>
-                </div>
-            </div>
-
-            <h3 style="font-weight: 300; margin-top: 20px;">Trading <b style="color:var(--glow-trade)">Vault</b></h3>
-            <div class="grid-container" id="grid-trading-vault">
-                <div class="card" onclick="window.open('https://dhan.co/')"><span class="icon">⚡</span><h3>Dhan Web</h3></div>
-                <div class="card" onclick="window.open('https://angelone.in/')"><span class="icon">📈</span><h3>Angel One</h3></div>
-                <div class="card" onclick="window.open('https://www.tradingview.com/')"><span class="icon">🕯️</span><h3>Price Action</h3></div>
-                <div class="card" onclick="window.open('https://www.nseindia.com/')"><span class="icon">📊</span><h3>Options Data</h3></div>
-            </div>
-        </div>
-
-        <div id="academic" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <div id="main-academic-view">
-                <h2 class="module-title">BAMS <b style="color:var(--glow-focus)">Knowledge Base</b></h2>
-                <div class="grid-container" id="grid-academic">
-                    <div class="card"><span class="icon">🌿</span><h3>Samhitas</h3></div>
-                    <div class="card"><span class="icon">🦴</span><h3>Rachana Sharir</h3></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="ai-hub" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Strategic <b style="color:var(--glow-focus)">AI Toolkit</b></h2>
-            <div class="grid-container" id="grid-ai">
-                <div class="card" onclick="window.open('https://chat.openai.com/')"><span class="icon">🧠</span><h3>ChatGPT</h3></div>
-                <div class="card" onclick="window.open('https://gemini.google.com/')"><span class="icon">✨</span><h3>Gemini</h3></div>
-            </div>
-        </div>
-
-        <div id="tasks" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Master <b style="color:var(--glow-focus)">Task List</b></h2>
-            <div style="max-width: 600px; margin: 0 auto; background:rgba(0,0,0,0.5); padding:30px; border-radius:15px; border:1px solid #333;">
-                <input type="text" id="taskInput" class="input-field" style="padding:15px; font-size:1.1em;" placeholder="Aaj kya karna hai? Type & Enter..." onkeypress="handleTaskKeyPress(event)">
-                <ul id="taskList" class="task-list"></ul>
-            </div>
-        </div>
-
-        <!-- FIXED THE BROKEN CHILL ZONE MODULE -->
-        <div id="chill" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Chill <b style="color:var(--glow-break)">Zone</b></h2>
-            <div class="grid-container">
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://quickdraw.withgoogle.com/')">
-                    <span class="icon">🎨</span><h3>Quick, Draw!</h3><small style="color:#aaa;">Doodle to relax</small>
-                </div>
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://www.roblox.com')">
-                    <span class="icon">🧱</span><h3>Roblox</h3><small style="color:#aaa;">Jump into a game</small>
-                </div>
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://store.steampowered.com/')">
-                    <span class="icon">🚂</span><h3>Steam</h3><small style="color:#aaa;">Check library & store</small>
-                </div>
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://play2048.co/')">
-                    <span class="icon">🧩</span><h3>2048</h3><small style="color:#aaa;">Mind puzzle</small>
-                </div>
-            </div>
-        </div>
-
-        <!-- SETTINGS POPUP -->
-        <div id="settings-modal" class="popup-modal">
-            <h2 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 10px;">⚙️ Settings Center</h2>
-            <p style="color: #aaa;">More settings coming soon...</p>
-            <button onclick="togglePopup('settings-modal')" style="margin-top:15px; width:100%; background:#ff4444; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">Close Settings</button>
-        </div>
-
-    </div>
-
-    <!-- JAVASCRIPT FOR FUNCTIONALITY -->
-    <script>
-        // Module Switching
-        function openModule(moduleId, btnElement) {
-            closeAllModules();
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById(moduleId).style.display = 'block';
-            
-            let btns = document.querySelectorAll('.icon-btn');
-            btns.forEach(btn => btn.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-        }
-
-        function closeAllModules() {
-            let modules = document.querySelectorAll('.module-overlay');
-            modules.forEach(mod => mod.style.display = 'none');
-            document.getElementById('home-screen').style.display = 'flex';
-            let btns = document.querySelectorAll('.icon-btn');
-            btns.forEach(btn => btn.classList.remove('active'));
-        }
-
-        // Popups
-        function togglePopup(popupId) {
-            let popup = document.getElementById(popupId);
-            popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
-        }
-
-        // Timer Logic
-        let timerInterval;
-        let timeLeft = 1500; // 25 mins
-        let isRunning = false;
-
-        function toggleTimer() {
-            const display = document.getElementById('timer-display');
-            const btn = document.getElementById('start-btn');
-            
-            if (isRunning) {
-                clearInterval(timerInterval);
-                btn.innerText = "START";
-                display.classList.remove('timer-running');
-                isRunning = false;
-            } else {
-                btn.innerText = "PAUSE";
-                display.classList.add('timer-running');
-                isRunning = true;
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    if (timeLeft < 0) {
-                        clearInterval(timerInterval);
-                        alert("Time's up! Take a break.");
-                        timeLeft = 1500;
-                        btn.innerText = "START";
-                        display.classList.remove('timer-running');
-                        isRunning = false;
-                    }
-                    let m = Math.floor(timeLeft / 60);
-                    let s = timeLeft % 60;
-                    display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                }, 1000);
-            }
-        }
-
-        // Task Logic
-        function handleTaskKeyPress(e) {
-            if (e.key === 'Enter') {
-                let input = document.getElementById('taskInput');
-                if (input.value.trim() !== '') {
-                    let list = document.getElementById('taskList');
-                    let li = document.createElement('li');
-                    li.className = 'task-item';
-                    li.innerHTML = `<span>${input.value}</span> <button class="del-btn" onclick="this.parentElement.remove()">X</button>`;
-                    list.appendChild(li);
-                    input.value = '';
-                }
-            }
-        }
-
-        // Paper Trade Logic
-        function savePaperTrade() {
-            let entry = document.getElementById('trade-entry').value;
-            let sl = document.getElementById('trade-sl').value;
-            let reason = document.getElementById('trade-reason').value || "No reason given";
-            
-            if (entry && sl) {
-                let list = document.getElementById('tradeList');
-                let li = document.createElement('li');
-                li.className = 'task-item trade-item';
-                li.innerHTML = `
-                    <div style="flex:1;">
-                        <span style="color:#ffaa00; font-weight:bold;">Entry:</span> ${entry} | 
-                        <span style="color:#ff4444; font-weight:bold;">SL:</span> ${sl}<br>
-                        <small style="color:#aaa;">${reason}</small>
-                    </div>
-                    <button class="del-btn" onclick="this.parentElement.remove()">X</button>
-                `;
-                list.prepend(li); // Add to top
-                
-                // Clear inputs
-                document.getElementById('trade-entry').value = '';
-                document.getElementById('trade-sl').value = '';
-                document.getElementById('trade-reason').value = '';
-            } else {
-                alert("Entry and SL are required!");
-            }
-        }
-
-        // Fake AI Simulator for visual completion
-        function simulateAIAnalysis() {
-            let input = document.getElementById('ai-market-input').value;
-            let output = document.getElementById('ai-market-output');
-            if(input.trim() === '') return;
-            
-            output.style.display = 'block';
-            output.innerHTML = "<i>Analyzing market conditions...</i>";
-            
-            setTimeout(() => {
-                output.innerHTML = "<b>AI Signal:</b> Based on current metrics for your query, volume is consolidating. Keep strict SL if entering calls. Wait for breakout confirmation above VWAP.";
-            }, 1500);
-        }
-    </script>
-</body>
-</html>
+        /* Popup Modal */
+        .popup-modal { display: none; position: fixed; top: 15%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px; border: 1
