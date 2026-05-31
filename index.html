@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K.K. Command Center | Pro Ultra</title>
+    <style>
+        :root { 
+            --glow-focus: #00ff88; /* Default Neon Green */
+            --glow-break: #00d4ff; 
+            --glow-trade: #ffaa00;
+            --bg-alpha: 0.85;
+            --main-transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        body { 
+            background-color: #050505; /* Deep dark base */
+            color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        /* Cinematic Background Elements */
+        #canvas-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;
+        }
+        .cinematic-vignette {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.95) 100%);
+            z-index: 1; pointer-events: none;
+        }
+        .bg-image-mode {
+            background: linear-gradient(rgba(5, 5, 5, var(--bg-alpha)), rgba(5, 5, 5, var(--bg-alpha))), 
+                        url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+
+        /* Z-index adjustments to sit above background */
+        .left-sidebar, .main-wrapper, .header-bar { position: relative; z-index: 10; }
+
+        /* LEFT TOOLBAR */
+        .left-sidebar {
+            position: fixed; left: 0; top: 0; bottom: 0; width: 65px;
+            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255,255,255,0.1); z-index: 2500;
+            display: flex; flex-direction: column; align-items: center; padding-top: 20px; box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+        }
+        .icon-btn {
+            font-size: 1.8em; cursor: pointer; margin-bottom: 25px; opacity: 0.5; transition: 0.3s; width: 100%; text-align: center; padding: 10px 0;
+        }
+        .icon-btn:hover, .icon-btn.active { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 10px var(--glow-focus)); border-left: 3px solid var(--glow-focus); background: rgba(255,255,255,0.05); }
+
+        /* Main Content Wrapper */
+        .main-wrapper {
+            margin-left: 65px; flex: 1; display: flex; flex-direction: column; height: 100vh; width: calc(100% - 65px); position: relative;
+        }
+        
+        /* Header & Timer */
+        .header-bar { height: 70px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px); z-index: 1500; }
+        .timer-controls { display: flex; align-items: center; gap: 20px; }
+        .mode-badge { padding: 8px 15px; border-radius: 25px; font-weight: bold; border: 2px solid var(--glow-focus); color: var(--glow-focus); transition: var(--main-transition); letter-spacing: 1px; font-size: 0.9em; }
+        .btn-timer { background: transparent; color: white; border: 1px solid #666; padding: 8px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .btn-timer:hover { background: rgba(255,255,255,0.1); }
+
+        @keyframes timerPulse {
+            0% { text-shadow: 0 0 5px currentColor; transform: scale(1); }
+            50% { text-shadow: 0 0 20px currentColor, 0 0 30px currentColor; transform: scale(1.05); }
+            100% { text-shadow: 0 0 5px currentColor; transform: scale(1); }
+        }
+        .timer-running { animation: timerPulse 2s infinite ease-in-out; color: var(--glow-focus); }
+
+        /* Welcome Home Screen */
+        .home-screen {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; z-index: 10;
+        }
+        .home-screen h1 { font-size: 3em; font-weight: 300; margin: 0; letter-spacing: 2px; }
+        .home-screen p { color: #aaa; font-size: 1.2em; margin-top: 10px; }
+
+        /* FULL SCREEN MODULE OVERLAYS */
+        .module-overlay { 
+            display: none; position: absolute; top: 70px; left: 0; right: 0; bottom: 0; 
+            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(25px); 
+            z-index: 1000; overflow-y: auto; padding: 30px 40px; animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .close-module-btn {
+            background: rgba(255,255,255,0.1); color: white; border: 1px solid #444; padding: 8px 15px; border-radius: 8px; cursor: pointer; 
+            font-weight: bold; float: right; transition: 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        .close-module-btn:hover { background: #ff4444; border-color: #ff4444; }
+        .module-title { font-weight: 300; margin-top: 0; font-size: 2em; margin-bottom: 20px; }
+
+        /* General Reusable Styles */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: rgba(255,255,255,0.03); padding: 30px 15px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: var(--main-transition); cursor: pointer; backdrop-filter: blur(10px); position: relative; }
+        .card:hover { transform: translateY(-5px); border-color: var(--glow-focus); background: rgba(255,255,255,0.08); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .icon { font-size: 40px; display: block; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+        .input-field { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid #444; border-radius: 8px; color: white; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; }
+        
+        /* Popup Modal */
+        .popup-modal { display: none; position: fixed; top: 15%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px; border: 1px solid var(--glow-focus); z-index: 3000; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        .overlay-bg { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 2999; }
+
+        /* Tasks & Layouts */
+        .task-list { list-style: none; padding: 0; margin: 0; }
+        .task-item { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--glow-focus); flex-wrap: wrap; gap: 10px; }
+        .del-btn { background: rgba(255,68,68,0.2); border: 1px solid #ff4444; color: #ff4444; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .del-btn:hover { background: #ff4444; color: white; }
+
+        /* TRADING AREA */
+        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; align-items: stretch; }
+        .chart-col { flex: 100%; min-width: 0; }
+        .side-col-wrapper { display: flex; gap: 20px; width: 100%; flex-wrap: wrap;} 
+        .side-col { flex: 1; min-width: 300px; display: flex; flex-direction: column; }
+        .panel { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; border: 1px solid #333; display: flex; flex-direction: column; box-sizing: border-box; flex-grow: 1; }
+        .chart-container { width: 100%; height: 55vh; min-height: 400px; border-radius: 10px; overflow: hidden; border: 1px solid #444; flex-grow: 1; position: relative; }
+        .ai-output-box { margin-top:15px; font-size:0.9em; color:#ddd; background:rgba(0,0,0,0.4); padding:15px; border-radius:8px; display:none; border-left: 3px solid var(--glow-focus); line-height: 1.5; max-height: 200px; overflow-y: auto;}
+
+        @media (max-width: 768px) {
+            .left-sidebar { width: 50px; }
+            .main-wrapper { margin-left: 50px; width: calc(100% - 50px); }
+            .header-bar { padding: 0 10px; height: 60px; }
+            #desktop-logo { display: none; }
+            .chart-container { height: 45vh; min-height: 350px; } 
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-bg"></canvas>
+    <div class="cinematic-vignette"></div>
+
+    <div class="left-sidebar" id="sidebar">
+        <div class="icon-btn" onclick="openModule('workspace', this)" title="Digital Workspace">🚀</div>
+        <div class="icon-btn" onclick="openModule('trading', this)" title="Live Trading Terminal" style="color:var(--glow-trade);">📈</div>
+        <div class="icon-btn" onclick="openModule('academic', this)" title="BAMS Academic Hub">📖</div>
+        <div class="icon-btn" onclick="openModule('ai-hub', this)" title="AI Intelligence">🤖</div>
+        <div class="icon-btn" onclick="openModule('tasks', this)" title="Master Tasks">📝</div>
+        <div class="icon-btn" onclick="openModule('chill', this)" title="Chill Zone (Games)" style="color:var(--glow-break);">🎮</div>
+        
+        <div style="flex-grow: 1;"></div>
+        <div class="icon-btn" onclick="toggleSettings()" title="Settings" style="color:#aaa;">⚙️</div>
+    </div>
+
+    <div class="main-wrapper" id="main-wrapper">
+        <div class="header-bar" id="header">
+            <div class="timer-controls">
+                <span id="mode-badge" class="mode-badge">FOCUS MODE</span>
+                <span id="timer-display" style="font-size:2.2em; font-family:monospace; font-weight:bold; letter-spacing: 2px;">25:00</span>
+                <button onclick="toggleTimer()" id="start-btn" class="btn-timer">START</button>
+            </div>
+            <div id="desktop-logo" style="font-size: 1.2em; font-weight: 300;">K.K. HQ</div>
+        </div>
+
+        <div class="home-screen" id="home-screen">
+            <h1>Welcome to <b style="color:var(--glow-focus)">Command Center</b></h1>
+            <p>Select a module from the sidebar to begin.</p>
+        </div>
+
+        <div id="workspace" class="module-overlay">
+            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
+            <h2 class="module-title">Digital <b style="color:var(--glow-focus)">Operations</b></h2>
+            <div class="grid-container" id="grid-workspace">
+                <div class="card" onclick="window.open('https://mail.google.com')"><span class="icon">📧</span><h3>Gmail</h3></div>
+                <div class="card" onclick="window.open('https://drive.google.com')"><span class="icon">☁️</span><h3>Drive</h3></div>
+            </div>
+        </div>
+
+        <div id="trading" class="module-overlay">
+            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
+            <h2 class="module-title">Live <b style="color:var(--glow-trade)">Trading Terminal</b></h2>
+            <div class="flex-row">
+                <div class="flex-col chart-col">
+                    <div class="panel" style="padding:10px;">
+                        <div class="chart-container">
+                            <div class="tradingview-widget-container" style="height:100%;width:100%">
+                              <div id="tradingview_advanced" style="height:100%;width:100%"></div>
+                              <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                              <script type="text/javascript">
+                              new TradingView.widget({
+                                "autosize": true, "symbol": "BSE:SENSEX", "interval": "15", "timezone": "Asia/Kolkata",
+                                "theme": "dark", "style": "1", "locale": "en", "enable_publishing": false,
+                                "allow_symbol_change": true, "hide_side_toolbar": false, "hide_top_toolbar": false,
+                                "withdateranges": true, "backgroundColor": "rgba(0, 0, 0, 1)", "gridColor": "rgba(68, 68, 68, 0.06)",
+                                "container_id": "tradingview_advanced"
+                              });
+                              </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-col-wrapper">
+                <div class="side-col">
+                    <div class="panel">
+                        <h3 style="margin: 0 0 10px 0; color: var(--glow-focus);">🤖 AI Market Analyzer</h3>
+                        <textarea id="ai-market-input" class="input-field" style="resize:vertical; height:70px; margin-bottom: 10px;" placeholder="Ask AI about trends or setups..."></textarea>
+                        <button onclick="simulateAIAnalysis()" style="width:100%; background:rgba(0, 255, 136, 0.1); color:var(--glow-focus); border:1px solid var(--glow-focus); padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">Ask AI ⚡</button>
+                        <div id="ai-market-output" class="ai-output-box"></div>
+                    </div>
+                </div>
+
+                <div class="side-col">
+                    <div class="panel">
+                        <h3 style="margin: 0 0 10px 0; color: var(--glow-trade);">📝 Paper Log</h3>
+                        <div style="display:flex; gap:10px;">
+                             <input type="text" id="trade-entry" class="input-field" placeholder="Entry" style="padding:10px; margin-bottom:8px; flex:1;">
+                             <input type="text" id="trade-sl" class="input-field" placeholder="Stop Loss" style="padding:10px; margin-bottom:8px; flex:1;">
+                        </div>
+                        <input type="text" id="trade-reason" class="input-field" placeholder="Reason (Optional)" style="padding:10px; margin-bottom:10px;">
+                        <button onclick="savePaperTrade()" style="width:100%; background:var(--glow-trade); color:black; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">Log Trade</button>
+                        <ul id="tradeList" class="task-list" style="margin-top: 15px; flex-grow: 1; overflow-y: auto; max-height: 150px;"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="academic" class="module-overlay">
+            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
+            <h2 class="module-title">BAMS <b style="color:var(--glow-focus)">Knowledge Base</b></h2>
+            <div class="grid-container" id="grid-academic">
+                <div class="card"><span class="icon">📚</span><h3>Anatomy</h3></div>
+                <div class="card"><span class="icon">🌿</span><h3>Dravyaguna</h3></div>
+            </div>
+        </div>
+
+        <div id="ai-hub" class="module-overlay">
+            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
+            <h2 class="module-title">Strategic <b style="color:var(--glow-focus)">AI Toolkit</b></h2>
+            <div class="grid-container" id="grid-ai">
+                <div class="card" onclick="window.open('https://chat.openai.com')"><span class="icon">🧠</span><h3>ChatGPT</h3></div>
+                <div class="card" onclick="window.open('https://gemini.google.com')"><span class="icon">✨</span><h3>Gemini</h3></div>
+            </div>
+        </div>
+
+        <div id="tasks" class="module-overlay">
+            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
+            <h2 class="module-title">Master <b style="color:var(--glow-focus)">Task List</b></h2>
+            <div style="max-width: 600px; margin: 0 auto; background:rgba(0,0,0,0.5); padding:30px; border-radius:15px; border:1px solid #333;">
+                <input type="text" id="taskInput" class="input-field" style="padding:15px; font-size:1.1em;" placeholder="Aaj kya karna hai? Type & Enter..." onkeypress="handleTaskKeyPress(event)">
+                <ul id="taskList" class="task-list"></ul>
+            </div>
+        </div>
+
+        <div id="chill" class="module-overlay">
+            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
+            <h2 class="module-title">Chill <b style="color:var(--glow-break)">Zone</b></h2>
+            <div class="grid-container">
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://quickdraw.withgoogle.com/')"><span class="icon">🎨</span><h3>Quick, Draw!</h3></div>
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://www.roblox.com')"><span class="icon">🧱</span><h3>Roblox</h3></div>
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://store.steampowered.com/')"><span class="icon">🚂</span><h3>Steam</h3></div>
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://open.spotify.com/')"><span class="icon">🎵</span><h3>Spotify</h3></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay-bg" id="settings-overlay" onclick="toggleSettings()"></div>
+    <div id="settings-modal" class="popup-modal">
+        <h2 style="color:var(--glow-focus); margin-top:0;">System Settings</h2>
+        
+        <label style="display:block; margin-bottom:5px; color:#aaa;">Background Style:</label>
+        <select id="bg-setting" class="input-field">
+            <option value="particles">Sci-Fi Particles (Interactive)</option>
+            <option value="image">Cinematic Image</option>
+            <option value="static">Pure Dark</option>
+        </select>
+
+        <label style="display:block; margin-bottom:5px; margin-top:10px; color:#aaa;">Main Theme Color (Glow):</label>
+        <input type="color" id="theme-color" class="input-field" value="#00ff88" style="padding: 2px; height: 45px; cursor:pointer;">
+
+        <button onclick="saveSettings()" style="width:100%; padding:12px; background:var(--glow-focus); color:#000; font-weight:bold; border:none; border-radius:8px; margin-top:15px; cursor:pointer;">Save & Apply</button>
+        <button onclick="toggleSettings()" style="width:100%; padding:10px; background:transparent; color:#fff; border:1px solid #555; border-radius:8px; margin-top:10px; cursor:pointer;">Close</button>
+    </div>
+
+    <script>
+        /* --- 1. MODULE NAVIGATION --- */
+        function openModule(moduleId, btnElement) {
+            document.querySelectorAll('.module-overlay').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('home-screen').style.display = 'none';
+            
+            document.getElementById(moduleId).style.display = 'block';
+            if(btnElement) btnElement.classList.add('active');
+        }
+
+        function closeAllModules() {
+            document.querySelectorAll('.module-overlay').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('home-screen').style.display = 'flex';
+        }
+
+        /* --- 2. FOCUS TIMER --- */
+        let timerInterval;
+        let timeLeft = 1500; // 25 mins
+        let isRunning = false;
+
+        function toggleTimer() {
+            const display = document.getElementById('timer-display');
+            const btn = document.getElementById('start-btn');
+            
+            if (isRunning) {
+                clearInterval(timerInterval);
+                btn.innerText = "START";
+                display.classList.remove('timer-running');
+                isRunning = false;
+            } else {
+                isRunning = true;
+                btn.innerText = "PAUSE";
+                display.classList.add('timer-running');
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                        let s = (timeLeft % 60).toString().padStart(2, '0');
+                        display.innerText = `${m}:${s}`;
+                    } else {
+                        clearInterval(timerInterval);
+                        alert("Focus Session Complete!");
+                        resetTimer();
+                    }
+                }, 1000);
+            }
+        }
+        function resetTimer() { timeLeft = 1500; document.getElementById('timer-display').innerText = "25:00"; isRunning=false; document.getElementById('start-btn').innerText = "START"; document.getElementById('timer-display').classList.remove('timer-running'); }
+
+        /* --- 3. TASK MANAGER --- */
+        let tasks = JSON.parse(localStorage.getItem('kk_tasks')) || [];
+        
+        function renderTasks() {
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
+            tasks.forEach((t, i) => {
+                list.innerHTML += `<li class="task-item">${t} <button class="del-btn" onclick="deleteTask(${i})">X</button></li>`;
+            });
+        }
+        function handleTaskKeyPress(e) {
+            if(e.key === 'Enter' && e.target.value.trim() !== '') {
+                tasks.push(e.target.value.trim());
+                localStorage.setItem('kk_tasks', JSON.stringify(tasks));
+                e.target.value = '';
+                renderTasks();
+            }
+        }
+        function deleteTask(index) { tasks.splice(index, 1); localStorage.setItem('kk_tasks', JSON.stringify(tasks)); renderTasks(); }
+
+        /* --- 4. PAPER TRADING LOG --- */
+        let trades = JSON.parse(localStorage.getItem('kk_trades')) || [];
+        
+        function renderTrades() {
+            const list = document.getElementById('tradeList');
+            list.innerHTML = '';
+            trades.forEach((t, i) => {
+                list.innerHTML += `<li class="task-item" style="border-left-color:var(--glow-trade); font-size:0.9em;">
+                    <b>E:</b> ${t.entry} | <b>SL:</b> ${t.sl} <br> <small>${t.reason}</small> 
+                    <button class="del-btn" style="padding:2px 6px;" onclick="deleteTrade(${i})">X</button>
+                </li>`;
+            });
+        }
+        function savePaperTrade() {
+            let entry = document.getElementById('trade-entry').value;
+            let sl = document.getElementById('trade-sl').value;
+            let reason = document.getElementById('trade-reason').value || 'No reason';
+            if(entry && sl) {
+                trades.push({entry, sl, reason});
+                localStorage.setItem('kk_trades', JSON.stringify(trades));
+                document.getElementById('trade-entry').value = '';
+                document.getElementById('trade-sl').value = '';
+                document.getElementById('trade-reason').value = '';
+                renderTrades();
+            } else { alert("Entry and SL required!"); }
+        }
+        function deleteTrade(index) { trades.splice(index, 1); localStorage.setItem('kk_trades', JSON.stringify(trades)); renderTrades(); }
+
+        /* --- 5. AI SIMULATOR --- */
+        function simulateAIAnalysis() {
+            const input = document.getElementById('ai-market-input').value;
+            const outputBox = document.getElementById('ai-market-output');
+            if(!input) return;
+            
+            outputBox.style.display = 'block';
+            outputBox.innerHTML = "<i>Analyzing market conditions...</i>";
+            
+            setTimeout(() => {
+                outputBox.innerHTML = `<b>AI Insight:</b> Based on current price action algorithms, volume is consolidating. Keep a strict SL. <br><br><i>Note: This is simulated logic.</i>`;
+            }, 1500);
+        }
+
+        /* --- 6. SETTINGS & BACKGROUND LOGIC --- */
+        function toggleSettings() {
+            const modal = document.getElementById('settings-modal');
+            const overlay = document.getElementById('settings-overlay');
+            if(modal.style.display === 'block') {
+                modal.style.display = 'none'; overlay.style.display = 'none';
+            } else {
+                modal.style.display = 'block'; overlay.style.display = 'block';
+            }
+        }
+
+        function saveSettings() {
+            const bgType = document.getElementById('bg-setting').value;
+            const themeColor = document.getElementById('theme-color').value;
+            
+            const settings = { bg: bgType, color: themeColor };
+            localStorage.setItem('kk_settings', JSON.stringify(settings));
+            applySettings(settings);
+            toggleSettings();
+        }
+
+        function applySettings(settings) {
+            // Apply Color
+            document.documentElement.style.setProperty('--glow-focus', settings.color);
+            document.getElementById('theme-color').value = settings.color;
+
+            // Apply Background
+            const body = document.body;
+            document.getElementById('bg-setting').value = settings.bg;
+            
+            if(settings.bg === 'image') {
+                body.classList.add('bg-image-mode');
+                stopParticles();
+            } else if (settings.bg === 'static') {
+                body.classList.remove('bg-image-mode');
+                stopParticles();
+            } else {
+                // Particles
+                body.classList.remove('bg-image-mode');
+                startParticles();
+            }
+        }
+
+        /* --- 7. PARTICLE NETWORK ANIMATION --- */
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        let animationFrameId;
+        let particlesActive = false;
+        
+        let mouse = { x: null, y: null, radius: 150 };
+        window.addEventListener('mousemove', (event) => { mouse.x = event.x; mouse.y = event.y; });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+            }
+            draw() {
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color; ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 1;
+                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 1;
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 1;
+                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 1;
+                }
+                this.x += this.directionX; this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function initParticles() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            let themeColor = getComputedStyle(document.documentElement).getPropertyValue('--glow-focus').trim();
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                particlesArray.push(new Particle(x, y, (Math.random()*2)-1, (Math.random()*2)-1, size, themeColor));
+            }
+        }
+
+        function animateParticles() {
+            if(!particlesActive) return;
+            animationFrameId = requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            
+            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
+            
+            // Connect lines
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - (distance / 20000)})`;
+                        ctx.lineWidth = 1; ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function startParticles() {
+            if(particlesActive) return;
+            particlesActive = true;
+            initParticles();
+            animateParticles();
+        }
+
+        function stopParticles() {
+            particlesActive = false;
+            cancelAnimationFrame(animationFrameId);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+        }
+
+        window.addEventListener('resize', () => { if(particlesActive) initParticles(); });
+
+        /* --- 8. INITIALIZE EVERYTHING ON LOAD --- */
+        window.onload = () => {
+            renderTasks();
+            renderTrades();
+            
+            // Load Settings if they exist
+            const savedSettings = JSON.parse(localStorage.getItem('kk_settings'));
+            if(savedSettings) {
+                applySettings(savedSettings);
+            } else {
+                startParticles(); // Default state
+            }
+        };
+
+    </script>
+</body>
+</html>
