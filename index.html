@@ -6,15 +6,14 @@
     <title>K.K. Command Center | Pro Ultra</title>
     <style>
         :root { 
-            --glow-focus: #00ff88; /* Default Neon Green */
+            --glow-focus: #00ff88; 
             --glow-break: #00d4ff; 
             --glow-trade: #ffaa00;
             --bg-alpha: 0.85;
             --main-transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        
         body { 
-            background-color: #050505; /* Deep dark base */
+            background-color: #050505; 
             color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden;
             transition: background 0.5s ease;
         }
@@ -44,15 +43,11 @@
             border-right: 1px solid rgba(255,255,255,0.1); z-index: 2500;
             display: flex; flex-direction: column; align-items: center; padding-top: 20px; box-shadow: 5px 0 20px rgba(0,0,0,0.5);
         }
-        .icon-btn {
-            font-size: 1.8em; cursor: pointer; margin-bottom: 25px; opacity: 0.5; transition: 0.3s; width: 100%; text-align: center; padding: 10px 0;
-        }
+        .icon-btn { font-size: 1.8em; cursor: pointer; margin-bottom: 25px; opacity: 0.5; transition: 0.3s; width: 100%; text-align: center; padding: 10px 0; }
         .icon-btn:hover, .icon-btn.active { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 10px var(--glow-focus)); border-left: 3px solid var(--glow-focus); background: rgba(255,255,255,0.05); }
 
         /* Main Content Wrapper */
-        .main-wrapper {
-            margin-left: 65px; flex: 1; display: flex; flex-direction: column; height: 100vh; width: calc(100% - 65px); position: relative;
-        }
+        .main-wrapper { margin-left: 65px; flex: 1; display: flex; flex-direction: column; height: 100vh; width: calc(100% - 65px); position: relative; transition: box-shadow 1s ease-in-out; }
         
         /* Header & Timer */
         .header-bar { height: 70px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px); z-index: 1500; }
@@ -61,32 +56,19 @@
         .btn-timer { background: transparent; color: white; border: 1px solid #666; padding: 8px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
         .btn-timer:hover { background: rgba(255,255,255,0.1); }
 
-        @keyframes timerPulse {
-            0% { text-shadow: 0 0 5px currentColor; transform: scale(1); }
-            50% { text-shadow: 0 0 20px currentColor, 0 0 30px currentColor; transform: scale(1.05); }
-            100% { text-shadow: 0 0 5px currentColor; transform: scale(1); }
-        }
+        @keyframes timerPulse { 0% { text-shadow: 0 0 5px currentColor; transform: scale(1); } 50% { text-shadow: 0 0 20px currentColor, 0 0 30px currentColor; transform: scale(1.05); } 100% { text-shadow: 0 0 5px currentColor; transform: scale(1); } }
         .timer-running { animation: timerPulse 2s infinite ease-in-out; color: var(--glow-focus); }
 
         /* Welcome Home Screen */
-        .home-screen {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; z-index: 10;
-        }
+        .home-screen { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; z-index: 10; }
         .home-screen h1 { font-size: 3em; font-weight: 300; margin: 0; letter-spacing: 2px; }
         .home-screen p { color: #aaa; font-size: 1.2em; margin-top: 10px; }
 
         /* FULL SCREEN MODULE OVERLAYS */
-        .module-overlay { 
-            display: none; position: absolute; top: 70px; left: 0; right: 0; bottom: 0; 
-            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(25px); 
-            z-index: 1000; overflow-y: auto; padding: 30px 40px; animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
+        .module-overlay { display: none; position: absolute; top: 70px; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(25px); z-index: 1000; overflow-y: auto; padding: 30px 40px; animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         
-        .close-module-btn {
-            background: rgba(255,255,255,0.1); color: white; border: 1px solid #444; padding: 8px 15px; border-radius: 8px; cursor: pointer; 
-            font-weight: bold; float: right; transition: 0.3s; display: flex; align-items: center; gap: 8px;
-        }
+        .close-module-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid #444; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; float: right; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
         .close-module-btn:hover { background: #ff4444; border-color: #ff4444; }
         .module-title { font-weight: 300; margin-top: 0; font-size: 2em; margin-bottom: 20px; }
 
@@ -98,7 +80,7 @@
         .input-field { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid #444; border-radius: 8px; color: white; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; }
         
         /* Popup Modal */
-        .popup-modal { display: none; position: fixed; top: 15%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px; border: 1px solid var(--glow-focus); z-index: 3000; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        .popup-modal { display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px; border: 1px solid var(--glow-focus); z-index: 3000; box-shadow: 0 20px 50px rgba(0,0,0,0.9); max-height: 80vh; overflow-y: auto; }
         .overlay-bg { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 2999; }
 
         /* Tasks & Layouts */
@@ -106,9 +88,16 @@
         .task-item { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--glow-focus); flex-wrap: wrap; gap: 10px; }
         .del-btn { background: rgba(255,68,68,0.2); border: 1px solid #ff4444; color: #ff4444; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .del-btn:hover { background: #ff4444; color: white; }
+        .add-card { border: 2px dashed #555; background: transparent; }
+        .add-card:hover { border-color: var(--glow-focus); background: rgba(0,255,136,0.05); }
+        .delete-card { position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.5); border-radius: 50%; width: 25px; height: 25px; font-size: 12px; border: none; color: white; cursor: pointer; display: none; }
+        .card:hover .delete-card { display: block; }
+        .back-btn { background: rgba(0,0,0,0.5); color: white; border: 1px solid #555; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; }
+        .back-btn:hover { border-color: var(--glow-focus); color: var(--glow-focus); }
 
         /* TRADING AREA */
         .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; align-items: stretch; }
+        .flex-col { display: flex; flex-direction: column; }
         .chart-col { flex: 100%; min-width: 0; }
         .side-col-wrapper { display: flex; gap: 20px; width: 100%; flex-wrap: wrap;} 
         .side-col { flex: 1; min-width: 300px; display: flex; flex-direction: column; }
@@ -116,11 +105,22 @@
         .chart-container { width: 100%; height: 55vh; min-height: 400px; border-radius: 10px; overflow: hidden; border: 1px solid #444; flex-grow: 1; position: relative; }
         .ai-output-box { margin-top:15px; font-size:0.9em; color:#ddd; background:rgba(0,0,0,0.4); padding:15px; border-radius:8px; display:none; border-left: 3px solid var(--glow-focus); line-height: 1.5; max-height: 200px; overflow-y: auto;}
 
+        /* Mobile Optimization */
         @media (max-width: 768px) {
             .left-sidebar { width: 50px; }
             .main-wrapper { margin-left: 50px; width: calc(100% - 50px); }
             .header-bar { padding: 0 10px; height: 60px; }
+            .timer-controls { gap: 10px; }
+            .mode-badge { padding: 5px 10px; font-size: 0.7em; letter-spacing: 0; }
+            #timer-display { font-size: 1.4em !important; }
+            .btn-timer { padding: 5px 10px; font-size: 0.8em; }
             #desktop-logo { display: none; }
+            .grid-container { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .card { padding: 15px 10px; border-radius: 12px; }
+            .icon { font-size: 30px; margin-bottom: 8px; }
+            .card h3 { font-size: 0.9em; margin: 0; }
+            .flex-row { flex-direction: column; gap: 15px; }
+            .chart-col, .side-col { flex: none; width: 100%; min-width: unset; }
             .chart-container { height: 45vh; min-height: 350px; } 
         }
     </style>
@@ -139,14 +139,15 @@
         <div class="icon-btn" onclick="openModule('chill', this)" title="Chill Zone (Games)" style="color:var(--glow-break);">🎮</div>
         
         <div style="flex-grow: 1;"></div>
-        <div class="icon-btn" onclick="toggleSettings()" title="Settings" style="color:#aaa;">⚙️</div>
+        <div class="icon-btn" onclick="togglePopup('settings-modal')" title="Settings & Backup" style="color:#aaa;">⚙️</div>
     </div>
 
     <div class="main-wrapper" id="main-wrapper">
+        
         <div class="header-bar" id="header">
             <div class="timer-controls">
                 <span id="mode-badge" class="mode-badge">FOCUS MODE</span>
-                <span id="timer-display" style="font-size:2.2em; font-family:monospace; font-weight:bold; letter-spacing: 2px;">25:00</span>
+                <span id="timer-display" style="font-size:2.2em; font-family:monospace; font-weight:bold; letter-spacing: 2px; transition: color 0.3s;">25:00</span>
                 <button onclick="toggleTimer()" id="start-btn" class="btn-timer">START</button>
             </div>
             <div id="desktop-logo" style="font-size: 1.2em; font-weight: 300;">K.K. HQ</div>
@@ -160,18 +161,27 @@
         <div id="workspace" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Digital <b style="color:var(--glow-focus)">Operations</b></h2>
-            <div class="grid-container" id="grid-workspace">
+            <div class="grid-container">
+                <div class="card" onclick="window.open('https://meet.google.com/new')"><span class="icon">🤝</span><h3>Meet (Sync)</h3></div>
+                <div class="card" onclick="window.open('https://shopify.com')"><span class="icon">🛒</span><h3>Aura Fit Shopify</h3></div>
                 <div class="card" onclick="window.open('https://mail.google.com')"><span class="icon">📧</span><h3>Gmail</h3></div>
-                <div class="card" onclick="window.open('https://drive.google.com')"><span class="icon">☁️</span><h3>Drive</h3></div>
+                <div class="card" onclick="window.open('https://drive.google.com')"><span class="icon">📁</span><h3>Drive</h3></div>
+                <div class="card" onclick="window.open('https://canva.com')"><span class="icon">🎨</span><h3>Canva Design</h3></div>
+                <div class="card" onclick="window.open('https://trends.google.com')"><span class="icon">📈</span><h3>Real Estate Trends</h3></div>
             </div>
         </div>
 
         <div id="trading" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Live <b style="color:var(--glow-trade)">Trading Terminal</b></h2>
+            
             <div class="flex-row">
                 <div class="flex-col chart-col">
                     <div class="panel" style="padding:10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 10px;">
+                            <h3 style="margin: 0; color: var(--glow-trade);">📊 Advanced Market Chart</h3>
+                            <small style="color: #aaa;">Crypto, SIP, Stocks</small>
+                        </div>
                         <div class="chart-container">
                             <div class="tradingview-widget-container" style="height:100%;width:100%">
                               <div id="tradingview_advanced" style="height:100%;width:100%"></div>
@@ -193,14 +203,13 @@
 
             <div class="side-col-wrapper">
                 <div class="side-col">
-                    <div class="panel">
+                    <div class="panel" style="flex-grow: 0;">
                         <h3 style="margin: 0 0 10px 0; color: var(--glow-focus);">🤖 AI Market Analyzer</h3>
                         <textarea id="ai-market-input" class="input-field" style="resize:vertical; height:70px; margin-bottom: 10px;" placeholder="Ask AI about trends or setups..."></textarea>
                         <button onclick="simulateAIAnalysis()" style="width:100%; background:rgba(0, 255, 136, 0.1); color:var(--glow-focus); border:1px solid var(--glow-focus); padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">Ask AI ⚡</button>
                         <div id="ai-market-output" class="ai-output-box"></div>
                     </div>
                 </div>
-
                 <div class="side-col">
                     <div class="panel">
                         <h3 style="margin: 0 0 10px 0; color: var(--glow-trade);">📝 Paper Log</h3>
@@ -214,23 +223,48 @@
                     </div>
                 </div>
             </div>
+
+            <h3 style="font-weight: 300; margin-top: 20px;">Trading <b style="color:var(--glow-trade)">Vault</b></h3>
+            <div class="grid-container">
+                <div class="card" onclick="window.open('https://dhan.co/')"><span class="icon">⚡</span><h3>Dhan Web</h3></div>
+                <div class="card" onclick="window.open('https://angelone.in/')"><span class="icon">📈</span><h3>Angel One</h3></div>
+                <div class="card" onclick="window.open('https://www.tradingview.com/')"><span class="icon">🕯️</span><h3>Price Action</h3></div>
+                <div class="card" onclick="window.open('https://www.nseindia.com/')"><span class="icon">📊</span><h3>Options Data</h3></div>
+            </div>
         </div>
 
         <div id="academic" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">BAMS <b style="color:var(--glow-focus)">Knowledge Base</b></h2>
-            <div class="grid-container" id="grid-academic">
-                <div class="card"><span class="icon">📚</span><h3>Anatomy</h3></div>
-                <div class="card"><span class="icon">🌿</span><h3>Dravyaguna</h3></div>
+            
+            <div id="main-academic-view">
+                <h2 class="module-title">BAMS <b style="color:var(--glow-focus)">Knowledge Base</b></h2>
+                <div class="grid-container">
+                    <div class="card" onclick="openSubject('Anatomy')"><span class="icon">🦴</span><h3>Anatomy</h3></div>
+                    <div class="card" onclick="openSubject('Physiology')"><span class="icon">🧪</span><h3>Physiology</h3></div>
+                    <div class="card" onclick="openSubject('Padarth')"><span class="icon">📜</span><h3>Padarth</h3></div>
+                    <div class="card" onclick="openSubject('Samhita')"><span class="icon">🕉️</span><h3>Samhita</h3></div>
+                    <div class="card" onclick="openSubject('Sanskrit')"><span class="icon">🔤</span><h3>Sanskrit</h3></div>
+                    <div class="card" onclick="openSubject('Clinical')"><span class="icon">🏥</span><h3>Clinical</h3></div>
+                    <div class="card" onclick="openSubject('Exam Vault')"><span class="icon">🎓</span><h3>Exam Vault</h3></div>
+                    <div class="card" onclick="openSubject('Shloka Lib')"><span class="icon">✍️</span><h3>Shloka Lib</h3></div>
+                </div>
+            </div>
+
+            <div id="subject-detail-view" style="display:none;">
+                <button class="back-btn" onclick="closeSubject()">⬅ Back to Subjects</button>
+                <h2 class="module-title" id="subject-title">Subject <b style="color:var(--glow-focus)">Hub</b></h2>
+                <div class="grid-container" id="grid-subject-specific"></div>
             </div>
         </div>
 
         <div id="ai-hub" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Strategic <b style="color:var(--glow-focus)">AI Toolkit</b></h2>
-            <div class="grid-container" id="grid-ai">
-                <div class="card" onclick="window.open('https://chat.openai.com')"><span class="icon">🧠</span><h3>ChatGPT</h3></div>
-                <div class="card" onclick="window.open('https://gemini.google.com')"><span class="icon">✨</span><h3>Gemini</h3></div>
+            <div class="grid-container">
+                <div class="card" onclick="window.open('https://gemini.google.com')"><span class="icon">✨</span><h3>Gemini AI</h3></div>
+                <div class="card" onclick="window.open('https://chatgpt.com')"><span class="icon">🧠</span><h3>ChatGPT</h3></div>
+                <div class="card" onclick="window.open('https://www.meta.ai')"><span class="icon">♾️</span><h3>Meta AI</h3></div>
+                <div class="card" onclick="window.open('https://news.google.com')"><span class="icon">📰</span><h3>News Tracker</h3></div>
             </div>
         </div>
 
@@ -247,189 +281,329 @@
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Chill <b style="color:var(--glow-break)">Zone</b></h2>
             <div class="grid-container">
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://quickdraw.withgoogle.com/')"><span class="icon">🎨</span><h3>Quick, Draw!</h3></div>
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://www.roblox.com')"><span class="icon">🧱</span><h3>Roblox</h3></div>
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://store.steampowered.com/')"><span class="icon">🚂</span><h3>Steam</h3></div>
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://open.spotify.com/')"><span class="icon">🎵</span><h3>Spotify</h3></div>
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://quickdraw.withgoogle.com/')"><span class="icon">🎨</span><h3>Quick, Draw!</h3><small style="color:#aaa;">Doodle to relax</small></div>
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://www.roblox.com')"><span class="icon">🧱</span><h3>Roblox</h3><small style="color:#aaa;">Jump into a game</small></div>
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://store.steampowered.com/')"><span class="icon">🚂</span><h3>Steam</h3><small style="color:#aaa;">Check library & store</small></div>
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://play2048.co/')"><span class="icon">🧩</span><h3>2048</h3><small style="color:#aaa;">Mind puzzle</small></div>
+                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://lofico.com/')"><span class="icon">🎧</span><h3>Lofi Radio</h3><small style="color:#aaa;">Relaxing beats</small></div>
             </div>
         </div>
-    </div>
+    </div> 
 
-    <div class="overlay-bg" id="settings-overlay" onclick="toggleSettings()"></div>
+    <div class="overlay-bg" id="settings-overlay" onclick="togglePopup('settings-modal')"></div>
     <div id="settings-modal" class="popup-modal">
-        <h2 style="color:var(--glow-focus); margin-top:0;">System Settings</h2>
+        <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 15px;">Cinematic Settings & Backup</h3>
         
-        <label style="display:block; margin-bottom:5px; color:#aaa;">Background Style:</label>
+        <label style="display:block; margin-bottom:5px; color:var(--glow-focus); font-weight:bold;">Avenger Background Style:</label>
         <select id="bg-setting" class="input-field">
             <option value="particles">Sci-Fi Particles (Interactive)</option>
             <option value="image">Cinematic Image</option>
             <option value="static">Pure Dark</option>
         </select>
 
-        <label style="display:block; margin-bottom:5px; margin-top:10px; color:#aaa;">Main Theme Color (Glow):</label>
-        <input type="color" id="theme-color" class="input-field" value="#00ff88" style="padding: 2px; height: 45px; cursor:pointer;">
+        <div style="display: flex; gap: 10px; margin-top:10px;">
+            <div style="flex: 1;"><label style="color:#aaa; font-size:0.9em;">Focus (mins)</label><input type="number" id="focus-time-input" value="25" class="input-field"></div>
+            <div style="flex: 1;"><label style="color:#aaa; font-size:0.9em;">Break (mins)</label><input type="number" id="break-time-input" value="5" class="input-field"></div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;"><label style="color:#aaa; font-size:0.9em;">Focus Color</label><input type="color" id="f-color" value="#00ff88" class="input-field" style="height:40px; padding:2px;"></div>
+            <div style="flex: 1;"><label style="color:#aaa; font-size:0.9em;">Break Color</label><input type="color" id="b-color" value="#00d4ff" class="input-field" style="height:40px; padding:2px;"></div>
+        </div>
+        
+        <label style="color:#aaa; font-size:0.9em;">Background Transparency (Image mode only)</label>
+        <input type="range" id="trans-range" min="0.1" max="1" step="0.1" value="0.85" style="width:100%; margin-bottom:15px;">
+        
+        <button onclick="testVoiceNotification()" style="width:100%; background:transparent; color:var(--glow-focus); border:1px solid var(--glow-focus); padding:10px; border-radius:8px; cursor:pointer; font-weight:bold; margin-bottom:15px;">🔊 Test Voice & Sound</button>
+        <button onclick="applySettings()" style="width:100%; background:var(--glow-focus); color:black; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:bold; margin-bottom: 15px;">Save, Apply & Reset Timer</button>
 
-        <button onclick="saveSettings()" style="width:100%; padding:12px; background:var(--glow-focus); color:#000; font-weight:bold; border:none; border-radius:8px; margin-top:15px; cursor:pointer;">Save & Apply</button>
-        <button onclick="toggleSettings()" style="width:100%; padding:10px; background:transparent; color:#fff; border:1px solid #555; border-radius:8px; margin-top:10px; cursor:pointer;">Close</button>
+        <h4 style="margin-top:0; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; color: #00d4ff;">💾 Data Backup</h4>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="exportData()" style="flex:1; background:transparent; color:#00d4ff; border:1px solid #00d4ff; padding:10px; border-radius:8px; cursor:pointer; font-size: 0.9em;">⬇️ Export</button>
+            <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+            <button onclick="document.getElementById('importFile').click()" style="flex:1; background:transparent; color:#ffaa00; border:1px solid #ffaa00; padding:10px; border-radius:8px; cursor:pointer; font-size: 0.9em;">⬆️ Import</button>
+        </div>
+        <button onclick="togglePopup('settings-modal')" style="width:100%; background:transparent; color:white; border:1px solid #555; padding:10px; border-radius:8px; cursor:pointer; margin-top:15px;">Close</button>
+    </div>
+
+    <div id="add-link-modal" class="popup-modal">
+        <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 15px;">Add to <span id="modal-subject-name" style="color:var(--glow-focus);">Hub</span></h3>
+        <input type="text" id="new-name" placeholder="Name (e.g., Chapter 1 PDF)" class="input-field">
+        <input type="text" id="new-icon" placeholder="Emoji Icon (e.g., 📘)" class="input-field">
+        <input type="text" id="new-url" placeholder="Paste URL here" class="input-field">
+        <button onclick="saveNewCard()" style="width:100%; background:var(--glow-focus); color:black; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:bold;">Add Link</button>
+        <button onclick="togglePopup('add-link-modal')" style="width:100%; background:transparent; color:white; border:1px solid #555; padding:10px; border-radius:8px; cursor:pointer; margin-top:10px;">Cancel</button>
     </div>
 
     <script>
-        /* --- 1. MODULE NAVIGATION --- */
+        // --- 1. MODULE NAVIGATION LOGIC ---
         function openModule(moduleId, btnElement) {
-            document.querySelectorAll('.module-overlay').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('home-screen').style.display = 'none';
-            
+            document.querySelectorAll('.module-overlay').forEach(overlay => overlay.style.display = 'none');
+            document.querySelectorAll('.left-sidebar .icon-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(moduleId).style.display = 'block';
             if(btnElement) btnElement.classList.add('active');
+            if(moduleId !== 'academic') closeSubject();
         }
 
         function closeAllModules() {
-            document.querySelectorAll('.module-overlay').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.module-overlay').forEach(overlay => overlay.style.display = 'none');
+            document.querySelectorAll('.left-sidebar .icon-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('home-screen').style.display = 'flex';
         }
 
-        /* --- 2. FOCUS TIMER --- */
-        let timerInterval;
-        let timeLeft = 1500; // 25 mins
-        let isRunning = false;
+        function togglePopup(id) { 
+            let m = document.getElementById(id);
+            let overlay = document.getElementById('settings-overlay');
+            if(m.style.display === 'block') {
+                m.style.display = 'none';
+                if(id === 'settings-modal') overlay.style.display = 'none';
+            } else {
+                m.style.display = 'block';
+                if(id === 'settings-modal') overlay.style.display = 'block';
+            }
+        }
+
+        // --- 2. ACADEMIC HUB SUB-MENU LOGIC ---
+        let currentActiveSubject = null;
+        function openSubject(subjectName) {
+            currentActiveSubject = subjectName;
+            document.getElementById('main-academic-view').style.display = 'none';
+            document.getElementById('subject-detail-view').style.display = 'block';
+            document.getElementById('subject-title').innerHTML = `${subjectName} <b style="color:var(--glow-focus)">Library</b>`;
+            document.getElementById('modal-subject-name').innerText = subjectName;
+            renderSubjectSpecificLinks();
+        }
+        function closeSubject() {
+            currentActiveSubject = null;
+            document.getElementById('main-academic-view').style.display = 'block';
+            document.getElementById('subject-detail-view').style.display = 'none';
+        }
+        function getSubjectLinks(subject) { return JSON.parse(localStorage.getItem('subject_' + subject)) || []; }
+        function renderSubjectSpecificLinks() {
+            const container = document.getElementById('grid-subject-specific');
+            container.innerHTML = "";
+            let links = getSubjectLinks(currentActiveSubject);
+            links.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="card" onclick="window.open('${item.url}')">
+                        <button class="delete-card" onclick="event.stopPropagation(); deleteCard(${index})">X</button>
+                        <span class="icon">${item.icon}</span><h3>${item.name}</h3>
+                    </div>`;
+            });
+            container.innerHTML += `<div class="card add-card" onclick="togglePopup('add-link-modal')"><span class="icon">➕</span><h3>Add Resource</h3></div>`;
+        }
+        function saveNewCard() {
+            let name = document.getElementById('new-name').value, icon = document.getElementById('new-icon').value || "📄", url = document.getElementById('new-url').value;
+            if(name && url && currentActiveSubject) {
+                let links = getSubjectLinks(currentActiveSubject);
+                links.push({ name, icon, url });
+                localStorage.setItem('subject_' + currentActiveSubject, JSON.stringify(links));
+                renderSubjectSpecificLinks();
+                togglePopup('add-link-modal');
+                document.getElementById('new-name').value = ""; document.getElementById('new-icon').value = ""; document.getElementById('new-url').value = "";
+            } else { alert("Please enter a Name and URL."); }
+        }
+        function deleteCard(index) {
+            if(currentActiveSubject) {
+                let links = getSubjectLinks(currentActiveSubject);
+                links.splice(index, 1);
+                localStorage.setItem('subject_' + currentActiveSubject, JSON.stringify(links));
+                renderSubjectSpecificLinks();
+            }
+        }
+
+        // --- 3. TIMER & SETTINGS LOGIC ---
+        const alarmSound = new Audio('https://actions.google.com/sounds/v1/water/glass_water_pour.ogg');
+        function speakNotification(text) {
+            if ('speechSynthesis' in window) { const utterance = new SpeechSynthesisUtterance(text); window.speechSynthesis.speak(utterance); }
+        }
+        function testVoiceNotification() { alarmSound.play(); speakNotification("Voice notifications are active."); }
+        if ("Notification" in window) { Notification.requestPermission(); }
+
+        let focusMin = 25, breakMin = 5, isFocus = true, timeLeft = focusMin * 60, isRunning = false, timerId = null;
+
+        function applySettings() {
+            // Apply Timer & Colors
+            let f = document.getElementById('f-color').value, b = document.getElementById('b-color').value, t = document.getElementById('trans-range').value;
+            focusMin = parseInt(document.getElementById('focus-time-input').value) || 25;
+            breakMin = parseInt(document.getElementById('break-time-input').value) || 5;
+            clearInterval(timerId); isRunning = false; isFocus = true; timeLeft = focusMin * 60;
+            document.getElementById('start-btn').innerText = "START";
+            document.getElementById('timer-display').classList.remove('timer-running');
+            document.documentElement.style.setProperty('--glow-focus', f);
+            document.documentElement.style.setProperty('--glow-break', b);
+            updateModeUI(); updateUI();
+
+            // Apply Background settings (Particles, Image, Dark)
+            const bgType = document.getElementById('bg-setting').value;
+            if(bgType === 'image') {
+                document.body.classList.add('bg-image-mode');
+                document.body.style.backgroundImage = `linear-gradient(rgba(5,5,5,${t}), rgba(5,5,5,${t})), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')`;
+                stopParticles();
+            } else if (bgType === 'static') {
+                document.body.classList.remove('bg-image-mode');
+                document.body.style.backgroundImage = 'none';
+                stopParticles();
+            } else {
+                document.body.classList.remove('bg-image-mode');
+                document.body.style.backgroundImage = 'none';
+                startParticles();
+            }
+
+            // Save settings to LocalStorage so they persist on refresh
+            localStorage.setItem('kk_settings', JSON.stringify({ f, b, t, focusMin, breakMin, bgType }));
+            togglePopup('settings-modal');
+        }
+
+        function loadSettingsOnStart() {
+            let saved = JSON.parse(localStorage.getItem('kk_settings'));
+            if(saved) {
+                document.getElementById('f-color').value = saved.f;
+                document.getElementById('b-color').value = saved.b;
+                document.getElementById('trans-range').value = saved.t;
+                document.getElementById('focus-time-input').value = saved.focusMin;
+                document.getElementById('break-time-input').value = saved.breakMin;
+                document.getElementById('bg-setting').value = saved.bgType || 'particles';
+                applySettings(); // Trigger the visual updates
+                if(document.getElementById('settings-modal').style.display === 'block') { togglePopup('settings-modal'); } // hide if auto-opened
+            } else {
+                startParticles(); // Default state
+            }
+        }
+
+        function updateModeUI() {
+            let color = isFocus ? getComputedStyle(document.documentElement).getPropertyValue('--glow-focus') : getComputedStyle(document.documentElement).getPropertyValue('--glow-break');
+            document.getElementById('mode-badge').style.borderColor = color;
+            document.getElementById('mode-badge').style.color = color;
+            document.getElementById('header').style.borderColor = color;
+            document.getElementById('timer-display').style.color = isRunning ? color : 'white';
+            let mainWrap = document.getElementById('main-wrapper');
+            if(isRunning) mainWrap.style.boxShadow = `inset 0 0 120px ${color}33`; else mainWrap.style.boxShadow = "none";
+        }
 
         function toggleTimer() {
-            const display = document.getElementById('timer-display');
-            const btn = document.getElementById('start-btn');
-            
-            if (isRunning) {
-                clearInterval(timerInterval);
-                btn.innerText = "START";
-                display.classList.remove('timer-running');
-                isRunning = false;
-            } else {
-                isRunning = true;
-                btn.innerText = "PAUSE";
-                display.classList.add('timer-running');
-                timerInterval = setInterval(() => {
-                    if (timeLeft > 0) {
-                        timeLeft--;
-                        let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-                        let s = (timeLeft % 60).toString().padStart(2, '0');
-                        display.innerText = `${m}:${s}`;
-                    } else {
-                        clearInterval(timerInterval);
-                        alert("Focus Session Complete!");
-                        resetTimer();
-                    }
+            if(isRunning) { 
+                clearInterval(timerId); isRunning = false; 
+                document.getElementById('start-btn').innerText = "RESUME"; 
+                document.getElementById('timer-display').classList.remove('timer-running');
+                document.getElementById('main-wrapper').style.boxShadow = "none"; 
+                document.getElementById('timer-display').style.color = 'white';
+            } else { 
+                isRunning = true; 
+                document.getElementById('start-btn').innerText = "PAUSE";
+                document.getElementById('timer-display').classList.add('timer-running');
+                updateModeUI(); 
+                timerId = setInterval(() => {
+                    if(timeLeft > 0) { timeLeft--; updateUI(); } else { handleSessionComplete(); }
                 }, 1000);
             }
         }
-        function resetTimer() { timeLeft = 1500; document.getElementById('timer-display').innerText = "25:00"; isRunning=false; document.getElementById('start-btn').innerText = "START"; document.getElementById('timer-display').classList.remove('timer-running'); }
 
-        /* --- 3. TASK MANAGER --- */
-        let tasks = JSON.parse(localStorage.getItem('kk_tasks')) || [];
+        function handleSessionComplete() {
+            clearInterval(timerId); isRunning = false; alarmSound.play();
+            if (isFocus) { speakNotification("Focus session complete."); if (Notification.permission === "granted") new Notification("Focus session complete."); } 
+            else { speakNotification("Break is over."); if (Notification.permission === "granted") new Notification("Break is over."); }
+            switchMode();
+        }
+
+        function switchMode() {
+            isFocus = !isFocus; timeLeft = (isFocus ? focusMin : breakMin) * 60; 
+            document.getElementById('mode-badge').innerText = isFocus ? "FOCUS MODE" : "BREAK MODE";
+            document.getElementById('start-btn').innerText = "START"; 
+            document.getElementById('timer-display').classList.remove('timer-running');
+            document.getElementById('main-wrapper').style.boxShadow = "none"; 
+            document.getElementById('timer-display').style.color = 'white';
+            updateModeUI(); updateUI();
+        }
+        function updateUI() { let m = Math.floor(timeLeft/60), s = timeLeft%60; document.getElementById('timer-display').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; }
         
-        function renderTasks() {
+        // --- 4. TASKS LOGIC ---
+        function loadTasks() {
+            let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || [];
             const list = document.getElementById('taskList');
-            list.innerHTML = '';
-            tasks.forEach((t, i) => {
-                list.innerHTML += `<li class="task-item">${t} <button class="del-btn" onclick="deleteTask(${i})">X</button></li>`;
+            list.innerHTML = "";
+            tasks.forEach((task, index) => {
+                list.innerHTML += `<li class="task-item"><span style="font-size:1.1em; flex:1;">${task}</span><button class="del-btn" onclick="deleteTask(${index})">Done ✔</button></li>`;
             });
         }
         function handleTaskKeyPress(e) {
             if(e.key === 'Enter' && e.target.value.trim() !== '') {
-                tasks.push(e.target.value.trim());
-                localStorage.setItem('kk_tasks', JSON.stringify(tasks));
-                e.target.value = '';
-                renderTasks();
+                let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || [];
+                tasks.push(e.target.value.trim()); localStorage.setItem('dailyTasks', JSON.stringify(tasks));
+                loadTasks(); e.target.value = '';
             }
         }
-        function deleteTask(index) { tasks.splice(index, 1); localStorage.setItem('kk_tasks', JSON.stringify(tasks)); renderTasks(); }
+        function deleteTask(index) {
+            let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || [];
+            tasks.splice(index, 1); localStorage.setItem('dailyTasks', JSON.stringify(tasks)); loadTasks();
+        }
 
-        /* --- 4. PAPER TRADING LOG --- */
-        let trades = JSON.parse(localStorage.getItem('kk_trades')) || [];
-        
-        function renderTrades() {
+        // --- 5. PAPER TRADING LOGIC ---
+        function loadTrades() {
+            let trades = JSON.parse(localStorage.getItem('paperTrades')) || [];
             const list = document.getElementById('tradeList');
-            list.innerHTML = '';
-            trades.forEach((t, i) => {
-                list.innerHTML += `<li class="task-item" style="border-left-color:var(--glow-trade); font-size:0.9em;">
-                    <b>E:</b> ${t.entry} | <b>SL:</b> ${t.sl} <br> <small>${t.reason}</small> 
-                    <button class="del-btn" style="padding:2px 6px;" onclick="deleteTrade(${i})">X</button>
-                </li>`;
+            if(!list) return; list.innerHTML = "";
+            trades.forEach((trade, index) => {
+                list.innerHTML += `
+                    <li class="task-item trade-item">
+                        <div style="flex:1; font-size:0.9em; text-align: left;">
+                            <b>${trade.entry}</b> <br> <span style="color:#ffaa00">SL: ${trade.sl}</span> | <span style="color:#aaa">${trade.reason}</span>
+                        </div>
+                        <button class="del-btn" onclick="deleteTrade(${index})">X</button>
+                    </li>`;
             });
         }
         function savePaperTrade() {
-            let entry = document.getElementById('trade-entry').value;
-            let sl = document.getElementById('trade-sl').value;
-            let reason = document.getElementById('trade-reason').value || 'No reason';
-            if(entry && sl) {
-                trades.push({entry, sl, reason});
-                localStorage.setItem('kk_trades', JSON.stringify(trades));
-                document.getElementById('trade-entry').value = '';
-                document.getElementById('trade-sl').value = '';
-                document.getElementById('trade-reason').value = '';
-                renderTrades();
-            } else { alert("Entry and SL required!"); }
+            let entry = document.getElementById('trade-entry').value, sl = document.getElementById('trade-sl').value, reason = document.getElementById('trade-reason').value;
+            if(entry) {
+                let trades = JSON.parse(localStorage.getItem('paperTrades')) || [];
+                trades.push({entry, sl, reason}); localStorage.setItem('paperTrades', JSON.stringify(trades));
+                loadTrades(); speakNotification(`Trade logged. Best of luck.`);
+                document.getElementById('trade-entry').value = ''; document.getElementById('trade-sl').value = ''; document.getElementById('trade-reason').value = '';
+            }
         }
-        function deleteTrade(index) { trades.splice(index, 1); localStorage.setItem('kk_trades', JSON.stringify(trades)); renderTrades(); }
+        function deleteTrade(index) {
+            let trades = JSON.parse(localStorage.getItem('paperTrades')) || [];
+            trades.splice(index, 1); localStorage.setItem('paperTrades', JSON.stringify(trades)); loadTrades();
+        }
 
-        /* --- 5. AI SIMULATOR --- */
-        function simulateAIAnalysis() {
+        // --- 6. AI ANALYZER ---
+        async function simulateAIAnalysis() {
             const input = document.getElementById('ai-market-input').value;
             const outputBox = document.getElementById('ai-market-output');
-            if(!input) return;
-            
-            outputBox.style.display = 'block';
-            outputBox.innerHTML = "<i>Analyzing market conditions...</i>";
-            
-            setTimeout(() => {
-                outputBox.innerHTML = `<b>AI Insight:</b> Based on current price action algorithms, volume is consolidating. Keep a strict SL. <br><br><i>Note: This is simulated logic.</i>`;
-            }, 1500);
+            if(!input) { alert("Please ask a question!"); return; }
+            outputBox.style.display = "block"; outputBox.innerHTML = `<i>Connecting to Gemini AI... 🔄</i>`;
+            const apiKey = "AQ.Ab8RN6KoCJpqCa0tZXmtMWpZqYz1Ez2YCnIlc_IWshQc7BKnHg";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            try {
+                const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: "You are an expert, concise AI assistant. Briefly answer: " + input }] }] })
+                });
+                if (!response.ok) { const errText = await response.text(); throw new Error(errText); }
+                const data = await response.json();
+                const aiText = data.candidates[0].content.parts[0].text;
+                const formattedText = aiText.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--glow-focus)">$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/\n/g, '<br>');
+                outputBox.innerHTML = `<b>Gemini Response:</b><br><br>${formattedText}`;
+            } catch (error) { outputBox.innerHTML = `<span style="color:#ff4444;"><b>API Error Details:</b><br><small style="font-family:monospace; display:block; padding:10px; background:rgba(0,0,0,0.5); border-radius:5px; margin-top:5px;">${error.message}</small></span>`; }
         }
 
-        /* --- 6. SETTINGS & BACKGROUND LOGIC --- */
-        function toggleSettings() {
-            const modal = document.getElementById('settings-modal');
-            const overlay = document.getElementById('settings-overlay');
-            if(modal.style.display === 'block') {
-                modal.style.display = 'none'; overlay.style.display = 'none';
-            } else {
-                modal.style.display = 'block'; overlay.style.display = 'block';
-            }
+        // --- 7. BACKUP & RESTORE ---
+        function exportData() {
+            let data = JSON.stringify(localStorage);
+            let blob = new Blob([data], {type: "application/json"});
+            let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'KK_Dashboard_Backup.json'; a.click();
+        }
+        function importData(event) {
+            let file = event.target.files[0]; if(!file) return;
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                try { let data = JSON.parse(e.target.result); for (let key in data) { localStorage.setItem(key, data[key]); } alert("Imported Successfully!"); location.reload(); } 
+                catch(err) { alert("Error parsing backup file!"); }
+            };
+            reader.readAsText(file);
         }
 
-        function saveSettings() {
-            const bgType = document.getElementById('bg-setting').value;
-            const themeColor = document.getElementById('theme-color').value;
-            
-            const settings = { bg: bgType, color: themeColor };
-            localStorage.setItem('kk_settings', JSON.stringify(settings));
-            applySettings(settings);
-            toggleSettings();
-        }
-
-        function applySettings(settings) {
-            // Apply Color
-            document.documentElement.style.setProperty('--glow-focus', settings.color);
-            document.getElementById('theme-color').value = settings.color;
-
-            // Apply Background
-            const body = document.body;
-            document.getElementById('bg-setting').value = settings.bg;
-            
-            if(settings.bg === 'image') {
-                body.classList.add('bg-image-mode');
-                stopParticles();
-            } else if (settings.bg === 'static') {
-                body.classList.remove('bg-image-mode');
-                stopParticles();
-            } else {
-                // Particles
-                body.classList.remove('bg-image-mode');
-                startParticles();
-            }
-        }
-
-        /* --- 7. PARTICLE NETWORK ANIMATION --- */
+        // --- 8. AVENGER CINEMATIC ANIMATION (PARTICLES) ---
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particlesArray = [];
@@ -450,7 +624,6 @@
             update() {
                 if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
                 if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-                
                 let dx = mouse.x - this.x; let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
                 if (distance < mouse.radius + this.size) {
@@ -463,7 +636,6 @@
                 this.draw();
             }
         }
-
         function initParticles() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             particlesArray = [];
@@ -476,15 +648,11 @@
                 particlesArray.push(new Particle(x, y, (Math.random()*2)-1, (Math.random()*2)-1, size, themeColor));
             }
         }
-
         function animateParticles() {
             if(!particlesActive) return;
             animationFrameId = requestAnimationFrame(animateParticles);
             ctx.clearRect(0, 0, innerWidth, innerHeight);
-            
             for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
-            
-            // Connect lines
             for (let a = 0; a < particlesArray.length; a++) {
                 for (let b = a; b < particlesArray.length; b++) {
                     let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
@@ -498,34 +666,16 @@
                 }
             }
         }
-
-        function startParticles() {
-            if(particlesActive) return;
-            particlesActive = true;
-            initParticles();
-            animateParticles();
-        }
-
-        function stopParticles() {
-            particlesActive = false;
-            cancelAnimationFrame(animationFrameId);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
-        }
-
+        function startParticles() { if(particlesActive) return; particlesActive = true; initParticles(); animateParticles(); }
+        function stopParticles() { particlesActive = false; cancelAnimationFrame(animationFrameId); ctx.clearRect(0, 0, innerWidth, innerHeight); }
         window.addEventListener('resize', () => { if(particlesActive) initParticles(); });
 
-        /* --- 8. INITIALIZE EVERYTHING ON LOAD --- */
+        // Initialize on load
         window.onload = () => {
-            renderTasks();
-            renderTrades();
-            
-            // Load Settings if they exist
-            const savedSettings = JSON.parse(localStorage.getItem('kk_settings'));
-            if(savedSettings) {
-                applySettings(savedSettings);
-            } else {
-                startParticles(); // Default state
-            }
+            updateUI();
+            loadTasks();
+            loadTrades();
+            loadSettingsOnStart();
         };
 
     </script>
