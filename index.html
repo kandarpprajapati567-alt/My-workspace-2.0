@@ -298,10 +298,10 @@
         <label style="display:block; margin-bottom:5px; color:var(--glow-focus); font-weight:bold;">Avenger Background Style:</label>
         <select id="bg-setting" class="input-field">
             <option value="particles">Sci-Fi Particles (Default Focus)</option>
-            <option value="ironman">Iron Man (JARVIS HUD 🔴🟡)</option>
-            <option value="spiderman">Spider-Man (Web Network 🕸️)</option>
+            <option value="ironman">Iron Man (JARVIS 3D Flight 🔴🟡)</option>
+            <option value="spiderman">Spider-Man (3D Web Network 🕸️)</option>
             <option value="captain">Captain America (Vibranium 🛡️)</option>
-            <option value="strange">Doctor Strange (Mystic Sparks ✨)</option>
+            <option value="strange">Doctor Strange (3D Mystic Vortex ✨)</option>
             <option value="image">Cinematic Image 🌄</option>
             <option value="static">Pure Dark 🌑</option>
         </select>
@@ -426,10 +426,9 @@
         if ("Notification" in window) { Notification.requestPermission(); }
 
         let focusMin = 25, breakMin = 5, isFocus = true, timeLeft = focusMin * 60, isRunning = false, timerId = null;
-        let currentAnimTheme = 'particles'; // Track current avenger theme
+        let currentAnimTheme = 'particles'; 
 
         function applySettings() {
-            // Apply Timer & Colors
             let f = document.getElementById('f-color').value, b = document.getElementById('b-color').value, t = document.getElementById('trans-range').value;
             focusMin = parseInt(document.getElementById('focus-time-input').value) || 25;
             breakMin = parseInt(document.getElementById('break-time-input').value) || 5;
@@ -440,9 +439,8 @@
             document.documentElement.style.setProperty('--glow-break', b);
             updateModeUI(); updateUI();
 
-            // Apply Background settings (Avenger Themes)
             const bgType = document.getElementById('bg-setting').value;
-            currentAnimTheme = bgType; // Update global state
+            currentAnimTheme = bgType; 
             
             if(bgType === 'image') {
                 document.body.classList.add('bg-image-mode');
@@ -456,10 +454,9 @@
                 document.body.classList.remove('bg-image-mode');
                 document.body.style.backgroundImage = 'none';
                 stopParticles(); 
-                startParticles(); // Restart with new theme
+                startParticles(); 
             }
 
-            // Save settings
             localStorage.setItem('kk_settings', JSON.stringify({ f, b, t, focusMin, breakMin, bgType }));
             togglePopup('settings-modal');
         }
@@ -476,7 +473,7 @@
                 applySettings(); 
                 if(document.getElementById('settings-modal').style.display === 'block') { togglePopup('settings-modal'); } 
             } else {
-                startParticles(); // Default state
+                startParticles(); 
             }
         }
 
@@ -578,164 +575,4 @@
 
         // --- 6. AI ANALYZER ---
         async function simulateAIAnalysis() {
-            const input = document.getElementById('ai-market-input').value;
-            const outputBox = document.getElementById('ai-market-output');
-            if(!input) { alert("Please ask a question!"); return; }
-            outputBox.style.display = "block"; outputBox.innerHTML = `<i>Connecting to Gemini AI... 🔄</i>`;
-            const apiKey = "AQ.Ab8RN6KoCJpqCa0tZXmtMWpZqYz1Ez2YCnIlc_IWshQc7BKnHg";
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            try {
-                const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: "You are an expert, concise AI assistant. Briefly answer: " + input }] }] })
-                });
-                if (!response.ok) { const errText = await response.text(); throw new Error(errText); }
-                const data = await response.json();
-                const aiText = data.candidates[0].content.parts[0].text;
-                const formattedText = aiText.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--glow-focus)">$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/\n/g, '<br>');
-                outputBox.innerHTML = `<b>Gemini Response:</b><br><br>${formattedText}`;
-            } catch (error) { outputBox.innerHTML = `<span style="color:#ff4444;"><b>API Error Details:</b><br><small style="font-family:monospace; display:block; padding:10px; background:rgba(0,0,0,0.5); border-radius:5px; margin-top:5px;">${error.message}</small></span>`; }
-        }
-
-        // --- 7. BACKUP & RESTORE ---
-        function exportData() {
-            let data = JSON.stringify(localStorage);
-            let blob = new Blob([data], {type: "application/json"});
-            let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'KK_Dashboard_Backup.json'; a.click();
-        }
-        function importData(event) {
-            let file = event.target.files[0]; if(!file) return;
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                try { let data = JSON.parse(e.target.result); for (let key in data) { localStorage.setItem(key, data[key]); } alert("Imported Successfully!"); location.reload(); } 
-                catch(err) { alert("Error parsing backup file!"); }
-            };
-            reader.readAsText(file);
-        }
-
-        // --- 8. AVENGER CINEMATIC ANIMATION LOGIC ---
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-        let animationFrameId;
-        let particlesActive = false;
-        
-        let mouse = { x: null, y: null, radius: 150 };
-        window.addEventListener('mousemove', (event) => { mouse.x = event.x; mouse.y = event.y; });
-
-        class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
-            }
-            draw() {
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color; ctx.fill();
-            }
-            update() {
-                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-                
-                // Mouse interaction for all modes except Dr Strange
-                if(currentAnimTheme !== 'strange') {
-                    let dx = mouse.x - this.x; let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    let activeRadius = currentAnimTheme === 'spiderman' ? mouse.radius * 1.5 : mouse.radius; // Spidey senses larger radius
-                    
-                    if (distance < activeRadius + this.size) {
-                        if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 1;
-                        if (mouse.x > this.x && this.x > this.size * 10) this.x -= 1;
-                        if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 1;
-                        if (mouse.y > this.y && this.y > this.size * 10) this.y -= 1;
-                    }
-                }
-
-                // Dr. Strange Magic Sparks behavior
-                if(currentAnimTheme === 'strange') {
-                    this.size += (Math.random() - 0.5) * 0.5;
-                    if(this.size < 0.5) this.size = 0.5;
-                    if(this.size > 2.5) this.size = 2.5;
-                }
-
-                this.x += this.directionX; this.y += this.directionY;
-                this.draw();
-            }
-        }
-
-        function initParticles() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 9000;
-            if(currentAnimTheme === 'strange') numberOfParticles *= 1.5; // More particles for magic
-
-            for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                
-                // Determine speed based on theme (Iron Man is faster)
-                let speedMult = currentAnimTheme === 'ironman' ? 2 : 1;
-                let dirX = ((Math.random() * 2) - 1) * speedMult;
-                let dirY = ((Math.random() * 2) - 1) * speedMult;
-
-                // Determine Color based on Avenger Theme
-                let pColor = getComputedStyle(document.documentElement).getPropertyValue('--glow-focus').trim();
-                
-                if (currentAnimTheme === 'ironman') pColor = Math.random() > 0.5 ? '#ff2a2a' : '#ffc400';
-                else if (currentAnimTheme === 'spiderman') pColor = Math.random() > 0.5 ? '#ff0000' : '#0044ff';
-                else if (currentAnimTheme === 'captain') {
-                    let rand = Math.random();
-                    pColor = rand < 0.33 ? '#ff0000' : (rand < 0.66 ? '#ffffff' : '#0033ff');
-                }
-                else if (currentAnimTheme === 'strange') pColor = '#ff8800';
-
-                particlesArray.push(new Particle(x, y, dirX, dirY, size, pColor));
-            }
-        }
-
-        function animateParticles() {
-            if(!particlesActive) return;
-            animationFrameId = requestAnimationFrame(animateParticles);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
-            
-            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
-            
-            // Connect lines (Skip for Dr. Strange, he uses pure sparks)
-            if(currentAnimTheme !== 'strange') {
-                for (let a = 0; a < particlesArray.length; a++) {
-                    for (let b = a; b < particlesArray.length; b++) {
-                        let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
-                                       ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                        
-                        if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                            let opacity = 1 - (distance / 20000);
-                            
-                            // Line colors based on theme
-                            if(currentAnimTheme === 'ironman') ctx.strokeStyle = `rgba(255, 196, 0, ${opacity})`; // Gold lines
-                            else if(currentAnimTheme === 'spiderman') ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 1.5})`; // Thicker White Webs
-                            else if(currentAnimTheme === 'captain') ctx.strokeStyle = `rgba(0, 51, 255, ${opacity})`; // Blue lines
-                            else ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`; // Default White lines
-                            
-                            ctx.lineWidth = currentAnimTheme === 'spiderman' ? 1.5 : 1; 
-                            ctx.beginPath();
-                            ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
-        }
-
-        function startParticles() { if(particlesActive) return; particlesActive = true; initParticles(); animateParticles(); }
-        function stopParticles() { particlesActive = false; cancelAnimationFrame(animationFrameId); ctx.clearRect(0, 0, innerWidth, innerHeight); }
-        window.addEventListener('resize', () => { if(particlesActive) { stopParticles(); startParticles(); } });
-
-        // Initialize on load
-        window.onload = () => {
-            updateUI();
-            loadTasks();
-            loadTrades();
-            loadSettingsOnStart();
-        };
-
-    </script>
-</body>
-</html>
+            const input = document.getElementById('ai-market-input
