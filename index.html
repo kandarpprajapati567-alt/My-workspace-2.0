@@ -138,8 +138,9 @@
         <div class="icon-btn" onclick="openModule('tasks', this)" title="Master Tasks">📝</div>
         <div class="icon-btn" onclick="openModule('chill', this)" title="Chill Zone (Games)" style="color:var(--glow-break);">🎮</div>
         
-        <div style="flex-grow: 1;"></div>
         <div class="icon-btn" onclick="togglePopup('settings-modal')" title="Settings & Backup" style="color:#aaa;">⚙️</div>
+        
+        <div style="flex-grow: 1;"></div>
     </div>
 
     <div class="main-wrapper" id="main-wrapper">
@@ -296,9 +297,13 @@
         
         <label style="display:block; margin-bottom:5px; color:var(--glow-focus); font-weight:bold;">Avenger Background Style:</label>
         <select id="bg-setting" class="input-field">
-            <option value="particles">Sci-Fi Particles (Interactive)</option>
-            <option value="image">Cinematic Image</option>
-            <option value="static">Pure Dark</option>
+            <option value="particles">Sci-Fi Particles (Default Focus)</option>
+            <option value="ironman">Iron Man (JARVIS HUD 🔴🟡)</option>
+            <option value="spiderman">Spider-Man (Web Network 🕸️)</option>
+            <option value="captain">Captain America (Vibranium 🛡️)</option>
+            <option value="strange">Doctor Strange (Mystic Sparks ✨)</option>
+            <option value="image">Cinematic Image 🌄</option>
+            <option value="static">Pure Dark 🌑</option>
         </select>
 
         <div style="display: flex; gap: 10px; margin-top:10px;">
@@ -421,6 +426,7 @@
         if ("Notification" in window) { Notification.requestPermission(); }
 
         let focusMin = 25, breakMin = 5, isFocus = true, timeLeft = focusMin * 60, isRunning = false, timerId = null;
+        let currentAnimTheme = 'particles'; // Track current avenger theme
 
         function applySettings() {
             // Apply Timer & Colors
@@ -434,8 +440,10 @@
             document.documentElement.style.setProperty('--glow-break', b);
             updateModeUI(); updateUI();
 
-            // Apply Background settings (Particles, Image, Dark)
+            // Apply Background settings (Avenger Themes)
             const bgType = document.getElementById('bg-setting').value;
+            currentAnimTheme = bgType; // Update global state
+            
             if(bgType === 'image') {
                 document.body.classList.add('bg-image-mode');
                 document.body.style.backgroundImage = `linear-gradient(rgba(5,5,5,${t}), rgba(5,5,5,${t})), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')`;
@@ -447,10 +455,11 @@
             } else {
                 document.body.classList.remove('bg-image-mode');
                 document.body.style.backgroundImage = 'none';
-                startParticles();
+                stopParticles(); 
+                startParticles(); // Restart with new theme
             }
 
-            // Save settings to LocalStorage so they persist on refresh
+            // Save settings
             localStorage.setItem('kk_settings', JSON.stringify({ f, b, t, focusMin, breakMin, bgType }));
             togglePopup('settings-modal');
         }
@@ -464,8 +473,8 @@
                 document.getElementById('focus-time-input').value = saved.focusMin;
                 document.getElementById('break-time-input').value = saved.breakMin;
                 document.getElementById('bg-setting').value = saved.bgType || 'particles';
-                applySettings(); // Trigger the visual updates
-                if(document.getElementById('settings-modal').style.display === 'block') { togglePopup('settings-modal'); } // hide if auto-opened
+                applySettings(); 
+                if(document.getElementById('settings-modal').style.display === 'block') { togglePopup('settings-modal'); } 
             } else {
                 startParticles(); // Default state
             }
@@ -603,7 +612,7 @@
             reader.readAsText(file);
         }
 
-        // --- 8. AVENGER CINEMATIC ANIMATION (PARTICLES) ---
+        // --- 8. AVENGER CINEMATIC ANIMATION LOGIC ---
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particlesArray = [];
@@ -624,51 +633,100 @@
             update() {
                 if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
                 if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < mouse.radius + this.size) {
-                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 1;
-                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 1;
-                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 1;
-                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 1;
+                
+                // Mouse interaction for all modes except Dr Strange
+                if(currentAnimTheme !== 'strange') {
+                    let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    let activeRadius = currentAnimTheme === 'spiderman' ? mouse.radius * 1.5 : mouse.radius; // Spidey senses larger radius
+                    
+                    if (distance < activeRadius + this.size) {
+                        if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 1;
+                        if (mouse.x > this.x && this.x > this.size * 10) this.x -= 1;
+                        if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 1;
+                        if (mouse.y > this.y && this.y > this.size * 10) this.y -= 1;
+                    }
                 }
+
+                // Dr. Strange Magic Sparks behavior
+                if(currentAnimTheme === 'strange') {
+                    this.size += (Math.random() - 0.5) * 0.5;
+                    if(this.size < 0.5) this.size = 0.5;
+                    if(this.size > 2.5) this.size = 2.5;
+                }
+
                 this.x += this.directionX; this.y += this.directionY;
                 this.draw();
             }
         }
+
         function initParticles() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             particlesArray = [];
             let numberOfParticles = (canvas.height * canvas.width) / 9000;
-            let themeColor = getComputedStyle(document.documentElement).getPropertyValue('--glow-focus').trim();
+            if(currentAnimTheme === 'strange') numberOfParticles *= 1.5; // More particles for magic
+
             for (let i = 0; i < numberOfParticles; i++) {
                 let size = (Math.random() * 2) + 1;
                 let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
                 let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                particlesArray.push(new Particle(x, y, (Math.random()*2)-1, (Math.random()*2)-1, size, themeColor));
+                
+                // Determine speed based on theme (Iron Man is faster)
+                let speedMult = currentAnimTheme === 'ironman' ? 2 : 1;
+                let dirX = ((Math.random() * 2) - 1) * speedMult;
+                let dirY = ((Math.random() * 2) - 1) * speedMult;
+
+                // Determine Color based on Avenger Theme
+                let pColor = getComputedStyle(document.documentElement).getPropertyValue('--glow-focus').trim();
+                
+                if (currentAnimTheme === 'ironman') pColor = Math.random() > 0.5 ? '#ff2a2a' : '#ffc400';
+                else if (currentAnimTheme === 'spiderman') pColor = Math.random() > 0.5 ? '#ff0000' : '#0044ff';
+                else if (currentAnimTheme === 'captain') {
+                    let rand = Math.random();
+                    pColor = rand < 0.33 ? '#ff0000' : (rand < 0.66 ? '#ffffff' : '#0033ff');
+                }
+                else if (currentAnimTheme === 'strange') pColor = '#ff8800';
+
+                particlesArray.push(new Particle(x, y, dirX, dirY, size, pColor));
             }
         }
+
         function animateParticles() {
             if(!particlesActive) return;
             animationFrameId = requestAnimationFrame(animateParticles);
             ctx.clearRect(0, 0, innerWidth, innerHeight);
+            
             for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
-                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - (distance / 20000)})`;
-                        ctx.lineWidth = 1; ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
+            
+            // Connect lines (Skip for Dr. Strange, he uses pure sparks)
+            if(currentAnimTheme !== 'strange') {
+                for (let a = 0; a < particlesArray.length; a++) {
+                    for (let b = a; b < particlesArray.length; b++) {
+                        let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                       ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                        
+                        if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                            let opacity = 1 - (distance / 20000);
+                            
+                            // Line colors based on theme
+                            if(currentAnimTheme === 'ironman') ctx.strokeStyle = `rgba(255, 196, 0, ${opacity})`; // Gold lines
+                            else if(currentAnimTheme === 'spiderman') ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 1.5})`; // Thicker White Webs
+                            else if(currentAnimTheme === 'captain') ctx.strokeStyle = `rgba(0, 51, 255, ${opacity})`; // Blue lines
+                            else ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`; // Default White lines
+                            
+                            ctx.lineWidth = currentAnimTheme === 'spiderman' ? 1.5 : 1; 
+                            ctx.beginPath();
+                            ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                            ctx.stroke();
+                        }
                     }
                 }
             }
         }
+
         function startParticles() { if(particlesActive) return; particlesActive = true; initParticles(); animateParticles(); }
         function stopParticles() { particlesActive = false; cancelAnimationFrame(animationFrameId); ctx.clearRect(0, 0, innerWidth, innerHeight); }
-        window.addEventListener('resize', () => { if(particlesActive) initParticles(); });
+        window.addEventListener('resize', () => { if(particlesActive) { stopParticles(); startParticles(); } });
 
         // Initialize on load
         window.onload = () => {
