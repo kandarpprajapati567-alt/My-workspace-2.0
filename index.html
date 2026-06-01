@@ -11,119 +11,155 @@
             --glow-break: #00d4ff; 
             --glow-trade: #ffaa00;
             --main-transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --hud-bg: rgba(255, 42, 42, 0.03);
         }
         body { 
-            background-color: #050505; 
-            color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden;
+            background-color: #030303; 
+            color: #fff; font-family: 'Segoe UI', -apple-system, sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden;
             transition: background 0.5s ease;
         }
 
         #canvas-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
-        .cinematic-vignette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.95) 100%); z-index: 0; pointer-events: none; }
+        .cinematic-vignette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle, transparent 10%, rgba(0, 0, 0, 0.98) 100%); z-index: 0; pointer-events: none; }
 
         .left-sidebar, .main-wrapper, .header-bar { position: relative; z-index: 10; }
 
         /* LEFT TOOLBAR */
-        .left-sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 65px; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(15px); border-right: 1px solid rgba(255,255,255,0.1); z-index: 2500; display: flex; flex-direction: column; align-items: center; padding-top: 20px; box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
-        .icon-btn { font-size: 1.8em; cursor: pointer; margin-bottom: 25px; opacity: 0.5; transition: 0.3s; width: 100%; text-align: center; padding: 10px 0; }
-        .icon-btn:hover, .icon-btn.active { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 10px var(--glow-focus)); border-left: 3px solid var(--glow-focus); background: rgba(255,255,255,0.05); }
+        .left-sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 65px; background: rgba(3, 3, 3, 0.95); backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.05); z-index: 2500; display: flex; flex-direction: column; align-items: center; padding-top: 20px; box-shadow: 5px 0 30px rgba(0,0,0,0.7); }
+        .icon-btn { font-size: 1.6em; cursor: pointer; margin-bottom: 25px; opacity: 0.4; transition: 0.3s; width: 100%; text-align: center; padding: 12px 0; border-left: 3px solid transparent; }
+        .icon-btn:hover, .icon-btn.active { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 15px var(--glow-focus)); border-left-color: var(--glow-focus); background: rgba(255,255,255,0.02); }
 
         /* Main Content */
-        .main-wrapper { margin-left: 65px; flex: 1; display: flex; flex-direction: column; height: 100vh; width: calc(100% - 65px); position: relative; transition: box-shadow 1s ease-in-out; }
-        .header-bar { height: 70px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px); z-index: 1500; }
-        .timer-controls { display: flex; align-items: center; gap: 20px; }
-        .mode-badge { padding: 8px 15px; border-radius: 25px; font-weight: bold; border: 2px solid var(--glow-focus); color: var(--glow-focus); transition: var(--main-transition); letter-spacing: 1px; font-size: 0.9em; }
-        .btn-timer { background: transparent; color: white; border: 1px solid #666; padding: 8px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .btn-timer:hover { background: rgba(255,255,255,0.1); }
-        .timer-running { color: var(--glow-focus); text-shadow: 0 0 10px var(--glow-focus); }
+        .main-wrapper { margin-left: 65px; flex: 1; display: flex; flex-direction: column; height: 100vh; width: calc(100% - 65px); position: relative; }
+        .header-bar { height: 80px; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-bottom: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); z-index: 1500; }
+        
+        /* 20 LAKH PREMIUM CLOCK SYSTEM */
+        .timer-controls { display: flex; align-items: center; gap: 25px; background: rgba(255,255,255,0.01); padding: 5px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.03); box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+        .clock-container { position: relative; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; }
+        .clock-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .clock-bg-circle { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 3; }
+        .clock-progress-circle { fill: none; stroke: var(--glow-focus); stroke-width: 3; stroke-dasharray: 126; stroke-dashoffset: 126; transition: stroke-dashoffset 1s linear, stroke 0.4s ease; filter: drop-shadow(0 0 5px var(--glow-focus)); }
+        .clock-pulse-dot { position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px #fff; opacity: 0; }
+        .timer-running .clock-pulse-dot { animation: arcPulse 1.5s infinite ease-in-out; }
+        
+        @keyframes arcPulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(2); opacity: 1; filter: drop-shadow(0 0 8px var(--glow-focus)); } }
+        
+        .mode-badge { padding: 6px 14px; border-radius: 20px; font-weight: 800; border: 1px solid var(--glow-focus); color: var(--glow-focus); transition: var(--main-transition); letter-spacing: 1.5px; font-size: 0.75em; text-transform: uppercase; background: var(--hud-bg); box-shadow: 0 0 15px var(--hud-bg); }
+        .timer-display-wrapper { display: flex; flex-direction: column; }
+        .timer-label { font-size: 0.6em; color: #666; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; margin-bottom: -2px; }
+        #timer-display { font-size: 1.8em; font-family: 'Courier New', monospace; font-weight: 900; letter-spacing: 1px; transition: color 0.4s; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+        .timer-running #timer-display { color: var(--glow-focus); text-shadow: 0 0 15px var(--glow-focus); animation: corePulse 2s infinite alternate; }
+        
+        @keyframes corePulse { from { opacity: 0.85; } to { opacity: 1; filter: drop-shadow(0 0 3px var(--glow-focus)); } }
+
+        .btn-timer { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 22px; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-weight: bold; font-size: 0.85em; letter-spacing: 1px; }
+        .btn-timer:hover { border-color: var(--glow-focus); background: var(--hud-bg); box-shadow: 0 0 15px var(--hud-bg); color: var(--glow-focus); }
 
         .home-screen { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; z-index: 10; }
-        .home-screen h1 { font-size: 3em; font-weight: 300; margin: 0; letter-spacing: 2px; }
+        .home-screen h1 { font-size: 3.5em; font-weight: 300; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
 
         /* OVERLAYS & GRIDS */
-        .module-overlay { display: none; position: absolute; top: 70px; left: 0; right: 0; bottom: 0; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(25px); z-index: 1000; overflow-y: auto; padding: 30px 40px; animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .close-module-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid #444; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; float: right; transition: 0.3s; }
-        .close-module-btn:hover { background: #ff4444; border-color: #ff4444; }
-        .module-title { font-weight: 300; margin-top: 0; font-size: 2em; margin-bottom: 20px; }
+        .module-overlay { display: none; position: absolute; top: 80px; left: 0; right: 0; bottom: 0; background: rgba(4, 4, 4, 0.97); backdrop-filter: blur(30px); z-index: 1000; overflow-y: auto; padding: 40px; animation: slideUp 0.5s cubic-bezier(0.1, 0.9, 0.2, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .close-module-btn { background: rgba(255,255,255,0.03); color: #888; border: 1px solid rgba(255,255,255,0.08); padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: bold; float: right; transition: 0.3s; font-size: 0.8em; }
+        .close-module-btn:hover { background: #ff4444; border-color: #ff4444; color: white; box-shadow: 0 0 15px rgba(255, 68, 68, 0.4); }
+        .module-title { font-weight: 300; margin-top: 0; font-size: 2.2em; margin-bottom: 30px; letter-spacing: 1px; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: rgba(255,255,255,0.03); padding: 30px 15px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: var(--main-transition); cursor: pointer; backdrop-filter: blur(10px); position: relative; }
-        .card:hover { transform: translateY(-5px); border-color: var(--glow-focus); background: rgba(255,255,255,0.08); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .icon { font-size: 40px; display: block; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
-        .input-field { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid #444; border-radius: 8px; color: white; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .card { background: rgba(255,255,255,0.01); padding: 35px 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.04); transition: var(--main-transition); cursor: pointer; backdrop-filter: blur(10px); position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.01), transparent); transform: translateX(-100%); transition: 0.6s; }
+        .card:hover::before { transform: translateX(100%); }
+        .card:hover { transform: translateY(-4px); border-color: var(--glow-focus); background: var(--hud-bg); box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 15px var(--hud-bg); }
+        .icon { font-size: 42px; display: block; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); transition: 0.3s; }
+        .card:hover .icon { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--glow-focus)); }
+        .input-field { width: 100%; padding: 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: white; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; transition: 0.3s; }
+        .input-field:focus { border-color: var(--glow-focus); outline: none; background: rgba(0,0,0,0.8); box-shadow: 0 0 15px var(--hud-bg); }
 
         /* LISTS & UI ASSETS */
         .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-item { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--glow-focus); flex-wrap: wrap; gap: 10px; }
-        .del-btn { background: rgba(255,68,68,0.2); border: 1px solid #ff4444; color: #ff4444; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .del-btn:hover { background: #ff4444; color: white; }
-        .popup-modal { display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); padding: 30px; border-radius: 20px; border: 1px solid var(--glow-focus); z-index: 3000; box-shadow: 0 20px 50px rgba(0,0,0,0.9); max-height: 80vh; overflow-y: auto; }
-        .overlay-bg { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 2999; }
-        .add-card { border: 2px dashed #555; background: transparent; }
-        .add-card:hover { border-color: var(--glow-focus); background: rgba(0,255,136,0.05); }
-        .delete-card { position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.5); border-radius: 50%; width: 25px; height: 25px; font-size: 12px; border: none; color: white; cursor: pointer; display: none; }
-        .card:hover .delete-card { display: block; }
-        .back-btn { background: rgba(0,0,0,0.5); color: white; border: 1px solid #555; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; }
+        .task-item { background: rgba(255,255,255,0.02); padding: 18px 22px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--glow-focus); flex-wrap: wrap; gap: 10px; border-top: 1px solid rgba(255,255,255,0.01); }
+        .del-btn { background: transparent; border: 1px solid rgba(255,68,68,0.4); color: #ff4444; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.8em; }
+        .del-btn:hover { background: #ff4444; color: white; box-shadow: 0 0 15px rgba(255,68,68,0.4); }
+        
+        /* MODALS */
+        .popup-modal { display: none; position: fixed; top: 15%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(10,10,10,0.98); backdrop-filter: blur(25px); padding: 35px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); z-index: 3000; box-shadow: 0 25px 60px rgba(0,0,0,0.9); max-height: 80vh; overflow-y: auto; }
+        .overlay-bg { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 2999; backdrop-filter: blur(5px); }
+        .add-card { border: 1px dashed rgba(255,255,255,0.15); background: transparent; }
+        .add-card:hover { border-color: var(--glow-focus); background: var(--hud-bg); }
+        .delete-card { position: absolute; top: 12px; right: 12px; background: rgba(255,68,68,0.15); border: 1px solid rgba(255,68,68,0.3); border-radius: 50%; width: 24px; height: 24px; font-size: 10px; color: #ff4444; cursor: pointer; display: none; align-items: center; justify-content: center; transition: 0.2s; }
+        .card:hover .delete-card { display: flex; }
+        .delete-card:hover { background: #ff4444; color: white; }
+        .back-btn { background: rgba(255,255,255,0.02); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-bottom: 25px; transition: 0.3s; font-weight: bold; font-size: 0.85em; }
+        .back-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--glow-focus); }
         
         /* TRADING AREA */
-        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; align-items: stretch; }
+        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
         .chart-col { flex: 100%; min-width: 0; }
         .side-col-wrapper { display: flex; gap: 20px; width: 100%; flex-wrap: wrap;} 
         .side-col { flex: 1; min-width: 300px; display: flex; flex-direction: column; }
-        .panel { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; border: 1px solid #333; display: flex; flex-direction: column; box-sizing: border-box; flex-grow: 1; }
-        .chart-container { width: 100%; height: 55vh; min-height: 400px; border-radius: 10px; overflow: hidden; border: 1px solid #444; flex-grow: 1; position: relative; }
+        .panel { background: rgba(5,5,5,0.4); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; box-sizing: border-box; flex-grow: 1; backdrop-filter: blur(10px); }
+        .chart-container { width: 100%; height: 55vh; min-height: 400px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-grow: 1; }
 
-        /* 3D VAULT TRIGGER */
+        /* HUD SIDE VAULT TRIGGER */
         .vault-trigger-btn {
             position: fixed; right: 0; top: 50%; transform: translateY(-50%);
-            background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2); border-right: none;
-            padding: 20px 10px; border-radius: 15px 0 0 15px; cursor: pointer;
-            z-index: 2500; display: flex; flex-direction: column; align-items: center; gap: 10px;
-            transition: all 0.3s ease; box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.08); border-right: none;
+            padding: 25px 12px; border-radius: 20px 0 0 20px; cursor: pointer;
+            z-index: 2500; display: flex; flex-direction: column; align-items: center; gap: 12px;
+            transition: all 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         }
-        .vault-trigger-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--glow-focus); padding-right: 20px; }
-        .vault-trigger-btn span { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: bold; letter-spacing: 2px; color: #fff; }
+        .vault-trigger-btn:hover { background: rgba(255,255,255,0.02); border-color: var(--glow-focus); padding-right: 22px; box-shadow: -5px 0 25px var(--hud-bg); }
+        .vault-trigger-btn span { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 900; letter-spacing: 3px; color: #aaa; font-size: 0.85em; transition: 0.3s; }
+        .vault-trigger-btn:hover span { color: var(--glow-focus); text-shadow: 0 0 10px var(--glow-focus); }
 
-        /* FULL SCREEN 3D VAULT */
+        /* LUXURY AVENGERS CARD VAULT OVERLAY */
         #character-vault-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(30px);
+            background: rgba(2, 2, 2, 0.98); backdrop-filter: blur(40px);
             z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.5s ease;
+            opacity: 0; transition: opacity 0.5s cubic-bezier(0.1, 0.9, 0.2, 1);
         }
-        .vault-close { position: absolute; top: 30px; right: 40px; font-size: 2em; color: white; cursor: pointer; transition: 0.3s; z-index: 10001; }
+        .vault-close { position: absolute; top: 35px; right: 45px; font-size: 1.8em; color: #666; cursor: pointer; transition: 0.3s; z-index: 10001; }
         .vault-close:hover { color: #ff4444; transform: scale(1.1); }
         
-        .carousel-container { position: relative; width: 100vw; height: 75vh; display: flex; justify-content: center; align-items: center; perspective: 1500px; transform-style: preserve-3d; }
+        .vault-header { text-align: center; margin-bottom: 40px; z-index: 10000; }
+        .vault-header h2 { font-size: 2.2em; font-weight: 300; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
+        .vault-header p { color: #555; margin: 5px 0 0 0; font-size: 0.9em; letter-spacing: 1px; }
+
+        .carousel-container { position: relative; width: 90vw; max-width: 1200px; display: flex; justify-content: center; align-items: center; gap: 30px; z-index: 10000; flex-wrap: wrap; }
         
-        /* 3D Model Card Space (No Background Cards) */
-        .model-card {
-            position: absolute; width: 450px; height: 550px; 
-            background: transparent; border: none; box-shadow: none;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
-            cursor: pointer;
+        /* 20 LAKH HUD AVENGERS CARDS */
+        .premium-char-card {
+            width: 280px; height: 420px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px; padding: 30px; display: flex; flex-direction: column; align-items: center;
+            justify-content: space-between; box-sizing: border-box; transition: all 0.5s cubic-bezier(0.1, 0.9, 0.2, 1);
+            position: relative; overflow: hidden; cursor: pointer;
         }
-        /* Iframe for realistic Sketchfab 3D models */
-        .model-card iframe { width: 100%; height: 100%; position: absolute; top: 0; border: none; border-radius: 20px; pointer-events: none; }
-        /* Safe clicking mask to allow selection of right/left characters */
-        .click-mask { position: absolute; top: 0; left: 0; width: 100%; height: 80%; z-index: 5; }
+        .premium-char-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 0; transition: 0.5s ease; }
+        .premium-char-card:hover::before { height: 100%; }
+        
+        /* Specific Card Configurations */
+        #card-ironman:hover { border-color: #ff2a2a; box-shadow: 0 20px 40px rgba(255,42,42,0.15), inset 0 0 25px rgba(255,42,42,0.05); transform: translateY(-10px); }
+        #card-ironman::before { background: #ff2a2a; }
+        #card-captainamerica:hover { border-color: #0077ff; box-shadow: 0 20px 40px rgba(0,119,255,0.15), inset 0 0 25px rgba(0,119,255,0.05); transform: translateY(-10px); }
+        #card-captainamerica::before { background: #0077ff; }
+        #card-thor:hover { border-color: #ffaa00; box-shadow: 0 20px 40px rgba(255,170,0,0.15), inset 0 0 25px rgba(255,170,0,0.05); transform: translateY(-10px); }
+        #card-thor::before { background: #ffaa00; }
 
-        .model-info { text-align: center; margin-top: auto; width: 100%; z-index: 10; padding-bottom: 10px; }
-        .model-info h2 { margin: 0; font-size: 2.3em; text-transform: uppercase; letter-spacing: 3px; }
+        .char-hologram-circle { width: 110px; height: 110px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 3em; position: relative; transition: 0.5s; }
+        .premium-char-card:hover .char-hologram-circle { transform: rotate(180deg) scale(1.05); border-style: solid; border-color: inherit; filter: drop-shadow(0 0 15px currentColor); }
+        
+        .char-details { text-align: center; width: 100%; }
+        .char-details h3 { font-size: 1.5em; margin: 15px 0 5px 0; letter-spacing: 1px; text-transform: uppercase; font-weight: 400; }
+        .char-details p { font-size: 0.8em; color: #555; margin: 0; line-height: 1.4; transition: 0.3s; }
+        .premium-char-card:hover .char-details p { color: #aaa; }
+        
+        .char-status-badge { font-size: 0.65em; font-weight: 900; padding: 4px 10px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: #666; letter-spacing: 1px; text-transform: uppercase; }
+        .premium-char-card:hover .char-status-badge { background: transparent; color: inherit; border-color: inherit; }
 
-        .carousel-controls { position: absolute; bottom: 4%; display: flex; gap: 60px; z-index: 10001; }
-        .nav-arrow { font-size: 3em; color: rgba(255,255,255,0.3); cursor: pointer; transition: 0.3s; user-select: none; }
-        .nav-arrow:hover { color: white; text-shadow: 0 0 20px white; transform: scale(1.2); }
-        .activate-btn { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 2px solid white; color: white; padding: 10px 30px; font-size: 1.1em; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: 10px; position: relative; z-index: 20; }
-        .activate-btn:hover { background: white; color: black; }
-
-        /* Cinematic HUD Typography for Avengers */
-        #model-ironman h2 { color: #ff2a2a; text-shadow: 0 0 20px rgba(255,42,42,0.6); } 
-        #model-captainamerica h2 { color: #0077ff; text-shadow: 0 0 20px rgba(0,119,255,0.6); } 
-        #model-thor h2 { color: #ffaa00; text-shadow: 0 0 20px rgba(255,170,0,0.6); }
+        /* SCREEN DISTORTION MATRIX GLITCH EFFECT (CHOSEN EVENT EFFECT) */
+        .glitch-flash { position: fixed; top:0; left:0; width:100vw; height:100vh; background: #fff; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.1s ease; }
     </style>
 </head>
 <body>
@@ -132,6 +168,7 @@
     <audio id="audio-captainamerica" src="captainamerica.mp3"></audio>
     <audio id="audio-thor" src="thor.mp3"></audio>
 
+    <div class="glitch-flash" id="shockwave-flash"></div>
     <canvas id="canvas-bg"></canvas>
     <div class="cinematic-vignette"></div>
 
@@ -145,35 +182,77 @@
         <div class="icon-btn" onclick="togglePopup('settings-modal')" title="Settings & Backup" style="color:#aaa;">⚙️</div>
     </div>
 
+    <!-- VAULT TRIGGER -->
     <div class="vault-trigger-btn" onclick="openVault()">
-        <span style="font-size:1.5em">🔥</span>
+        <span style="font-size:1.3em; margin-bottom: 2px;">⚡</span>
         <span>EDITIONS</span>
     </div>
 
+    <!-- UPGRADED MARVEL CARDS VAULT -->
     <div id="character-vault-overlay">
         <div class="vault-close" onclick="closeVault()">✖</div>
-        <div class="carousel-container" id="carousel"></div>
-        <div class="carousel-controls">
-            <div class="nav-arrow" onclick="moveCarousel(-1)">◀</div>
-            <div class="nav-arrow" onclick="moveCarousel(1)">▶</div>
+        <div class="vault-header">
+            <h2>Select System Interface</h2>
+            <p>Deploy specialized core HUD configuration modules</p>
+        </div>
+        <div class="carousel-container">
+            <!-- Card 1 -->
+            <div class="premium-char-card" id="card-ironman" style="color: #ff2a2a;" onclick="activateProtocol('ironman', '#ff2a2a')">
+                <div class="char-hologram-circle">🚀</div>
+                <div class="char-details">
+                    <h3>Iron Man</h3>
+                    <p>Jarvis UI. High energy particle distribution system enabled.</p>
+                </div>
+                <div class="char-status-badge">STARK-7</div>
+            </div>
+            <!-- Card 2 -->
+            <div class="premium-char-card" id="card-captainamerica" style="color: #0077ff;" onclick="activateProtocol('captainamerica', '#0077ff')">
+                <div class="char-hologram-circle">🛡️</div>
+                <div class="char-details">
+                    <h3>Captain</h3>
+                    <p>Tactical Shield Interface. Stable & focused operational workspace.</p>
+                </div>
+                <div class="char-status-badge">SHIELD-02</div>
+            </div>
+            <!-- Card 3 -->
+            <div class="premium-char-card" id="card-thor" style="color: #ffaa00;" onclick="activateProtocol('thor', '#ffaa00')">
+                <div class="char-hologram-circle">⚡</div>
+                <div class="char-details">
+                    <h3>Thor Odinson</h3>
+                    <p>Asgardian Matrix. Lightning particle vectors with custom triggers.</p>
+                </div>
+                <div class="char-status-badge">MJOLNIR</div>
+            </div>
         </div>
     </div>
 
     <div class="main-wrapper" id="main-wrapper">
         <div class="header-bar" id="header">
-            <div class="timer-controls">
-                <span id="mode-badge" class="mode-badge">FOCUS MODE</span>
-                <span id="timer-display" style="font-size:2.2em; font-family:monospace; font-weight:bold; letter-spacing: 2px; transition: color 0.3s;">25:00</span>
+            <!-- 20 LAKH PREMIUM CLOCK SYSTEM AUTOMATION -->
+            <div class="timer-controls" id="timer-box">
+                <div class="clock-container">
+                    <svg class="clock-svg">
+                        <circle class="clock-bg-circle" cx="22.5" cy="22.5" r="20"></circle>
+                        <circle class="clock-progress-circle" id="clock-ring" cx="22.5" cy="22.5" r="20"></circle>
+                    </svg>
+                    <div class="clock-pulse-dot"></div>
+                </div>
+                <div class="timer-display-wrapper">
+                    <span class="timer-label" id="timer-status-label">SYSTEM STATE</span>
+                    <span id="timer-display">25:00</span>
+                </div>
                 <button onclick="toggleTimer()" id="start-btn" class="btn-timer">START</button>
+                <span id="mode-badge" class="mode-badge">FOCUS MODE</span>
             </div>
-            <div id="desktop-logo" style="font-size: 1.2em; font-weight: 300;">K.K. HQ</div>
+            <div id="desktop-logo" style="font-size: 1.1em; font-weight: 300; letter-spacing: 2px; color: #888;">K.K. // CODENAME: HQ</div>
         </div>
 
         <div class="home-screen" id="home-screen">
-            <h1>Command <b style="color:var(--glow-focus)">Center</b></h1>
-            <p>Select a module from the left to begin.</p>
+            <h1>Command <b style="color:var(--glow-focus); text-shadow: 0 0 25px var(--glow-focus);">Center</b></h1>
+            <p style="color: #555; letter-spacing: 1px; font-size: 0.9.em; margin-top: 5px;">Select an intelligence module to initialize operations.</p>
         </div>
 
+        <!-- WORKSPACE MODULE -->
         <div id="workspace" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Digital <b style="color:var(--glow-focus)">Operations</b></h2>
@@ -186,6 +265,7 @@
             </div>
         </div>
 
+        <!-- TRADING MODULE -->
         <div id="trading" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Live <b style="color:var(--glow-trade)">Trading Terminal</b></h2>
@@ -213,19 +293,20 @@
             <div class="side-col-wrapper">
                 <div class="side-col">
                     <div class="panel">
-                        <h3 style="margin: 0 0 10px 0; color: var(--glow-trade);">📝 Paper Log</h3>
-                        <div style="display:flex; gap:10px;">
-                             <input type="text" id="trade-entry" class="input-field" placeholder="Entry" style="padding:10px; margin-bottom:8px; flex:1;">
-                             <input type="text" id="trade-sl" class="input-field" placeholder="Stop Loss" style="padding:10px; margin-bottom:8px; flex:1;">
+                        <h3 style="margin: 0 0 15px 0; color: var(--glow-trade); font-weight: 400; letter-spacing: 1px;">📝 Paper Log</h3>
+                        <div style="display:flex; gap:12px;">
+                             <input type="text" id="trade-entry" class="input-field" placeholder="Entry Price" style="flex:1;">
+                             <input type="text" id="trade-sl" class="input-field" placeholder="Stop Loss" style="flex:1;">
                         </div>
-                        <input type="text" id="trade-reason" class="input-field" placeholder="Reason (Optional)" style="padding:10px; margin-bottom:10px;">
-                        <button onclick="savePaperTrade()" style="width:100%; background:var(--glow-trade); color:black; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">Log Trade</button>
-                        <ul id="tradeList" class="task-list" style="margin-top: 15px; flex-grow: 1; overflow-y: auto; max-height: 150px;"></ul>
+                        <input type="text" id="trade-reason" class="input-field" placeholder="Execution Reason (Optional)">
+                        <button onclick="savePaperTrade()" style="width:100%; background:var(--glow-trade); color:black; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; transition: 0.3s; letter-spacing: 0.5px;">Log System Trade</button>
+                        <ul id="tradeList" class="task-list" style="margin-top: 20px; overflow-y: auto; max-height: 180px;"></ul>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- ACADEMIC MODULE -->
         <div id="academic" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <div id="main-academic-view">
@@ -248,6 +329,7 @@
             </div>
         </div>
 
+        <!-- AI HUB MODULE -->
         <div id="ai-hub" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Strategic <b style="color:var(--glow-focus)">AI Toolkit</b></h2>
@@ -258,15 +340,17 @@
             </div>
         </div>
 
+        <!-- TASKS MODULE -->
         <div id="tasks" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Master <b style="color:var(--glow-focus)">Task List</b></h2>
-            <div style="max-width: 600px; margin: 0 auto; background:rgba(0,0,0,0.5); padding:30px; border-radius:15px; border:1px solid #333;">
-                <input type="text" id="taskInput" class="input-field" style="padding:15px; font-size:1.1em;" placeholder="Aaj kya karna hai? Type & Enter..." onkeypress="handleTaskKeyPress(event)">
+            <div style="max-width: 600px; margin: 0 auto; background:rgba(0,0,0,0.3); padding:35px; border-radius:16px; border:1px solid rgba(255,255,255,0.04);">
+                <input type="text" id="taskInput" class="input-field" style="padding:15px; font-size:1.05em;" placeholder="What needs configuration? Type & press Enter..." onkeypress="handleTaskKeyPress(event)">
                 <ul id="taskList" class="task-list"></ul>
             </div>
         </div>
 
+        <!-- CHILL ZONE MODULE -->
         <div id="chill" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Chill <b style="color:var(--glow-break)">Zone</b></h2>
@@ -277,34 +361,35 @@
         </div>
     </div> 
 
+    <!-- SETTINGS & DATA BACKUP -->
     <div class="overlay-bg" id="settings-overlay" onclick="togglePopup('settings-modal')"></div>
-    
     <div id="settings-modal" class="popup-modal">
-        <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 15px;">Settings & Backup</h3>
-        <div style="display: flex; gap: 10px; margin-top:10px;">
-            <div style="flex: 1;"><label style="color:#aaa; font-size:0.9em;">Focus (mins)</label><input type="number" id="focus-time-input" value="25" class="input-field"></div>
-            <div style="flex: 1;"><label style="color:#aaa; font-size:0.9em;">Break (mins)</label><input type="number" id="break-time-input" value="5" class="input-field"></div>
+        <h3 style="margin-top:0; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 15px; font-weight: 400; letter-spacing: 1px;">Settings Configuration</h3>
+        <div style="display: flex; gap: 12px; margin-top:15px;">
+            <div style="flex: 1;"><label style="color:#666; font-size:0.8em; font-weight:bold; letter-spacing:1px;">FOCUS (MINS)</label><input type="number" id="focus-time-input" value="25" class="input-field" style="margin-top:5px;"></div>
+            <div style="flex: 1;"><label style="color:#666; font-size:0.8em; font-weight:bold; letter-spacing:1px;">BREAK (MINS)</label><input type="number" id="break-time-input" value="5" class="input-field" style="margin-top:5px;"></div>
         </div>
-        <button onclick="applySettings()" style="width:100%; background:var(--glow-focus); color:black; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:bold; margin-bottom: 15px;">Save Timer</button>
-        <h4 style="margin-top:0; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; color: #00d4ff;">💾 Data Backup</h4>
-        <div style="display: flex; gap: 10px;">
-            <button onclick="exportData()" style="flex:1; background:transparent; color:#00d4ff; border:1px solid #00d4ff; padding:10px; border-radius:8px; cursor:pointer;">⬇️ Export</button>
+        <button onclick="applySettings()" style="width:100%; background:var(--glow-focus); color:black; border:none; padding:14px; border-radius:8px; cursor:pointer; font-weight:bold; margin-bottom: 20px; transition: 0.3s; letter-spacing: 0.5px;">Update Quantum Timer</button>
+        <h4 style="margin-top:0; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; color: #00d4ff; font-weight: 400; letter-spacing: 1px;">💾 Core Cloud Backup</h4>
+        <div style="display: flex; gap: 12px;">
+            <button onclick="exportData()" style="flex:1; background:transparent; color:#00d4ff; border:1px solid rgba(0,212,255,0.3); padding:12px; border-radius:8px; cursor:pointer; transition:0.3s;">Export Dataset</button>
             <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
-            <button onclick="document.getElementById('importFile').click()" style="flex:1; background:transparent; color:#ffaa00; border:1px solid #ffaa00; padding:10px; border-radius:8px; cursor:pointer;">⬆️ Import</button>
+            <button onclick="document.getElementById('importFile').click()" style="flex:1; background:transparent; color:#ffaa00; border:1px solid rgba(255,170,0,0.3); padding:12px; border-radius:8px; cursor:pointer; transition:0.3s;">Import Dataset</button>
         </div>
-        <button onclick="togglePopup('settings-modal')" style="width:100%; background:transparent; color:white; border:1px solid #555; padding:10px; border-radius:8px; cursor:pointer; margin-top:15px;">Close</button>
+        <button onclick="togglePopup('settings-modal')" style="width:100%; background:transparent; color:#666; border:1px solid rgba(255,255,255,0.1); padding:12px; border-radius:8px; cursor:pointer; margin-top:20px; transition:0.3s;">Abort Configuration</button>
     </div>
 
+    <!-- ADD LINK RESOURCE MODAL -->
     <div id="add-link-modal" class="popup-modal">
-        <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 15px;">Add to <span id="modal-subject-name" style="color:var(--glow-focus);">Hub</span></h3>
-        <input type="text" id="new-name" placeholder="Name (e.g., PDF)" class="input-field">
-        <input type="text" id="new-url" placeholder="Paste URL here" class="input-field">
-        <button onclick="saveNewCard()" style="width:100%; background:var(--glow-focus); color:black; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:bold;">Add Link</button>
-        <button onclick="togglePopup('add-link-modal')" style="width:100%; background:transparent; color:white; border:1px solid #555; padding:10px; border-radius:8px; cursor:pointer; margin-top:10px;">Cancel</button>
+        <h3 style="margin-top:0; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 15px; font-weight:400;">Inject Resource to <span id="modal-subject-name" style="color:var(--glow-focus);">Hub</span></h3>
+        <input type="text" id="new-name" placeholder="Resource Name (e.g., Anatomy Sheet)" class="input-field" style="margin-top:10px;">
+        <input type="text" id="new-url" placeholder="Resource Path Matrix (Secure URL)" class="input-field">
+        <button onclick="saveNewCard()" style="width:100%; background:var(--glow-focus); color:black; border:none; padding:14px; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.3s;">Commit Link</button>
+        <button onclick="togglePopup('add-link-modal')" style="width:100%; background:transparent; color:#666; border:1px solid rgba(255,255,255,0.1); padding:12px; border-radius:8px; cursor:pointer; margin-top:12px; transition:0.3s;">Cancel Injection</button>
     </div>
 
     <script>
-        // --- 1. UI & MODULE LOGIC ---
+        // --- 1. UI & MODULE NAVIGATION CONTROL ---
         function openModule(moduleId, btnElement) {
             document.getElementById('home-screen').style.display = 'none';
             document.querySelectorAll('.module-overlay').forEach(overlay => overlay.style.display = 'none');
@@ -324,144 +409,120 @@
             else { m.style.display = 'block'; if(id === 'settings-modal') overlay.style.display = 'block'; }
         }
 
-        // --- 2. ACADEMIC HUB LOGIC ---
+        // --- 2. ACADEMIC DATABASE MANAGEMENT ---
         let currentActiveSubject = null;
         function openSubject(subjectName) { currentActiveSubject = subjectName; document.getElementById('main-academic-view').style.display = 'none'; document.getElementById('subject-detail-view').style.display = 'block'; document.getElementById('subject-title').innerHTML = `${subjectName} <b style="color:var(--glow-focus)">Library</b>`; document.getElementById('modal-subject-name').innerText = subjectName; renderSubjectSpecificLinks(); }
         function closeSubject() { currentActiveSubject = null; document.getElementById('main-academic-view').style.display = 'block'; document.getElementById('subject-detail-view').style.display = 'none'; }
         function getSubjectLinks(subject) { return JSON.parse(localStorage.getItem('subject_' + subject)) || []; }
         function renderSubjectSpecificLinks() {
             const container = document.getElementById('grid-subject-specific'); container.innerHTML = ""; let links = getSubjectLinks(currentActiveSubject);
-            links.forEach((item, index) => { container.innerHTML += `<div class="card" onclick="window.open('${item.url}')"><button class="delete-card" onclick="event.stopPropagation(); deleteCard(${index})">X</button><span class="icon">📄</span><h3>${item.name}</h3></div>`; });
+            links.forEach((item, index) => { container.innerHTML += `<div class="card" onclick="window.open('${item.url}')"><button class="delete-card" onclick="event.stopPropagation(); deleteCard(${index})">✖</button><span class="icon">📄</span><h3>${item.name}</h3></div>`; });
             container.innerHTML += `<div class="card add-card" onclick="togglePopup('add-link-modal')"><span class="icon">➕</span><h3>Add Resource</h3></div>`;
         }
         function saveNewCard() { let name = document.getElementById('new-name').value, url = document.getElementById('new-url').value; if(name && url && currentActiveSubject) { let links = getSubjectLinks(currentActiveSubject); links.push({ name, url }); localStorage.setItem('subject_' + currentActiveSubject, JSON.stringify(links)); renderSubjectSpecificLinks(); togglePopup('add-link-modal'); document.getElementById('new-name').value = ""; document.getElementById('new-url').value = ""; } }
         function deleteCard(index) { if(currentActiveSubject) { let links = getSubjectLinks(currentActiveSubject); links.splice(index, 1); localStorage.setItem('subject_' + currentActiveSubject, JSON.stringify(links)); renderSubjectSpecificLinks(); } }
 
-        // --- 3. TASKS & TRADING LOGIC ---
-        function loadTasks() { let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || []; const list = document.getElementById('taskList'); list.innerHTML = ""; tasks.forEach((task, index) => { list.innerHTML += `<li class="task-item"><span style="font-size:1.1em; flex:1;">${task}</span><button class="del-btn" onclick="deleteTask(${index})">Done ✔</button></li>`; }); }
+        // --- 3. MASTER TRACKING AND PAPER TRADING SYSTEM ---
+        function loadTasks() { let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || []; const list = document.getElementById('taskList'); list.innerHTML = ""; tasks.forEach((task, index) => { list.innerHTML += `<li class="task-item"><span style="font-size:1.05em; flex:1;">${task}</span><button class="del-btn" onclick="deleteTask(${index})">Done ✔</button></li>`; }); }
         function handleTaskKeyPress(e) { if(e.key === 'Enter' && e.target.value.trim() !== '') { let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || []; tasks.push(e.target.value.trim()); localStorage.setItem('dailyTasks', JSON.stringify(tasks)); loadTasks(); e.target.value = ''; } }
         function deleteTask(index) { let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || []; tasks.splice(index, 1); localStorage.setItem('dailyTasks', JSON.stringify(tasks)); loadTasks(); }
 
-        function loadTrades() { let trades = JSON.parse(localStorage.getItem('paperTrades')) || []; const list = document.getElementById('tradeList'); if(!list) return; list.innerHTML = ""; trades.forEach((trade, index) => { list.innerHTML += `<li class="task-item"><div style="flex:1; font-size:0.9em; text-align: left;"><b>${trade.entry}</b> <br> <span style="color:#ffaa00">SL: ${trade.sl}</span> | <span style="color:#aaa">${trade.reason}</span></div><button class="del-btn" onclick="deleteTrade(${index})">X</button></li>`; }); }
+        function loadTrades() { let trades = JSON.parse(localStorage.getItem('paperTrades')) || []; const list = document.getElementById('tradeList'); if(!list) return; list.innerHTML = ""; trades.forEach((trade, index) => { list.innerHTML += `<li class="task-item"><div style="flex:1; font-size:0.9em; text-align: left;"><b>${trade.entry}</b> <br> <span style="color:#ffaa00; font-size:0.85em;">SL: ${trade.sl}</span> | <span style="color:#888; font-size:0.85em;">${trade.reason}</span></div><button class="del-btn" onclick="deleteTrade(${index})">✖</button></li>`; }); }
         function savePaperTrade() { let entry = document.getElementById('trade-entry').value, sl = document.getElementById('trade-sl').value, reason = document.getElementById('trade-reason').value; if(entry) { let trades = JSON.parse(localStorage.getItem('paperTrades')) || []; trades.push({entry, sl, reason}); localStorage.setItem('paperTrades', JSON.stringify(trades)); loadTrades(); document.getElementById('trade-entry').value = ''; document.getElementById('trade-sl').value = ''; document.getElementById('trade-reason').value = ''; } }
         function deleteTrade(index) { let trades = JSON.parse(localStorage.getItem('paperTrades')) || []; trades.splice(index, 1); localStorage.setItem('paperTrades', JSON.stringify(trades)); loadTrades(); }
 
-        // --- 4. TIMER & BACKUP LOGIC ---
+        // --- 4. HIGH-END AUTOMATED HUD TIMING SYSTEM ---
         let focusMin = 25, breakMin = 5, isFocus = true, timeLeft = focusMin * 60, isRunning = false, timerId = null;
+        
         function applySettings() {
             focusMin = parseInt(document.getElementById('focus-time-input').value) || 25; breakMin = parseInt(document.getElementById('break-time-input').value) || 5;
             clearInterval(timerId); isRunning = false; isFocus = true; timeLeft = focusMin * 60;
-            document.getElementById('start-btn').innerText = "START"; document.getElementById('timer-display').classList.remove('timer-running');
+            document.getElementById('start-btn').innerText = "START"; document.getElementById('timer-box').classList.remove('timer-running');
             updateUI(); localStorage.setItem('kk_timer_settings', JSON.stringify({ focusMin, breakMin })); togglePopup('settings-modal');
         }
-        function toggleTimer() { 
-            if(isRunning) { clearInterval(timerId); isRunning = false; document.getElementById('start-btn').innerText = "RESUME"; document.getElementById('timer-display').classList.remove('timer-running'); } 
-            else { isRunning = true; document.getElementById('start-btn').innerText = "PAUSE"; document.getElementById('timer-display').classList.add('timer-running'); timerId = setInterval(() => { if(timeLeft > 0) { timeLeft--; updateUI(); } else { clearInterval(timerId); isRunning = false; isFocus = !isFocus; timeLeft = (isFocus ? focusMin : breakMin) * 60; document.getElementById('mode-badge').innerText = isFocus ? "FOCUS MODE" : "BREAK MODE"; document.getElementById('start-btn').innerText = "START"; document.getElementById('timer-display').classList.remove('timer-running'); updateUI(); } }, 1000); } 
-        }
-        function updateUI() { let m = Math.floor(timeLeft/60), s = timeLeft%60; document.getElementById('timer-display').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; }
-        function exportData() { let data = JSON.stringify(localStorage); let blob = new Blob([data], {type: "application/json"}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'KK_Backup.json'; a.click(); }
-        function importData(event) { let file = event.target.files[0]; if(!file) return; let reader = new FileReader(); reader.onload = function(e) { try { let data = JSON.parse(e.target.result); for (let key in data) { localStorage.setItem(key, data[key]); } alert("Imported!"); location.reload(); } catch(err) { alert("Error!"); } }; reader.readAsText(file); }
-
-        // --- 5. FIXED: 100% REALISTIC 3D SKETCHFAB VAULT (LAG-FREE) ---
-        const characters = [
-            { id: 'ironman', name: 'Iron Man', embedUrl: 'https://sketchfab.com/models/007328bf586144e0b04ec372eb0f5763/embed?autostart=1&camera=0&preload=1&ui_controls=0&ui_infos=0&ui_watermark=0', color: '#ff2a2a' },
-            { id: 'captainamerica', name: 'Captain America', embedUrl: 'https://sketchfab.com/models/ea0d588523cf44569bf8be220f12fa9b/embed?autostart=1&camera=0&preload=1&ui_controls=0&ui_infos=0&ui_watermark=0', color: '#0077ff' },
-            { id: 'thor', name: 'Thor Odinson', embedUrl: 'https://sketchfab.com/models/f591c28c68ff4ffc8b82963162b489be/embed?autostart=1&camera=0&preload=1&ui_controls=0&ui_infos=0&ui_watermark=0', color: '#ffaa00' }
-        ];
         
-        let currentIndex = 0;
+        function toggleTimer() { 
+            if(isRunning) { 
+                clearInterval(timerId); 
+                isRunning = false; 
+                document.getElementById('start-btn').innerText = "RESUME"; 
+                document.getElementById('timer-box').classList.remove('timer-running');
+                document.getElementById('timer-status-label').innerText = "SYSTEM PAUSED";
+            } else { 
+                isRunning = true; 
+                document.getElementById('start-btn').innerText = "PAUSE"; 
+                document.getElementById('timer-box').classList.add('timer-running'); 
+                document.getElementById('timer-status-label').innerText = isFocus ? "FOCUS ACTIVE" : "BREAK ACTIVE";
+                
+                timerId = setInterval(() => { 
+                    if(timeLeft > 0) { 
+                        timeLeft--; 
+                        updateUI(); 
+                    } else { 
+                        clearInterval(timerId); 
+                        isRunning = false; 
+                        isFocus = !isFocus; 
+                        timeLeft = (isFocus ? focusMin : breakMin) * 60; 
+                        document.getElementById('mode-badge').innerText = isFocus ? "FOCUS MODE" : "BREAK MODE"; 
+                        document.getElementById('start-btn').innerText = "START"; 
+                        document.getElementById('timer-box').classList.remove('timer-running'); 
+                        document.getElementById('timer-status-label').innerText = "CYCLE COMPLETE";
+                        updateUI(); 
+                    } 
+                }, 1000); 
+            } 
+        }
+        
+        function updateUI() { 
+            let m = Math.floor(timeLeft/60), s = timeLeft%60; 
+            document.getElementById('timer-display').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; 
+            
+            // Sync Arc Clock Ring Animation
+            let totalDuration = (isFocus ? focusMin : breakMin) * 60;
+            let percentageLeft = timeLeft / totalDuration;
+            let dashoffset = 126 - (126 * percentageLeft);
+            document.getElementById('clock-ring').style.strokeDashoffset = dashoffset;
+        }
+        
+        function exportData() { let data = JSON.stringify(localStorage); let blob = new Blob([data], {type: "application/json"}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'KK_Backup.json'; a.click(); }
+        function importData(event) { let file = event.target.files[0]; if(!file) return; let reader = new FileReader(); reader.onload = function(e) { try { let data = JSON.parse(e.target.result); for (let key in data) { localStorage.setItem(key, data[key]); } alert("Dataset synchronised completely!"); location.reload(); } catch(err) { alert("Matrix Sync Failed."); } }; reader.readAsText(file); }
+
+        // --- 5. PREMIUM HUD EDITION CARD VAULT PROTOCOL ---
         let currentTheme = localStorage.getItem('kk_theme') || 'ironman';
-
-        function initCarousel() {
-            const container = document.getElementById('carousel');
-            container.innerHTML = '';
-            characters.forEach((char, index) => {
-                const div = document.createElement('div');
-                div.className = 'model-card';
-                div.id = `model-${char.id}`;
-                
-                // Realistic animated iframes with transparent background layers for selecting "dusare" options seamlessly
-                div.innerHTML = `
-                    <iframe src="${char.embedUrl}" allow="autoplay; fullscreen; vr"></iframe>
-                    <div class="click-mask"></div>
-                    <div class="model-info">
-                        <h2>${char.name}</h2>
-                        <button class="activate-btn" onclick="activateProtocol(${index}, event)">Activate Protocol</button>
-                    </div>`;
-                
-                div.onclick = () => selectModel(index);
-                container.appendChild(div);
-            });
-            updateCarousel();
-        }
-
-        function selectModel(index) {
-            currentIndex = index;
-            updateCarousel();
-        }
-
-        function updateCarousel() {
-            const cards = document.querySelectorAll('.model-card');
-            cards.forEach((card, index) => {
-                let offset = index - currentIndex;
-                let translateZ = Math.abs(offset) * -450; 
-                let translateX = offset * 420; 
-                let scale = 1 - Math.abs(offset) * 0.15;
-                let opacity = Math.abs(offset) > 1 ? 0 : (Math.abs(offset) === 1 ? 0.35 : 1);
-                
-                card.style.transform = `translateX(${translateX}px) translateZ(${translateZ}px) scale(${scale})`;
-                card.style.opacity = opacity;
-                card.style.zIndex = 100 - Math.abs(offset);
-                
-                // Disables pointer events on background models so iframes don't steal clicks
-                const mask = card.querySelector('.click-mask');
-                if(offset === 0) {
-                    if(mask) mask.style.display = 'none';
-                    card.style.pointerEvents = 'auto';
-                } else {
-                    if(mask) mask.style.display = 'block';
-                    card.style.pointerEvents = 'auto';
-                }
-            });
-        }
-
-        function moveCarousel(dir) {
-            currentIndex += dir;
-            if (currentIndex < 0) currentIndex = 0;
-            if (currentIndex >= characters.length) currentIndex = characters.length - 1;
-            updateCarousel();
-        }
 
         function openVault() { 
             document.getElementById('character-vault-overlay').style.display = 'flex'; 
             setTimeout(() => document.getElementById('character-vault-overlay').style.opacity = '1', 10); 
-            initCarousel(); 
         }
         
         function closeVault() { 
             document.getElementById('character-vault-overlay').style.opacity = '0'; 
-            setTimeout(() => {
-                document.getElementById('character-vault-overlay').style.display = 'none';
-                document.getElementById('carousel').innerHTML = ''; // Instantly wipes memory to block lag
-            }, 500); 
+            setTimeout(() => document.getElementById('character-vault-overlay').style.display = 'none', 500); 
         }
 
-        function activateProtocol(index, event) {
-            event.stopPropagation();
-            let char = characters[index];
-            currentTheme = char.id;
+        function activateProtocol(themeId, themeColor) {
+            currentTheme = themeId;
             localStorage.setItem('kk_theme', currentTheme);
             
-            document.documentElement.style.setProperty('--glow-focus', char.color);
-            document.getElementById('mode-badge').style.borderColor = char.color;
-            document.getElementById('mode-badge').style.color = char.color;
+            // Smoothly change premium theme visual metrics
+            document.documentElement.style.setProperty('--glow-focus', themeColor);
+            document.documentElement.style.setProperty('--hud-bg', themeColor + '04');
+            document.getElementById('mode-badge').style.borderColor = themeColor;
+            document.getElementById('mode-badge').style.color = themeColor;
 
-            let audioNode = document.getElementById('audio-' + char.id);
-            if (audioNode && audioNode.getAttribute('src').indexOf('.mp3') !== -1 && audioNode.getAttribute('src') !== char.id + '.mp3') {
-                audioNode.currentTime = 0;
-                audioNode.play().catch(e => speakFallback(char.name));
+            // Trigger Luxury Screen Shockwave Animation
+            let flash = document.getElementById('shockwave-flash');
+            flash.style.background = themeColor;
+            flash.style.opacity = '0.15';
+            setTimeout(() => flash.style.opacity = '0', 300);
+
+            // Audio Deployment Control Matrix
+            let audioNode = document.getElementById('audio-' + themeId);
+            if (audioNode) {
+                document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+                audioNode.play().catch(e => speakFallback(themeId));
             } else {
-                speakFallback(char.name);
+                speakFallback(themeId);
             }
 
             closeVault();
@@ -471,48 +532,66 @@
         function speakFallback(name) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel(); 
-                let textToSpeak = `${name} protocol activated. Systems are live.`;
+                let formattedName = name === 'ironman' ? 'Iron Man' : name === 'captainamerica' ? 'Captain America' : 'Thor';
+                let textToSpeak = `${formattedName} architecture initialized successfully. Matrix is live.`;
                 let msg = new SpeechSynthesisUtterance(textToSpeak);
                 let voices = window.speechSynthesis.getVoices();
-                let jarvisVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('David'));
-                if (jarvisVoice) msg.voice = jarvisVoice;
-                msg.pitch = 0.5; msg.rate = 0.95;  
+                let luxuryVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('David'));
+                if (luxuryVoice) msg.voice = luxuryVoice;
+                msg.pitch = 0.65; msg.rate = 0.95;  
                 window.speechSynthesis.speak(msg);
             }
         }
         window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); };
 
-        // --- 6. OPTIMIZED LAG-FREE PARTICLES ---
+        // --- 6. OPTIMIZED HIGH-PERFORMANCE CINEMATIC HUD CANVAS MATRIX ---
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particles = [];
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; resetParticles(); });
 
-        class OptimizedParticle {
+        class OptimizedHUDParticle {
             constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 1;
-                this.speed = Math.random() * 2 + 0.5;
-                this.alpha = Math.random() * 0.5 + 0.1;
-                if(currentTheme === 'ironman') { this.y = canvas.height + 10; }
+                this.y = currentTheme === 'ironman' ? canvas.height + 20 : (currentTheme === 'thor' ? -20 : Math.random() * canvas.height);
+                this.size = Math.random() * 1.5 + 0.8;
+                this.speed = Math.random() * 1.8 + 0.4;
+                this.alpha = Math.random() * 0.4 + 0.05;
+                this.drift = Math.sin(Math.random() * 2) * 0.3;
             }
             update() {
                 if (currentTheme === 'ironman') {
                     this.y -= this.speed;
-                    if (this.y < 0) this.reset();
-                } else {
-                    this.y += this.speed;
+                    this.x += this.drift;
+                    if (this.y < -10) this.reset();
+                } else if (currentTheme === 'thor') {
+                    this.y += this.speed * 2.5; // Fast lightning velocity
+                    this.x += this.drift * 2;
+                    if (this.y > canvas.height + 10) this.reset();
+                } else { // Captain America structural geometric layout
+                    this.y += this.speed * 0.3;
                     if (this.y > canvas.height) this.reset();
                 }
             }
             draw() {
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                if (currentTheme === 'ironman') ctx.fillStyle = `rgba(255, 50, 0, ${this.alpha})`;
-                else if (currentTheme === 'captainamerica') ctx.fillStyle = `rgba(0, 100, 255, ${this.alpha})`;
-                else if (currentTheme === 'thor') ctx.fillStyle = `rgba(255, 200, 0, ${this.alpha})`;
+                if (currentTheme === 'ironman') {
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 42, 42, ${this.alpha})`;
+                } else if (currentTheme === 'captainamerica') {
+                    // Geometric Square Matrix Architecture
+                    ctx.rect(this.x, this.y, this.size * 1.5, this.size * 1.5);
+                    ctx.fillStyle = `rgba(0, 119, 255, ${this.alpha * 0.8})`;
+                } else if (currentTheme === 'thor') {
+                    // Laser Beam Lightning Vector lines
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + this.drift * 5, this.y + this.size * 8);
+                    ctx.strokeStyle = `rgba(255, 170, 0, ${this.alpha})`;
+                    ctx.lineWidth = this.size * 0.5;
+                    ctx.stroke();
+                    return;
+                }
                 ctx.fill();
             }
         }
@@ -520,8 +599,8 @@
         function resetParticles() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             particles = [];
-            let count = window.innerWidth > 768 ? 100 : 40; 
-            for (let i = 0; i < count; i++) { particles.push(new OptimizedParticle()); }
+            let count = window.innerWidth > 768 ? 80 : 35; 
+            for (let i = 0; i < count; i++) { particles.push(new OptimizedHUDParticle()); }
         }
 
         function animateRender() {
@@ -533,8 +612,11 @@
         window.onload = () => { 
             let savedSettings = JSON.parse(localStorage.getItem('kk_timer_settings'));
             if(savedSettings) { focusMin = savedSettings.focusMin; breakMin = savedSettings.breakMin; timeLeft = focusMin * 60; document.getElementById('focus-time-input').value = focusMin; document.getElementById('break-time-input').value = breakMin; }
-            let savedTheme = characters.find(c => c.id === currentTheme);
-            if(savedTheme) { document.documentElement.style.setProperty('--glow-focus', savedTheme.color); document.getElementById('mode-badge').style.borderColor = savedTheme.color; document.getElementById('mode-badge').style.color = savedTheme.color; }
+            
+            // Map saved configuration models on initialization
+            let colorMap = { 'ironman': '#ff2a2a', 'captainamerica': '#0077ff', 'thor': '#ffaa00' };
+            activateProtocol(currentTheme, colorMap[currentTheme] || '#ff2a2a');
+            
             updateUI(); loadTasks(); loadTrades(); resetParticles(); animateRender(); 
         };
     </script>
