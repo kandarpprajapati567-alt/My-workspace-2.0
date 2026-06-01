@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K.K. Command Center | Pro Ultra</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
         :root { 
@@ -97,39 +96,41 @@
         .vault-close { position: absolute; top: 30px; right: 40px; font-size: 2em; color: white; cursor: pointer; transition: 0.3s; z-index: 10001; }
         .vault-close:hover { color: #ff4444; transform: scale(1.1); }
         
-        .carousel-container { position: relative; width: 100vw; height: 70vh; display: flex; justify-content: center; align-items: center; perspective: 1500px; transform-style: preserve-3d; }
+        .carousel-container { position: relative; width: 100vw; height: 75vh; display: flex; justify-content: center; align-items: center; perspective: 1500px; transform-style: preserve-3d; }
         
-        /* UPDATED: 3D Model Wrappers (Removed card styling for realistic 3D look) */
+        /* 3D Model Card Space (No Background Cards) */
         .model-card {
-            position: absolute; width: 500px; height: 600px; 
-            background: transparent; /* Removed card background */
-            border: none; /* Removed borders */
+            position: absolute; width: 450px; height: 550px; 
+            background: transparent; border: none; box-shadow: none;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
             transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
-            cursor: pointer; box-shadow: none; /* Removed shadow */
+            cursor: pointer;
         }
-        /* Increased size and positioning of the 3D model */
-        model-viewer { width: 100%; height: 100%; position: absolute; top: 0; outline: none; --poster-color: transparent; }
-        .model-info { text-align: center; margin-top: auto; width: 100%; z-index: 2; padding-bottom: 20px; text-shadow: 0 5px 20px rgba(0,0,0,1); }
-        .model-info h2 { margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 3px; }
+        /* Iframe for realistic Sketchfab 3D models */
+        .model-card iframe { width: 100%; height: 100%; position: absolute; top: 0; border: none; border-radius: 20px; pointer-events: none; }
+        /* Safe clicking mask to allow selection of right/left characters */
+        .click-mask { position: absolute; top: 0; left: 0; width: 100%; height: 80%; z-index: 5; }
 
-        .carousel-controls { position: absolute; bottom: 5%; display: flex; gap: 60px; z-index: 10001; }
-        .nav-arrow { font-size: 3em; color: rgba(255,255,255,0.3); cursor: pointer; transition: 0.3s; }
+        .model-info { text-align: center; margin-top: auto; width: 100%; z-index: 10; padding-bottom: 10px; }
+        .model-info h2 { margin: 0; font-size: 2.3em; text-transform: uppercase; letter-spacing: 3px; }
+
+        .carousel-controls { position: absolute; bottom: 4%; display: flex; gap: 60px; z-index: 10001; }
+        .nav-arrow { font-size: 3em; color: rgba(255,255,255,0.3); cursor: pointer; transition: 0.3s; user-select: none; }
         .nav-arrow:hover { color: white; text-shadow: 0 0 20px white; transform: scale(1.2); }
-        .activate-btn { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border: 2px solid white; color: white; padding: 10px 30px; font-size: 1.2em; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: 15px; }
+        .activate-btn { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 2px solid white; color: white; padding: 10px 30px; font-size: 1.1em; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: 10px; position: relative; z-index: 20; }
         .activate-btn:hover { background: white; color: black; }
 
-        /* Dynamic Theme Colors for Vault (Applied to Text instead of Card Borders) */
-        #model-ironman h2 { color: #ff2a2a; text-shadow: 0 0 20px #ff2a2a; } 
-        #model-spiderman h2 { color: #0044ff; text-shadow: 0 0 20px #0044ff; } 
-        #model-doctordoom h2 { color: #00ff66; text-shadow: 0 0 20px #00ff66; }
+        /* Cinematic HUD Typography for Avengers */
+        #model-ironman h2 { color: #ff2a2a; text-shadow: 0 0 20px rgba(255,42,42,0.6); } 
+        #model-captainamerica h2 { color: #0077ff; text-shadow: 0 0 20px rgba(0,119,255,0.6); } 
+        #model-thor h2 { color: #ffaa00; text-shadow: 0 0 20px rgba(255,170,0,0.6); }
     </style>
 </head>
 <body>
 
     <audio id="audio-ironman" src="ironman.mp3"></audio>
-    <audio id="audio-spiderman" src="spiderman.mp3"></audio>
-    <audio id="audio-doctordoom" src="doctordoom.mp3"></audio>
+    <audio id="audio-captainamerica" src="captainamerica.mp3"></audio>
+    <audio id="audio-thor" src="thor.mp3"></audio>
 
     <canvas id="canvas-bg"></canvas>
     <div class="cinematic-vignette"></div>
@@ -151,8 +152,7 @@
 
     <div id="character-vault-overlay">
         <div class="vault-close" onclick="closeVault()">✖</div>
-        <div class="carousel-container" id="carousel">
-            </div>
+        <div class="carousel-container" id="carousel"></div>
         <div class="carousel-controls">
             <div class="nav-arrow" onclick="moveCarousel(-1)">◀</div>
             <div class="nav-arrow" onclick="moveCarousel(1)">▶</div>
@@ -362,13 +362,11 @@
         function exportData() { let data = JSON.stringify(localStorage); let blob = new Blob([data], {type: "application/json"}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'KK_Backup.json'; a.click(); }
         function importData(event) { let file = event.target.files[0]; if(!file) return; let reader = new FileReader(); reader.onload = function(e) { try { let data = JSON.parse(e.target.result); for (let key in data) { localStorage.setItem(key, data[key]); } alert("Imported!"); location.reload(); } catch(err) { alert("Error!"); } }; reader.readAsText(file); }
 
-        // --- 5. 3D VAULT & JARVIS VOICE SYSTEM ---
-        
-        // REPLACE THE 'src' LINKS HERE WITH YOUR ACTUAL IRON MAN / SPIDER MAN .glb FILES
+        // --- 5. FIXED: 100% REALISTIC 3D SKETCHFAB VAULT (LAG-FREE) ---
         const characters = [
-            { id: 'ironman', name: 'Iron Man', src: 'https://modelviewer.dev/shared-assets/models/RobotExpressive.glb', color: '#ff2a2a' },
-            { id: 'spiderman', name: 'Spider-Man', src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb', color: '#0044ff' },
-            { id: 'doctordoom', name: 'Doctor Doom', src: 'https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb', color: '#00ff66' }
+            { id: 'ironman', name: 'Iron Man', embedUrl: 'https://sketchfab.com/models/007328bf586144e0b04ec372eb0f5763/embed?autostart=1&camera=0&preload=1&ui_controls=0&ui_infos=0&ui_watermark=0', color: '#ff2a2a' },
+            { id: 'captainamerica', name: 'Captain America', embedUrl: 'https://sketchfab.com/models/ea0d588523cf44569bf8be220f12fa9b/embed?autostart=1&camera=0&preload=1&ui_controls=0&ui_infos=0&ui_watermark=0', color: '#0077ff' },
+            { id: 'thor', name: 'Thor Odinson', embedUrl: 'https://sketchfab.com/models/f591c28c68ff4ffc8b82963162b489be/embed?autostart=1&camera=0&preload=1&ui_controls=0&ui_infos=0&ui_watermark=0', color: '#ffaa00' }
         ];
         
         let currentIndex = 0;
@@ -381,21 +379,22 @@
                 const div = document.createElement('div');
                 div.className = 'model-card';
                 div.id = `model-${char.id}`;
-                // ADDED 'autoplay' SO THE 3D MODEL ANIMATIONS RUN AUTOMATICALLY
+                
+                // Realistic animated iframes with transparent background layers for selecting "dusare" options seamlessly
                 div.innerHTML = `
-                    <model-viewer src="${char.src}" autoplay auto-rotate camera-controls disable-zoom shadow-intensity="1"></model-viewer>
+                    <iframe src="${char.embedUrl}" allow="autoplay; fullscreen; vr"></iframe>
+                    <div class="click-mask"></div>
                     <div class="model-info">
                         <h2>${char.name}</h2>
-                        <button class="activate-btn" onclick="activateProtocol(${index}, event)">Activate Edition</button>
+                        <button class="activate-btn" onclick="activateProtocol(${index}, event)">Activate Protocol</button>
                     </div>`;
-                // ALLOW CLICKING TO SELECT "DUSARE" MODELS
+                
                 div.onclick = () => selectModel(index);
                 container.appendChild(div);
             });
             updateCarousel();
         }
 
-        // NEW FUNCTION: CLICKS A 3D MODEL TO SELECT IT
         function selectModel(index) {
             currentIndex = index;
             updateCarousel();
@@ -405,16 +404,24 @@
             const cards = document.querySelectorAll('.model-card');
             cards.forEach((card, index) => {
                 let offset = index - currentIndex;
-                let translateZ = Math.abs(offset) * -400; // Pushed slightly further back to emphasize depth
-                let translateX = offset * 450; // Spread wider so they don't overlap as heavily
+                let translateZ = Math.abs(offset) * -450; 
+                let translateX = offset * 420; 
                 let scale = 1 - Math.abs(offset) * 0.15;
-                let opacity = Math.abs(offset) > 1 ? 0 : (Math.abs(offset) === 1 ? 0.4 : 1);
+                let opacity = Math.abs(offset) > 1 ? 0 : (Math.abs(offset) === 1 ? 0.35 : 1);
                 
                 card.style.transform = `translateX(${translateX}px) translateZ(${translateZ}px) scale(${scale})`;
                 card.style.opacity = opacity;
                 card.style.zIndex = 100 - Math.abs(offset);
-                // ALLOW CLICKING ON ANY VISIBLE MODEL
-                card.style.pointerEvents = 'auto'; 
+                
+                // Disables pointer events on background models so iframes don't steal clicks
+                const mask = card.querySelector('.click-mask');
+                if(offset === 0) {
+                    if(mask) mask.style.display = 'none';
+                    card.style.pointerEvents = 'auto';
+                } else {
+                    if(mask) mask.style.display = 'block';
+                    card.style.pointerEvents = 'auto';
+                }
             });
         }
 
@@ -425,21 +432,30 @@
             updateCarousel();
         }
 
-        function openVault() { document.getElementById('character-vault-overlay').style.display = 'flex'; setTimeout(() => document.getElementById('character-vault-overlay').style.opacity = '1', 10); initCarousel(); }
-        function closeVault() { document.getElementById('character-vault-overlay').style.opacity = '0'; setTimeout(() => document.getElementById('character-vault-overlay').style.display = 'none', 500); }
+        function openVault() { 
+            document.getElementById('character-vault-overlay').style.display = 'flex'; 
+            setTimeout(() => document.getElementById('character-vault-overlay').style.opacity = '1', 10); 
+            initCarousel(); 
+        }
+        
+        function closeVault() { 
+            document.getElementById('character-vault-overlay').style.opacity = '0'; 
+            setTimeout(() => {
+                document.getElementById('character-vault-overlay').style.display = 'none';
+                document.getElementById('carousel').innerHTML = ''; // Instantly wipes memory to block lag
+            }, 500); 
+        }
 
         function activateProtocol(index, event) {
-            event.stopPropagation(); // Prevents triggering selectModel()
+            event.stopPropagation();
             let char = characters[index];
             currentTheme = char.id;
             localStorage.setItem('kk_theme', currentTheme);
             
-            // Apply Colors
             document.documentElement.style.setProperty('--glow-focus', char.color);
             document.getElementById('mode-badge').style.borderColor = char.color;
             document.getElementById('mode-badge').style.color = char.color;
 
-            // Try playing audio file first, if error or dummy file, trigger JARVIS hack
             let audioNode = document.getElementById('audio-' + char.id);
             if (audioNode && audioNode.getAttribute('src').indexOf('.mp3') !== -1 && audioNode.getAttribute('src') !== char.id + '.mp3') {
                 audioNode.currentTime = 0;
@@ -452,24 +468,15 @@
             resetParticles();
         }
 
-        // --- ADVANCED JARVIS VOICE SYNTHESIS HACK ---
         function speakFallback(name) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel(); 
-                
-                let textToSpeak = `${name} edition active. All protocols online.`;
-                if (name === "Doctor Doom") textToSpeak = `Latverian magic active. Bow to Doom.`;
-                if (name === "Spider-Man") textToSpeak = `Symbiote edition engaged. Web shooters loaded.`;
-                
+                let textToSpeak = `${name} protocol activated. Systems are live.`;
                 let msg = new SpeechSynthesisUtterance(textToSpeak);
                 let voices = window.speechSynthesis.getVoices();
-                
-                let jarvisVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('David') || v.name.includes('Mark'));
+                let jarvisVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('David'));
                 if (jarvisVoice) msg.voice = jarvisVoice;
-                
-                msg.pitch = (name === "Doctor Doom" || name === "Iron Man") ? 0.4 : 0.8; 
-                msg.rate = 0.9;  
-                
+                msg.pitch = 0.5; msg.rate = 0.95;  
                 window.speechSynthesis.speak(msg);
             }
         }
@@ -495,10 +502,6 @@
                 if (currentTheme === 'ironman') {
                     this.y -= this.speed;
                     if (this.y < 0) this.reset();
-                } else if (currentTheme === 'doctordoom') {
-                    this.y -= this.speed * 0.5;
-                    this.size += 0.02;
-                    if (this.y < 0) this.reset();
                 } else {
                     this.y += this.speed;
                     if (this.y > canvas.height) this.reset();
@@ -508,8 +511,8 @@
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 if (currentTheme === 'ironman') ctx.fillStyle = `rgba(255, 50, 0, ${this.alpha})`;
-                else if (currentTheme === 'spiderman') ctx.fillStyle = `rgba(0, 100, 255, ${this.alpha})`;
-                else if (currentTheme === 'doctordoom') ctx.fillStyle = `rgba(0, 255, 100, ${this.alpha})`;
+                else if (currentTheme === 'captainamerica') ctx.fillStyle = `rgba(0, 100, 255, ${this.alpha})`;
+                else if (currentTheme === 'thor') ctx.fillStyle = `rgba(255, 200, 0, ${this.alpha})`;
                 ctx.fill();
             }
         }
@@ -527,7 +530,6 @@
             requestAnimationFrame(animateRender);
         }
 
-        // Initialize Everything
         window.onload = () => { 
             let savedSettings = JSON.parse(localStorage.getItem('kk_timer_settings'));
             if(savedSettings) { focusMin = savedSettings.focusMin; breakMin = savedSettings.breakMin; timeLeft = focusMin * 60; document.getElementById('focus-time-input').value = focusMin; document.getElementById('break-time-input').value = breakMin; }
