@@ -55,12 +55,13 @@
         .btn-timer { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.15); padding: 6px 18px; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-weight: bold; font-size: 0.8em; }
         .btn-timer:hover { border-color: var(--glow-focus); background: var(--hud-bg); color: var(--glow-focus); box-shadow: 0 0 10px var(--hud-bg); }
 
-        /* CENTER SYSTEM: DYNAMIC HUD CLOCK SYSTEM ABOVE LOGO */
-        .center-hud-dashboard { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: auto; margin-bottom: auto; z-index: 100; position: relative; }
+        /* CENTER SYSTEM: FIXED CENTER ALIGNMENT FOR THE CLOCK & HEADERS */
+        .home-screen { display: flex; flex: 1; justify-content: center; align-items: center; text-align: center; }
+        .center-hud-dashboard { display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; position: relative; }
         
         /* 8K DIGITAL ENGINE CLOCK */
-        .matrix-hologram-clock { position: relative; width: 240px; height: 240px; display: flex; items-center: center; justify-content: center; align-items: center; margin-bottom: 25px; transition: var(--main-transition); }
-        .matrix-hologram-clock::before { content: ''; position: absolute; width: 105%; height: 105%; border: 1px dashed var(--glow-focus); border-radius: 50%; opacity: 0.25; animation: spinClockwise 25s linear infinite; }
+        .matrix-hologram-clock { position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; transition: var(--main-transition); }
+        .matrix-hologram-clock::before { content: ''; position: absolute; width: 105%; height: 105%; border: 1px dashed var(--glow-focus); border-radius: 50%; opacity: 0.25; animation: spinClockwise 25s linear infinite; box-shadow: inset 0 0 15px var(--hud-bg); }
         .matrix-hologram-clock::after { content: ''; position: absolute; width: 92%; height: 92%; border: 1px double var(--glow-focus); border-radius: 50%; opacity: 0.15; animation: spinCounterClockwise 15s linear infinite; }
         
         @keyframes spinClockwise { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -71,12 +72,12 @@
         
         .clock-digital-core { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; z-index: 10; pointer-events: none; }
         .hud-live-time { font-family: 'Courier New', monospace; font-size: 2.8em; font-weight: 900; letter-spacing: -1px; text-shadow: 0 0 20px var(--clock-glow); color: #ffffff; }
-        .hud-live-seconds { font-size: 0.45em; color: var(--glow-focus); font-weight: bold; margin-left: 2px; vertical-align: super; }
-        .hud-live-date { font-size: 0.7em; color: #666; font-weight: bold; letter-spacing: 2px; margin-top: 5px; text-transform: uppercase; }
+        .hud-live-seconds { font-size: 0.45em; color: var(--glow-focus); font-weight: bold; margin-left: 2px; vertical-align: super; text-shadow: 0 0 5px var(--glow-focus); }
+        .hud-live-date { font-size: 0.7em; color: #888; font-weight: bold; letter-spacing: 2px; margin-top: 5px; text-transform: uppercase; }
 
         /* BRAND HEADINGS UPGRADED */
         .home-screen h1 { font-size: 3.2em; font-weight: 300; margin: 0; letter-spacing: 6px; text-transform: uppercase; text-shadow: 0 0 30px rgba(0,0,0,0.5); }
-        .home-screen b { font-weight: 900; text-shadow: 0 0 20px var(--glow-focus); }
+        .home-screen b { font-weight: 900; transition: var(--main-transition); text-shadow: 0 0 20px var(--glow-focus); color: #fff; }
 
         /* OVERLAYS & GRIDS */
         .module-overlay { display: none; position: absolute; top: 90px; left: 0; right: 0; bottom: 0; background: rgba(3, 3, 5, 0.98); backdrop-filter: blur(35px); z-index: 1000; overflow-y: auto; padding: 40px; animation: slideUp 0.5s cubic-bezier(0.1, 0.9, 0.2, 1); }
@@ -185,13 +186,11 @@
         <div class="icon-btn" onclick="togglePopup('settings-modal')" title="Settings & Backup" style="color:#aaa;">⚙️</div>
     </div>
 
-    <!-- SIDE TRIGGER -->
     <div class="vault-trigger-btn" onclick="openVault()">
         <span style="font-size:1.2em; margin-bottom: 2px;">⚡</span>
         <span>EDITIONS</span>
     </div>
 
-    <!-- CARDS VAULT -->
     <div id="character-vault-overlay">
         <div class="vault-close" onclick="closeVault()">✖</div>
         <div class="vault-header">
@@ -244,10 +243,8 @@
             <div id="desktop-logo" style="font-size: 1.05em; font-weight: 300; letter-spacing: 2px; color: #666;">K.K. HQ</div>
         </div>
 
-        <!-- CENTER CINEMATIC TIME CONTROLLER -->
         <div class="home-screen" id="home-screen">
             <div class="center-hud-dashboard">
-                <!-- 8K HOLLOW MATRIX CLOCK SETUP -->
                 <div class="matrix-hologram-clock" id="hologram-clock-housing">
                     <svg class="clock-dial-svg">
                         <circle class="dial-ring-seconds" id="hologram-second-arc" cx="120" cy="120" r="100"></circle>
@@ -258,12 +255,11 @@
                     </div>
                 </div>
 
-                <h1>Command <b>Center</b></h1>
-                <p style="color: #444; letter-spacing: 1px; font-size: 0.85em; margin-top: 5px; text-transform: uppercase;">Quantum Core Dashboard Init // Select Modules</p>
+                <h1>Command <b id="branding-bold-logo">Center</b></h1>
+                <p style="color: #555; letter-spacing: 1px; font-size: 0.85em; margin-top: 12px; text-transform: uppercase;">Quantum Core Dashboard Init // Select Modules</p>
             </div>
         </div>
 
-        <!-- MODULE OVERLAYS (WORKSPACE, TRADING, ACADEMIC, AI, TASKS, CHILL) -->
         <div id="workspace" class="module-overlay">
             <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
             <h2 class="module-title">Digital <b style="color:var(--glow-focus)">Operations</b></h2>
@@ -367,7 +363,6 @@
         </div>
     </div> 
 
-    <!-- SETTINGS PANEL -->
     <div class="overlay-bg" id="settings-overlay" onclick="togglePopup('settings-modal')"></div>
     <div id="settings-modal" class="popup-modal">
         <h3 style="margin-top:0; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 15px; font-weight: 400;">Settings Configuration</h3>
@@ -385,7 +380,6 @@
         <button onclick="togglePopup('settings-modal')" style="width:100%; background:transparent; color:#555; border:1px solid rgba(255,255,255,0.08); padding:12px; border-radius:8px; cursor:pointer; margin-top:20px;">Abort Configuration</button>
     </div>
 
-    <!-- LINK INJECTION MODAL -->
     <div id="add-link-modal" class="popup-modal">
         <h3 style="margin-top:0; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 15px; font-weight:400;">Inject Resource to <span id="modal-subject-name" style="color:var(--glow-focus);">Hub</span></h3>
         <input type="text" id="new-name" placeholder="Resource Name" class="input-field" style="margin-top:10px;">
@@ -477,7 +471,6 @@
                 const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
                 dateStr.innerText = `${days[now.getDay()]} // ${months[now.getMonth()]} ${now.getDate() < 10 ? '0'+now.getDate() : now.getDate()}`;
                 
-                // Holographic circular sweep animation mapping over 60 seconds loop
                 let offset = 628 - (628 * (now.getSeconds() / 60));
                 arcRing.style.strokeDashoffset = offset;
             }, 1000);
@@ -495,8 +488,18 @@
             document.documentElement.style.setProperty('--glow-focus', themeColor);
             document.documentElement.style.setProperty('--hud-bg', themeColor + '04');
             document.documentElement.style.setProperty('--clock-glow', themeColor + '60');
+            
+            // Adjust borders, text colors, and custom element shadows
             document.getElementById('mode-badge').style.borderColor = themeColor;
             document.getElementById('mode-badge').style.color = themeColor;
+            document.getElementById('branding-bold-logo').style.textShadow = `0 0 20px ${themeColor}`;
+
+            // Inject structural dynamic styles safely into variables
+            const styleFallbackNode = document.getElementById('hologram-clock-housing');
+            if(styleFallbackNode) {
+                styleFallbackNode.style.setProperty('--glow-focus', themeColor);
+                styleFallbackNode.style.setProperty('--hud-bg', themeColor + '08');
+            }
 
             // Pulse Wave Glitch Flash
             let flash = document.getElementById('shockwave-flash'); flash.style.background = themeColor; flash.style.opacity = '0.12'; setTimeout(() => flash.style.opacity = '0', 250);
@@ -516,7 +519,7 @@
             }
         }
 
-        // --- 8K WEBGL MATRIX HOOK VECTOR BACKGROUND SYSTEM ---
+        // --- 3D CINEMATIC AVENGER PARTICLE MATRIX CONTROLLER ---
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -525,46 +528,70 @@
         class AdvancedCinematicParticle {
             constructor() { this.reset(); }
             reset() {
+                // 3D Space Coordinates positioning relative to center clock core
                 this.x = Math.random() * canvas.width;
-                this.y = currentTheme === 'ironman' ? canvas.height + 30 : (currentTheme === 'thor' ? -30 : Math.random() * canvas.height);
-                this.size = Math.random() * 2 + 0.6;
-                this.speed = Math.random() * 1.5 + 0.5;
-                this.alpha = Math.random() * 0.35 + 0.05;
-                this.vectorSign = Math.random() > 0.5 ? 1 : -1;
-                this.waveFrequency = Math.random() * 0.02;
+                this.y = Math.random() * canvas.height;
+                this.z = Math.random() * 2000 + 200; // Deep Virtual Z-Axis Field
+                
+                this.size = Math.random() * 2 + 0.5;
+                this.speedZ = Math.random() * 4 + 2; // Forward projection velocity
+                this.alpha = 0;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spinSpeed = (Math.random() - 0.5) * 0.03;
+                this.forkLength = Math.random() * 25 + 10;
             }
             update() {
-                if (currentTheme === 'ironman') {
-                    this.y -= this.speed * 1.2;
-                    this.x += Math.sin(this.y * this.waveFrequency) * 0.5;
-                    if (this.y < -20) this.reset();
-                } else if (currentTheme === 'thor') {
-                    this.y += this.speed * 3.5; // Heavy Lightning Sparks
-                    this.x += this.vectorSign * (Math.random() * 3);
-                    if (this.y > canvas.height + 20) this.reset();
-                } else { // Captain America Geometric Vector
-                    this.y += this.speed * 0.4;
-                    if (this.y > canvas.height) this.reset();
+                this.z -= this.speedZ; // Step forward out of 3D matrix depth
+                if (this.z <= 0) this.reset();
+
+                // Compute standard 3D to 2D perspective scale projections
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                
+                this.projX = (this.x - centerX) * (1000 / this.z) + centerX;
+                this.projY = (this.y - centerY) * (1000 / this.z) + centerY;
+                this.projSize = this.size * (1000 / this.z);
+
+                this.alpha = (2000 - this.z) / 2000;
+                this.angle += this.spinSpeed;
+
+                // Edge boundaries wrap-around safety
+                if (this.projX < -50 || this.projX > canvas.width + 50 || this.projY < -50 || this.projY > canvas.height + 50) {
+                    this.reset();
                 }
             }
             draw() {
+                if (!this.projX || !this.projY) return;
                 ctx.beginPath();
+                
                 if (currentTheme === 'ironman') {
-                    // Arc Floating Spheres
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 42, 42, ${this.alpha})`;
+                    // STARK ARC CORE FLUID FLUX: Concentric micro rings scaling outwards
+                    ctx.arc(this.projX, this.projY, this.projSize * 1.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 42, 42, ${this.alpha * 0.4})`;
                     ctx.fill();
+                    if(this.z < 600) {
+                        ctx.beginPath();
+                        ctx.arc(this.projX, this.projY, this.projSize * 3, 0, Math.PI * 2);
+                        ctx.strokeStyle = `rgba(255, 42, 42, ${this.alpha * 0.15})`;
+                        ctx.stroke();
+                    }
                 } else if (currentTheme === 'captainamerica') {
-                    // Star Matrix Cross hairs
-                    ctx.rect(this.x, this.y, this.size * 1.8, this.size * 1.8);
-                    ctx.fillStyle = `rgba(0, 119, 255, ${this.alpha * 0.75})`;
-                    ctx.fill();
+                    // SHIELD STRATEGIC MATRIX: Intersecting micro grid crosses and star anchors
+                    ctx.save();
+                    ctx.translate(this.projX, this.projY);
+                    ctx.rotate(this.angle);
+                    ctx.strokeStyle = `rgba(0, 119, 255, ${this.alpha * 0.5})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.strokeRect(-this.projSize, -this.projSize, this.projSize * 2, this.projSize * 2);
+                    ctx.restore();
                 } else if (currentTheme === 'thor') {
-                    // Electrical Lightning Strips
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.x + (this.vectorSign * 8), this.y + 15);
-                    ctx.strokeStyle = `rgba(255, 170, 0, ${this.alpha * 1.2})`;
-                    ctx.lineWidth = 1;
+                    // ASGARDIAN PLASMA FORKS: Chaotic lightning sparks emanating relative to center
+                    ctx.moveTo(this.projX, this.projY);
+                    let targetX = this.projX + Math.sin(this.angle) * this.forkLength * (1000 / this.z);
+                    let targetY = this.projY + Math.cos(this.angle) * this.forkLength * (1000 / this.z);
+                    ctx.lineTo(targetX, targetY);
+                    ctx.strokeStyle = `rgba(255, 170, 0, ${this.alpha * 0.85})`;
+                    ctx.lineWidth = Math.random() * 1.2 + 0.4;
                     ctx.stroke();
                 }
             }
@@ -573,12 +600,11 @@
         function resetParticles() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             particles = [];
-            let maxCount = window.innerWidth > 768 ? 120 : 45;
+            let maxCount = window.innerWidth > 768 ? 140 : 60;
             for (let i = 0; i < maxCount; i++) { particles.push(new AdvancedCinematicParticle()); }
         }
 
         function drawBackgroundGrid() {
-            // Draws secondary high tech mathematical matrix grid overlay lines
             ctx.strokeStyle = currentTheme === 'ironman' ? 'rgba(255,42,42,0.015)' : (currentTheme === 'captainamerica' ? 'rgba(0,119,255,0.015)' : 'rgba(255,170,0,0.012)');
             ctx.lineWidth = 0.5;
             let step = 60;
@@ -587,7 +613,8 @@
         }
 
         function animateRender() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(2, 2, 4, 0.25)"; // Fluid fade trail layer
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             drawBackgroundGrid();
             particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animateRender);
