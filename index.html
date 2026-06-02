@@ -8,8 +8,8 @@
         :root {
             --theme-color: #ff2a2a;
             --bg-color: #030305;
-            --glass-bg: rgba(20, 20, 25, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(20, 20, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --transition-fast: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -19,11 +19,24 @@
             user-select: none; transition: background-color 0.5s ease;
         }
 
-        /* Optimized Canvas & Cinematic Vignette */
+        /* Optimized Canvas & Cinematic Wallpapers */
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; }
+        
+        #bg-wallpaper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3;
+            background-size: cover; background-position: center; opacity: 0.4;
+            transition: background-image 1s ease-in-out, opacity 1s ease;
+            animation: cinematicZoom 20s infinite alternate linear;
+        }
+
+        @keyframes cinematicZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
         .vignette {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
-            background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.95) 100%);
+            background: radial-gradient(circle at center, transparent 10%, rgba(0,0,0,0.95) 100%);
         }
 
         /* Lighting Flash Overlay */
@@ -84,7 +97,7 @@
         }
         .nav-btn {
             font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: var(--transition-fast);
-            padding: 10px; border-radius: 12px; display: none; /* Hidden by default for isolation */
+            padding: 10px; border-radius: 12px; display: none;
         }
         .nav-btn.home-btn { display: block; color: white; border-bottom: 1px solid #333; padding-bottom: 20px; opacity: 0.8; }
         .nav-btn.active {
@@ -110,7 +123,7 @@
         
         /* Action Elements */
         .timer-box { font-size: 3rem; font-family: monospace; font-weight: bold; color: var(--theme-color); text-shadow: 0 0 20px var(--theme-color); margin: 20px 0; }
-        .action-btn { background: transparent; border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-block; }
+        .action-btn { background: transparent; border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
         .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 15px var(--theme-color); }
         .status-badge { font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.1); float: right; }
         .add-btn { position: absolute; top: 15px; right: 15px; background: var(--theme-color); color: #000; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; transition: 0.3s;}
@@ -120,14 +133,39 @@
         select, input[type="file"], textarea { background: rgba(0,0,0,0.5); border: 1px solid var(--theme-color); color: white; padding: 10px; border-radius: 8px; font-family: inherit; }
         select { margin-left: 10px; cursor: pointer; outline: none; }
 
+        /* Thor Story Modal Overlay */
+        #story-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10000;
+            background: #000; display: none; flex-direction: column; padding: 50px;
+            box-sizing: border-box; opacity: 0; transition: opacity 0.5s ease;
+        }
+        #story-overlay-close {
+            position: absolute; top: 30px; right: 40px; font-size: 2rem; color: var(--theme-color);
+            cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        #story-overlay-close:hover { transform: scale(1.2); }
+        #story-text-display {
+            font-family: monospace; font-size: 1.5rem; color: #ffaa00; text-shadow: 0 0 10px rgba(255,170,0,0.5);
+            line-height: 1.6; white-space: pre-wrap; margin-top: 40px; max-width: 800px;
+        }
+        .cursor { display: inline-block; width: 10px; height: 1.5rem; background-color: #ffaa00; animation: blink 1s infinite; }
+
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
+    <div id="bg-wallpaper"></div>
     <canvas id="bg-canvas"></canvas>
     <div class="vignette"></div>
     <div id="flash-overlay"></div>
+
+    <div id="story-overlay">
+        <div id="story-overlay-close" onclick="closeThorStory()">✕</div>
+        <h2 style="color: #ffaa00; font-size: 1.2rem; letter-spacing: 4px;">MJOLNIR ARCHIVES // SECURE RECORD</h2>
+        <div id="story-text-display"></div>
+    </div>
 
     <div id="landing-stage">
         <div class="landing-header">
@@ -136,7 +174,7 @@
         </div>
         
         <div class="carousel-container">
-            <div class="avenger-card" style="color: #ff2a2a; border-color: rgba(255,42,42,0.2);" onclick="initProtocol('ironman', '#ff2a2a', 'Iron Man Protocol Activated. Academic Interface Online.')">
+            <div class="avenger-card" style="color: #ff2a2a; border-color: rgba(255,42,42,0.2);" onclick="initProtocol('ironman', '#ff2a2a', '1000567352.jpg', 'Iron Man Protocol Activated. Academic Interface Online.')">
                 <div class="card-icon">🚀</div>
                 <div>
                     <div class="card-title">IRON MAN</div>
@@ -145,7 +183,7 @@
                 <div class="status-badge" style="border: 1px solid #ff2a2a;">MARK-85</div>
             </div>
 
-            <div class="avenger-card" style="color: #0077ff; border-color: rgba(0,119,255,0.2);" onclick="initProtocol('cap', '#0077ff', 'Captain America Protocol Activated. Tactical Shield Online.')">
+            <div class="avenger-card" style="color: #0077ff; border-color: rgba(0,119,255,0.2);" onclick="initProtocol('cap', '#0077ff', '1000567354.jpg', 'Captain America Protocol Activated. Tactical Shield Online.')">
                 <div class="card-icon">🛡️</div>
                 <div>
                     <div class="card-title">CAPTAIN</div>
@@ -154,7 +192,7 @@
                 <div class="status-badge" style="border: 1px solid #0077ff;">STRATEGY-01</div>
             </div>
 
-            <div class="avenger-card" style="color: #ffaa00; border-color: rgba(255,170,0,0.2);" onclick="initProtocol('thor', '#ffaa00', 'Thor Protocol Activated. Creative Forge Online.')">
+            <div class="avenger-card" style="color: #ffaa00; border-color: rgba(255,170,0,0.2);" onclick="initProtocol('thor', '#ffaa00', '1000567356.jpg', 'Thor Protocol Activated. Creative Forge Online.')">
                 <div class="card-icon">⚡</div>
                 <div>
                     <div class="card-title">THOR</div>
@@ -163,7 +201,7 @@
                 <div class="status-badge" style="border: 1px solid #ffaa00;">MJOLNIR</div>
             </div>
 
-            <div class="avenger-card" style="color: #ff0055; border-color: rgba(255,0,85,0.2);" onclick="initProtocol('spidey', '#ff0055', 'Spider-Man Protocol Activated. Agency Web Online.')">
+            <div class="avenger-card" style="color: #ff0055; border-color: rgba(255,0,85,0.2);" onclick="initProtocol('spidey', '#ff0055', '1000567363.jpg', 'Spider-Man Protocol Activated. Agency Web Online.')">
                 <div class="card-icon">🕸️</div>
                 <div>
                     <div class="card-title">SPIDER-MAN</div>
@@ -172,7 +210,7 @@
                 <div class="status-badge" style="border: 1px solid #ff0055;">PETER-P</div>
             </div>
 
-            <div class="avenger-card" style="color: #00ffaa; border-color: rgba(0,255,170,0.2);" onclick="initProtocol('strange', '#00ffaa', 'Doctor Strange Protocol Activated. AI Nexus Online.')">
+            <div class="avenger-card" style="color: #00ffaa; border-color: rgba(0,255,170,0.2);" onclick="initProtocol('strange', '#00ffaa', '1000567364.jpg', 'Doctor Strange Protocol Activated. AI Nexus Online.')">
                 <div class="card-icon">👁️</div>
                 <div>
                     <div class="card-title">DR. STRANGE</div>
@@ -181,7 +219,7 @@
                 <div class="status-badge" style="border: 1px solid #00ffaa;">EYE-AGAMOTTO</div>
             </div>
 
-            <div class="avenger-card" style="color: #aa00ff; border-color: rgba(170,0,255,0.2);" onclick="initProtocol('starlord', '#aa00ff', 'Star-Lord Protocol Activated. Chill Galaxy Online.')">
+            <div class="avenger-card" style="color: #aa00ff; border-color: rgba(170,0,255,0.2);" onclick="initProtocol('starlord', '#aa00ff', '1000567362.jpg', 'Star-Lord Protocol Activated. Chill Galaxy Online.')">
                 <div class="card-icon">🎧</div>
                 <div>
                     <div class="card-title">STAR-LORD</div>
@@ -213,12 +251,14 @@
         const dashboardStage = document.getElementById('dashboard-stage');
         const flashOverlay = document.getElementById('flash-overlay');
         const contentArea = document.getElementById('main-content');
+        const bgWallpaper = document.getElementById('bg-wallpaper');
         
         let currentThemeColor = '#ff2a2a';
         let isFocusTimerRunning = false;
         let timerInterval;
+        let typewriterInterval;
 
-        function initProtocol(moduleName, color, voiceText) {
+        function initProtocol(moduleName, color, imageFile, voiceText) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 let msg = new SpeechSynthesisUtterance(voiceText);
@@ -227,7 +267,11 @@
             }
 
             flashOverlay.style.backgroundColor = color;
-            flashOverlay.style.opacity = '0.8';
+            flashOverlay.style.opacity = '0.9';
+            
+            // Set Cinematic Wallpaper
+            bgWallpaper.style.backgroundImage = `url('${imageFile}')`;
+            bgWallpaper.style.opacity = '0.4';
             
             setTimeout(() => {
                 flashOverlay.style.opacity = '0';
@@ -236,7 +280,7 @@
                 setTimeout(() => { dashboardStage.style.opacity = '1'; }, 50);
                 
                 switchModule(moduleName, color);
-            }, 200);
+            }, 300);
         }
 
         function returnToHome() {
@@ -247,6 +291,8 @@
                 landingStage.style.opacity = '1';
                 document.documentElement.style.setProperty('--theme-color', '#fff');
                 resetParticles('#ffffff');
+                bgWallpaper.style.opacity = '0'; // Hide wallpaper on home
+                
                 // Stop any running widgets/timers
                 clearInterval(timerInterval);
                 isFocusTimerRunning = false;
@@ -259,22 +305,27 @@
                 color: '#ff2a2a', title: 'Academic <span class="glow-text">Matrix</span>', subtitle: 'BAMS Timetable & Study Vaults',
                 html: `
                     <div style="display:flex; gap: 30px; margin-bottom: 30px; flex-wrap: wrap;">
-                        <div class="tool-card" style="flex: 1; min-width: 280px;">
+                        <div class="tool-card" style="flex: 1; min-width: 280px; position: relative;">
                             <h3 style="margin-bottom: 15px; color: var(--theme-color);">Master Timetable</h3>
-                            <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
-                                <label class="action-btn" for="tt-upload" style="font-size: 0.8rem;">📄 Upload Timetable</label>
-                                <input type="file" id="tt-upload" style="display:none;" onchange="alert('Timetable uploaded locally!')">
-                                <select>
-                                    <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
-                                    <option>Thursday</option><option>Friday</option><option>Saturday</option>
+                            <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
+                                <label class="action-btn" for="tt-upload" style="font-size: 0.8rem; cursor: pointer;">📄 Upload File</label>
+                                <input type="file" id="tt-upload" style="display:none;" onchange="alert('Timetable format updated locally!')">
+                                
+                                <select id="day-selector" onchange="updateTimetableDay()">
+                                    <option value="Monday">Monday</option><option value="Tuesday">Tuesday</option>
+                                    <option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option>
+                                    <option value="Friday">Friday</option><option value="Saturday">Saturday</option>
                                 </select>
                             </div>
-                            <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #ccc;">
-                                <p><strong>09:00 AM:</strong> Rachana Sharir Lecture</p>
-                                <p><strong>11:30 AM:</strong> Kriya Sharir Practical</p>
-                                <p><strong>02:00 PM:</strong> Samhita Study</p>
+                            <div id="timetable-display" style="background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #ddd; border-left: 3px solid var(--theme-color);">
+                                <p><strong>09:00 AM:</strong> Rachana Sharir (Anatomy)</p>
+                                <p><strong>11:30 AM:</strong> Kriya Sharir (Physiology)</p>
+                                <p><strong>02:00 PM:</strong> Samhita Operations</p>
                             </div>
+                            
+                            <a href="https://drive.google.com/" target="_blank" class="action-btn" style="position: absolute; bottom: 25px; right: 25px; font-size: 0.8rem; background: rgba(255,42,42,0.1);">🔗 Connect Google Drive</a>
                         </div>
+                        
                         <div class="tool-card" style="flex: 1; text-align: center; border-color: var(--theme-color); min-width: 280px;">
                             <h3>Deep Focus Matrix</h3>
                             <div class="timer-box" id="hud-timer">25:00</div>
@@ -282,21 +333,22 @@
                         </div>
                     </div>
                     
-                    <h2 style="margin-bottom: 20px; font-size: 1.5rem;">BAMS Vaults (Click '+' to add Modules/Ebooks)</h2>
+                    <h2 style="margin-bottom: 20px; font-size: 1.5rem;">BAMS Vaults (Click '+' to append)</h2>
                     <div class="grid-layout">
-                        <div class="tool-card"><button class="add-btn" onclick="alert('Upload E-Book to Samhitas Vault')">+</button><span class="tool-icon">📜</span><h3>Samhitas</h3><p style="font-size:0.8rem; color:#888;">Charaka & Sushruta</p></div>
-                        <div class="tool-card"><button class="add-btn" onclick="alert('Upload to Rachana Sharir')">+</button><span class="tool-icon">🦴</span><h3>Rachana Sharir</h3><p style="font-size:0.8rem; color:#888;">Anatomy Blueprints</p></div>
-                        <div class="tool-card"><button class="add-btn" onclick="alert('Upload to Kriya Sharir')">+</button><span class="tool-icon">🧪</span><h3>Kriya Sharir</h3><p style="font-size:0.8rem; color:#888;">Physiological Ops</p></div>
-                        <div class="tool-card"><button class="add-btn" onclick="alert('Upload to Dhatus & Srotas')">+</button><span class="tool-icon">🩸</span><h3>Dhatus & Srotas</h3><p style="font-size:0.8rem; color:#888;">Channel Networks</p></div>
-                        <div class="tool-card"><button class="add-btn" onclick="alert('Upload Past Papers')">+</button><span class="tool-icon">🎓</span><h3>Exam Vault</h3><p style="font-size:0.8rem; color:#888;">Terminals & Tests</p></div>
-                        <div class="tool-card"><button class="add-btn" onclick="alert('Upload New Sloka Audio/Text')">+</button><span class="tool-icon">✨</span><h3>Sloka Library</h3><p style="font-size:0.8rem; color:#888;">Memorization Hub</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="alert('Append to Samhitas Vault')">+</button><span class="tool-icon">📜</span><h3>Samhita</h3><p style="font-size:0.8rem; color:#888;">Charaka & Sushruta</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="alert('Append to Rachana Sharir')">+</button><span class="tool-icon">🦴</span><h3>Anatomy</h3><p style="font-size:0.8rem; color:#888;">Rachana Sharir Specs</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="alert('Append to Kriya Sharir')">+</button><span class="tool-icon">🧪</span><h3>Physiology</h3><p style="font-size:0.8rem; color:#888;">Kriya Sharir Dynamics</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="alert('Append to Padarth Vigyan')">+</button><span class="tool-icon">⚛️</span><h3>Padarth Vigyan</h3><p style="font-size:0.8rem; color:#888;">Philosophical Foundations</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="alert('Append to Sanskrit')">+</button><span class="tool-icon">🕉️</span><h3>Sanskrit</h3><p style="font-size:0.8rem; color:#888;">Language Core</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="alert('Append Past Papers')">+</button><span class="tool-icon">🎓</span><h3>Exam Vault</h3><p style="font-size:0.8rem; color:#888;">Terminals & Tests</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="alert('Append New Sloka')">+</button><span class="tool-icon">✨</span><h3>Sloka Library</h3><p style="font-size:0.8rem; color:#888;">Memorization Hub</p></div>
                     </div>
                 `
             },
             cap: {
                 color: '#0077ff', title: 'Tactical <span class="glow-text">Terminal</span>', subtitle: 'Extended Charting & Finance Defense',
                 html: `
-                    <div style="width: 100%; height: 65vh; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,119,255,0.3); margin-bottom: 30px;">
+                    <div style="width: 100%; height: 65vh; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,119,255,0.3); margin-bottom: 30px; box-shadow: 0 0 30px rgba(0,119,255,0.1);">
                         <div class="tradingview-widget-container" style="height:100%;width:100%">
                             <div id="tradingview_cap" style="height:100%;width:100%"></div>
                         </div>
@@ -306,8 +358,8 @@
                     <div class="grid-layout">
                         <div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><span class="tool-icon">📈</span><h3>Angel One</h3><p style="font-size:0.8rem; color:#888;">Execute Trades</p></div>
                         <div class="tool-card" onclick="window.open('https://web.dhan.co/')"><span class="tool-icon">🏦</span><h3>Dhan Terminal</h3><p style="font-size:0.8rem; color:#888;">F&O / Options</p></div>
-                        <div class="tool-card"><span class="tool-icon">📊</span><h3>P&L Tracker</h3><p style="font-size:0.8rem; color:#888;">Daily Finance Management</p><button class="action-btn" style="margin-top:10px; font-size:0.7rem; padding: 5px 10px;" onclick="alert('P&L Calculator Opened')">Open Log</button></div>
-                        <div class="tool-card"><span class="tool-icon">💰</span><h3>Expense Vault</h3><p style="font-size:0.8rem; color:#888;">Track personal/business spending</p></div>
+                        <div class="tool-card"><span class="tool-icon">📊</span><h3>P&L Tracker</h3><p style="font-size:0.8rem; color:#888;">Daily Finance Management</p></div>
+                        <div class="tool-card"><span class="tool-icon">💰</span><h3>Expense Vault</h3><p style="font-size:0.8rem; color:#888;">Track personal spending</p></div>
                     </div>
                 `
             },
@@ -317,20 +369,21 @@
                     <div class="grid-layout" style="grid-template-columns: 1fr 1fr;">
                         <div class="tool-card" style="border-color: var(--theme-color);">
                             <span class="tool-icon">✍️</span><h3>Today's Story</h3>
-                            <p style="font-size:0.8rem; color:#888; margin-top:5px;">Jot down your daily thoughts, scenes, or scripts.</p>
-                            <textarea id="thor-story-input" style="width:90%; height:150px; margin-top:15px; resize:none;" placeholder="Once upon a time..."></textarea>
+                            <p style="font-size:0.8rem; color:#888; margin-top:5px;">Jot down your daily thoughts, scenes, or animation scripts.</p>
+                            <textarea id="thor-story-input" style="width:90%; height:150px; margin-top:15px; resize:none;" placeholder="Thunder strikes, and the scene begins..."></textarea>
                             <br><button class="action-btn" style="margin-top:15px;" onclick="saveThorStory()">SAVE TO VAULT</button>
                         </div>
                         
                         <div class="tool-card">
                             <span class="tool-icon">📚</span><h3>Story Vault</h3>
-                            <div id="thor-vault-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;">
+                            <p style="font-size:0.8rem; color:#888; margin-top:5px;">Click an entry to load cinematic dynamic text.</p>
+                            <div id="thor-vault-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;">
                                 </div>
                         </div>
                     </div>
                     <div class="grid-layout" style="margin-top: 25px;">
                         <div class="tool-card"><span class="tool-icon">🎥</span><h3>K.K. Animation</h3><p style="font-size:0.8rem; color:#888;">Video setup & Duration checks</p></div>
-                        <div class="tool-card"><span class="tool-icon">🔥</span><h3>Shayari Vault</h3><p style="font-size:0.8rem; color:#888;">Personal verses</p></div>
+                        <div class="tool-card"><span class="tool-icon">🔥</span><h3>Shayari Vault</h3><p style="font-size:0.8rem; color:#888;">Personal verses & poetry</p></div>
                     </div>
                 `
             },
@@ -343,13 +396,6 @@
                         <div class="tool-card" onclick="window.open('https://sheets.google.com')"><span class="tool-icon">📊</span><h3>Google Sheets</h3><p style="font-size:0.8rem; color:#888;">Lead Automation DB</p></div>
                         <div class="tool-card" onclick="window.open('https://drive.google.com')"><span class="tool-icon">☁️</span><h3>Google Drive</h3><p style="font-size:0.8rem; color:#888;">Cloud Storage Vault</p></div>
                         <div class="tool-card" onclick="window.open('https://meet.google.com')"><span class="tool-icon">📹</span><h3>Google Meet</h3><p style="font-size:0.8rem; color:#888;">Client Meetings</p></div>
-                        <div class="tool-card" onclick="window.open('https://calendar.google.com')"><span class="tool-icon">📅</span><h3>Google Calendar</h3><p style="font-size:0.8rem; color:#888;">Schedule Sync</p></div>
-                        <div class="tool-card" onclick="window.open('https://mail.google.com')"><span class="tool-icon">📧</span><h3>Gmail</h3><p style="font-size:0.8rem; color:#888;">Comms Control</p></div>
-                    </div>
-                    <h2 style="margin-top: 30px; margin-bottom: 20px; font-size: 1.5rem;">Agency Operations</h2>
-                    <div class="grid-layout">
-                        <div class="tool-card"><span class="tool-icon">🏢</span><h3>Grow with K.K.</h3><p style="font-size:0.8rem; color:#888;">Real Estate Marketing</p></div>
-                        <div class="tool-card"><span class="tool-icon">🤝</span><h3>DDK Freelancers</h3><p style="font-size:0.8rem; color:#888;">Partner Sync</p></div>
                     </div>
                 `
             },
@@ -360,9 +406,6 @@
                         <div class="tool-card" onclick="window.open('https://chatgpt.com')"><span class="tool-icon">🧠</span><h3>ChatGPT</h3><p style="font-size:0.8rem; color:#888;">General Intelligence</p></div>
                         <div class="tool-card" onclick="window.open('https://gemini.google.com')"><span class="tool-icon">✨</span><h3>Google Gemini</h3><p style="font-size:0.8rem; color:#888;">Workspace Integration</p></div>
                         <div class="tool-card" onclick="window.open('https://www.meta.ai/')"><span class="tool-icon">🌐</span><h3>Meta AI</h3><p style="font-size:0.8rem; color:#888;">Social Ecosystem AI</p></div>
-                        <div class="tool-card" onclick="window.open('https://claude.ai')"><span class="tool-icon">📝</span><h3>Claude AI</h3><p style="font-size:0.8rem; color:#888;">Deep Copywriting</p></div>
-                        <div class="tool-card" onclick="window.open('https://quillbot.com/')"><span class="tool-icon">✒️</span><h3>QuillBot</h3><p style="font-size:0.8rem; color:#888;">Grammar & Rephrasing</p></div>
-                        <div class="tool-card"><span class="tool-icon">🚀</span><h3>Organic Vision</h3><p style="font-size:0.8rem; color:#888;">Startup Framework (Video Active)</p></div>
                     </div>
                 `
             },
@@ -371,11 +414,8 @@
                 html: `
                     <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Stress Release Deck</h2>
                     <div class="grid-layout">
-                        <div class="tool-card" onclick="window.open('https://play2048.co/')"><span class="tool-icon">🔢</span><h3>2048</h3><p style="font-size:0.8rem; color:#888;">Brain Calm</p></div>
-                        <div class="tool-card" onclick="window.open('https://quickdraw.withgoogle.com/')"><span class="tool-icon">✏️</span><h3>Quick Draw</h3><p style="font-size:0.8rem; color:#888;">Doodle AI Game</p></div>
                         <div class="tool-card" onclick="window.open('https://lofi.co/')"><span class="tool-icon">🎧</span><h3>Lofi Cafe</h3><p style="font-size:0.8rem; color:#888;">Focus & Relax Beats</p></div>
-                        <div class="tool-card" onclick="window.open('https://tetris.com/play-tetris')"><span class="tool-icon">🧱</span><h3>Tetris Web</h3><p style="font-size:0.8rem; color:#888;">Classic Zone-out</p></div>
-                        <div class="tool-card" onclick="window.open('https://www.clickworker.com/')"><span class="tool-icon">💰</span><h3>Micro-Tasks</h3><p style="font-size:0.8rem; color:#888;">Light Hustle</p></div>
+                        <div class="tool-card" onclick="window.open('https://play2048.co/')"><span class="tool-icon">🔢</span><h3>2048</h3><p style="font-size:0.8rem; color:#888;">Brain Calm</p></div>
                     </div>
                 `
             }
@@ -413,7 +453,10 @@
             `;
 
             // Init specific scripts based on module
-            if(id === 'ironman') resetTimerUI();
+            if(id === 'ironman') {
+                resetTimerUI();
+                autoSelectCurrentDay();
+            }
             if(id === 'cap') loadTradingView();
             if(id === 'thor') renderThorVault();
 
@@ -421,7 +464,7 @@
             resetParticles(color);
         }
 
-        // --- 3. IRON MAN TIMER LOGIC ---
+        // --- 3. IRON MAN LOGIC ---
         let timeLeft = 25 * 60;
         function toggleTimer() {
             let btn = document.querySelector('#hud-timer + .action-btn');
@@ -455,8 +498,31 @@
             let display = document.getElementById('hud-timer');
             if(display) display.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
         }
+        function autoSelectCurrentDay() {
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const currentDay = days[new Date().getDay()];
+            const select = document.getElementById('day-selector');
+            if(select && currentDay !== "Sunday") {
+                select.value = currentDay;
+                updateTimetableDay();
+            }
+        }
+        function updateTimetableDay() {
+            const day = document.getElementById('day-selector').value;
+            const display = document.getElementById('timetable-display');
+            // Dynamic display based on day (simulated logic)
+            let html = `<p style="color:var(--theme-color); font-weight:bold; margin-bottom:10px;">${day.toUpperCase()} SCHEDULE</p>`;
+            if(day === "Monday" || day === "Wednesday") {
+                html += `<p><strong>09:00 AM:</strong> Rachana Sharir (Anatomy)</p><p><strong>11:30 AM:</strong> Padarth Vigyan</p><p><strong>02:00 PM:</strong> Samhita</p>`;
+            } else if (day === "Tuesday" || day === "Thursday") {
+                html += `<p><strong>09:00 AM:</strong> Kriya Sharir (Physiology)</p><p><strong>11:30 AM:</strong> Sanskrit</p><p><strong>02:00 PM:</strong> Practical Lab</p>`;
+            } else {
+                html += `<p><strong>09:00 AM:</strong> Exam Vault Revisions</p><p><strong>11:30 AM:</strong> Sloka Memorization</p><p><strong>02:00 PM:</strong> Self-Study</p>`;
+            }
+            display.innerHTML = html;
+        }
 
-        // --- 4. CAPTAIN AMERICA TRADING WIDGET ---
+        // --- 4. CAPTAIN AMERICA TRADING WIDGET (Fixed Symbol Change) ---
         function loadTradingView() {
             setTimeout(() => {
                 let container = document.getElementById('tradingview_cap');
@@ -469,14 +535,15 @@
                         "autosize": true, "symbol": "BSE:SENSEX", "interval": "15", "timezone": "Asia/Kolkata",
                         "theme": "dark", "style": "1", "locale": "en", "enable_publishing": false,
                         "backgroundColor": "rgba(0, 0, 0, 1)", "gridColor": "rgba(255, 255, 255, 0.05)",
-                        "hide_top_toolbar": false, "container_id": "tradingview_cap"
+                        "hide_top_toolbar": false, "allow_symbol_change": true, /* Fix applied here */
+                        "container_id": "tradingview_cap"
                     });
                 };
                 document.body.appendChild(script);
             }, 100);
         }
 
-        // --- 5. THOR STORY VAULT LOGIC ---
+        // --- 5. THOR STORY VAULT LOGIC (Cinematic Blank Page) ---
         function saveThorStory() {
             const input = document.getElementById('thor-story-input');
             const text = input.value.trim();
@@ -485,14 +552,14 @@
             let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
             const newStory = {
                 date: new Date().toLocaleString(),
-                snippet: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
+                snippet: text.substring(0, 30) + (text.length > 30 ? '...' : ''),
                 full: text
             };
-            stories.unshift(newStory); // Add to top
+            stories.unshift(newStory); 
             localStorage.setItem('thorVaultData', JSON.stringify(stories));
             
-            input.value = ''; // Clear text area
-            renderThorVault(); // Update UI
+            input.value = ''; 
+            renderThorVault(); 
         }
 
         function renderThorVault() {
@@ -501,18 +568,49 @@
             
             let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
             if(stories.length === 0) {
-                vaultList.innerHTML = '<p style="color:#777; font-size:0.8rem;">Vault is empty. Write your first story today.</p>';
+                vaultList.innerHTML = '<p style="color:#777; font-size:0.8rem;">Vault is empty. Strike lightning on the page.</p>';
                 return;
             }
             
             let html = '';
             stories.forEach((s, index) => {
-                html += `<div style="border-bottom: 1px solid rgba(255,170,0,0.3); padding-bottom: 8px; margin-bottom: 8px;">
-                            <span style="font-size:0.7rem; color:#ffaa00;">${s.date}</span><br>
-                            <span style="font-size:0.9rem; color:#ddd;">${s.snippet}</span>
+                html += `<div style="border-bottom: 1px solid rgba(255,170,0,0.3); padding: 8px 0; margin-bottom: 8px; cursor: pointer;" onclick="openThorStory(${index})">
+                            <span style="font-size:0.7rem; color:#ffaa00; display:block;">${s.date}</span>
+                            <span style="font-size:0.9rem; color:#ddd; transition: color 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ddd'">${s.snippet}</span>
                          </div>`;
             });
             vaultList.innerHTML = html;
+        }
+
+        function openThorStory(index) {
+            let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
+            const text = stories[index].full;
+            const overlay = document.getElementById('story-overlay');
+            const display = document.getElementById('story-text-display');
+            
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.style.opacity = '1', 10);
+            
+            display.innerHTML = '<span class="cursor"></span>';
+            let i = 0;
+            clearInterval(typewriterInterval);
+            
+            // Dynamic text animation
+            typewriterInterval = setInterval(() => {
+                if (i < text.length) {
+                    display.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
+                    i++;
+                } else {
+                    clearInterval(typewriterInterval);
+                }
+            }, 30); // Typing speed
+        }
+
+        function closeThorStory() {
+            const overlay = document.getElementById('story-overlay');
+            clearInterval(typewriterInterval);
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 500);
         }
 
         // --- 6. OPTIMIZED 3D PARTICLE ENGINE ---
@@ -561,8 +659,7 @@
         }
 
         function animate() {
-            ctx.fillStyle = 'rgba(2, 2, 4, 0.3)'; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
