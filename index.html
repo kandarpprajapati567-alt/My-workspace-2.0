@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Command Center | Upgraded</title>
+    <title>K.K. Command Center | Phase 2.1</title>
     <style>
         :root {
             --theme-color: #ff2a2a;
@@ -19,15 +19,15 @@
             user-select: none; transition: background-color 0.5s ease;
         }
 
-        /* Optimized Canvas & Cinematic Wallpapers (Canvas is now BEHIND Wallpaper) */
+        /* Optimized Canvas (BEHIND Wallpaper) */
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; }
         
         #bg-wallpaper {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
             background-size: cover; background-position: center; opacity: 0.4;
-            transition: background-image 1s ease-in-out, opacity 0.5s ease;
+            transition: background-image 0.5s ease-in-out, opacity 0.5s ease;
             animation: cinematicZoom 20s infinite alternate linear;
-            background-color: var(--bg-color); /* Base color */
+            background-color: var(--bg-color);
             background-blend-mode: overlay;
         }
 
@@ -41,6 +41,7 @@
             background: radial-gradient(circle at center, transparent 10%, rgba(0,0,0,0.95) 100%);
         }
 
+        /* Lighting Flash Overlay */
         #flash-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999;
             background: white; opacity: 0; pointer-events: none; transition: opacity 0.15s ease-out;
@@ -87,9 +88,11 @@
 
         /* --- STAGE 2: MAIN DASHBOARD --- */
         #dashboard-stage {
-            display: none; height: 100vh; width: 100vw; flex-direction: row; opacity: 0; transition: opacity 0.5s ease;
+            display: none; height: 100vh; width: 100vw; display: flex; opacity: 0;
+            transition: opacity 0.5s ease; flex-direction: row;
         }
 
+        /* Sidebar Navigation */
         .sidebar {
             width: 80px; background: rgba(5, 5, 8, 0.9); border-right: 1px solid var(--glass-border);
             display: flex; flex-direction: column; align-items: center; padding-top: 30px; gap: 25px; z-index: 100;
@@ -104,6 +107,7 @@
             filter: drop-shadow(0 0 10px var(--theme-color)); color: var(--theme-color);
         }
 
+        /* Main Content Area */
         .content-area { flex: 1; padding: 40px; overflow-y: auto; position: relative; z-index: 10; }
         .module-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 30px; }
         
@@ -111,13 +115,13 @@
         
         .tool-card {
             background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px;
-            padding: 25px; transition: var(--transition-fast); backdrop-filter: blur(10px); position: relative;
+            padding: 25px; cursor: pointer; transition: var(--transition-fast); backdrop-filter: blur(10px); position: relative;
         }
         .tool-card:hover {
             border-color: var(--theme-color); transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,255,255,0.02);
         }
-        .tool-icon { font-size: 2rem; margin-bottom: 15px; display: inline-block; cursor: pointer;}
+        .tool-icon { font-size: 2rem; margin-bottom: 15px; display: inline-block; }
         
         /* Action Elements */
         .timer-box { font-size: 3rem; font-family: monospace; font-weight: bold; color: var(--theme-color); text-shadow: 0 0 20px var(--theme-color); margin: 20px 0; }
@@ -127,7 +131,8 @@
         .add-btn { position: absolute; top: 15px; right: 15px; background: var(--theme-color); color: #000; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; transition: 0.3s;}
         .add-btn:hover { transform: scale(1.1); box-shadow: 0 0 10px var(--theme-color); }
         
-        select, input[type="text"], input[type="file"], textarea { background: rgba(0,0,0,0.5); border: 1px solid var(--theme-color); color: white; padding: 10px; border-radius: 8px; font-family: inherit; }
+        /* Form elements */
+        select, input[type="file"], input[type="text"], textarea { background: rgba(0,0,0,0.5); border: 1px solid var(--theme-color); color: white; padding: 10px; border-radius: 8px; font-family: inherit; }
         select { margin-left: 10px; cursor: pointer; outline: none; }
 
         /* Settings Modal */
@@ -253,7 +258,7 @@
         </div>
     </div>
 
-    <div id="dashboard-stage">
+    <div id="dashboard-stage" style="display: none;">
         <div class="sidebar">
             <div class="nav-btn home-btn" onclick="returnToHome()" title="Home Base">⌂</div>
             <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🚀</div>
@@ -264,7 +269,8 @@
             <div class="nav-btn" id="nav-starlord" style="color: #aa00ff;" onclick="switchModule('starlord')">🎧</div>
         </div>
 
-        <div class="content-area" id="main-content"></div>
+        <div class="content-area" id="main-content">
+            </div>
     </div>
 
     <script>
@@ -288,12 +294,12 @@
 
         function applyModuleWallpaper(id) {
             let config = kkSettings[id];
-            if(config.bg) {
+            if(config && config.bg) {
                 bgWallpaper.style.backgroundImage = `url('${config.bg}')`;
             } else {
-                bgWallpaper.style.backgroundImage = 'none'; // Clear if nothing uploaded
+                bgWallpaper.style.backgroundImage = 'none'; 
             }
-            bgWallpaper.style.opacity = config.opacity;
+            bgWallpaper.style.opacity = config ? config.opacity : 0.4;
         }
 
         function initProtocol(moduleName, color, voiceText) {
@@ -333,6 +339,7 @@
         // --- SETTINGS UI LOGIC ---
         function openSettings(id) {
             currentActiveModule = id;
+            if(!kkSettings[id]) kkSettings[id] = { bg: '', opacity: 0.4 };
             tempOpacity = kkSettings[id].opacity;
             document.getElementById('settings-title').innerText = `${id.toUpperCase()} SETTINGS`;
             updateOpacityDisplay();
@@ -348,7 +355,7 @@
             if(tempOpacity < 0) tempOpacity = 0;
             if(tempOpacity > 1) tempOpacity = 1;
             updateOpacityDisplay();
-            bgWallpaper.style.opacity = tempOpacity; // Live preview
+            bgWallpaper.style.opacity = tempOpacity; 
         }
         function updateOpacityDisplay() {
             document.getElementById('opacity-display').innerText = Math.round(tempOpacity * 100) + '%';
@@ -360,7 +367,7 @@
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    kkSettings[currentActiveModule].bg = e.target.result; // Save base64
+                    kkSettings[currentActiveModule].bg = e.target.result; 
                     finalizeSettingsSave();
                 };
                 reader.readAsDataURL(fileInput.files[0]);
@@ -374,7 +381,7 @@
             closeSettings();
         }
 
-        // --- MODULE GENERATOR ---
+        // --- 2. MODULE CONTENT GENERATOR ---
         const modules = {
             ironman: {
                 color: '#ff2a2a', title: 'Academic <span class="glow-text">Matrix</span>', subtitle: 'BAMS Timetable & Study Vaults',
@@ -391,11 +398,13 @@
                             </div>
                             <div id="timetable-display" style="background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #ddd; border-left: 3px solid var(--theme-color); min-height: 120px;">
                                 </div>
-                            <div style="margin-top: 10px; display:flex; gap:5px;">
-                                <input type="text" id="tt-time" placeholder="Ex: 09:00 AM" style="width: 100px;">
+                            <div style="margin-top: 15px; display:flex; gap:10px;">
+                                <input type="text" id="tt-time" placeholder="Time (e.g. 09:00 AM)" style="width: 130px;">
                                 <input type="text" id="tt-subject" placeholder="Subject Name" style="flex:1;">
                                 <button class="action-btn" onclick="addTimetableEntry()">Add</button>
                             </div>
+                            
+                            <a href="https://drive.google.com/" target="_blank" class="action-btn" style="position: absolute; top: 25px; right: 25px; font-size: 0.8rem; background: rgba(255,42,42,0.1);">🔗 Connect Google Drive</a>
                         </div>
                         
                         <div class="tool-card" style="flex: 1; text-align: center; border-color: var(--theme-color); min-width: 280px;">
@@ -405,12 +414,15 @@
                         </div>
                     </div>
                     
-                    <h2 style="margin-bottom: 20px; font-size: 1.5rem;">BAMS Vaults <span style="font-size:0.8rem; color:#888;">(Click '+' to upload local files/links)</span></h2>
+                    <h2 style="margin-bottom: 20px; font-size: 1.5rem;">BAMS Vaults <span style="font-size:0.8rem; color:#888;">(Click '+' to add files/links)</span></h2>
                     <div class="grid-layout">
-                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Samhita')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Samhita')">📜 Samhita</h3><p style="font-size:0.8rem; color:#888;">Charaka & Sushruta</p></div>
-                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Anatomy')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Anatomy')">🦴 Anatomy</h3><p style="font-size:0.8rem; color:#888;">Rachana Sharir Specs</p></div>
-                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Physiology')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Physiology')">🧪 Physiology</h3><p style="font-size:0.8rem; color:#888;">Kriya Sharir Dynamics</p></div>
-                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Exam Vault')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Exam Vault')">🎓 Exam Vault</h3><p style="font-size:0.8rem; color:#888;">Terminals & Papers</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Samhita')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Samhita')"><span class="tool-icon" style="margin-bottom:0;">📜</span> Samhita</h3><p style="font-size:0.8rem; color:#888;">Charaka & Sushruta</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Anatomy')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Anatomy')"><span class="tool-icon" style="margin-bottom:0;">🦴</span> Anatomy</h3><p style="font-size:0.8rem; color:#888;">Rachana Sharir Specs</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Physiology')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Physiology')"><span class="tool-icon" style="margin-bottom:0;">🧪</span> Physiology</h3><p style="font-size:0.8rem; color:#888;">Kriya Sharir Dynamics</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Padarth Vigyan')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Padarth Vigyan')"><span class="tool-icon" style="margin-bottom:0;">⚛️</span> Padarth Vigyan</h3><p style="font-size:0.8rem; color:#888;">Philosophical Foundations</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Sanskrit')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Sanskrit')"><span class="tool-icon" style="margin-bottom:0;">🕉️</span> Sanskrit</h3><p style="font-size:0.8rem; color:#888;">Language Core</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Exam Vault')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Exam Vault')"><span class="tool-icon" style="margin-bottom:0;">🎓</span> Exam Vault</h3><p style="font-size:0.8rem; color:#888;">Terminals & Tests</p></div>
+                        <div class="tool-card"><button class="add-btn" onclick="uploadToVault('Sloka Library')">+</button><h3 style="cursor:pointer;" onclick="viewVault('Sloka Library')"><span class="tool-icon" style="margin-bottom:0;">✨</span> Sloka Library</h3><p style="font-size:0.8rem; color:#888;">Memorization Hub</p></div>
                     </div>
                 `
             },
@@ -422,9 +434,13 @@
                             <div id="tradingview_cap" style="height:100%;width:100%"></div>
                         </div>
                     </div>
+                    
+                    <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Finance & Brokerage</h2>
                     <div class="grid-layout">
-                        <div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><span class="tool-icon">📈</span><h3>Angel One</h3></div>
-                        <div class="tool-card" onclick="window.open('https://web.dhan.co/')"><span class="tool-icon">🏦</span><h3>Dhan Terminal</h3></div>
+                        <div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><span class="tool-icon">📈</span><h3>Angel One</h3><p style="font-size:0.8rem; color:#888;">Execute Trades</p></div>
+                        <div class="tool-card" onclick="window.open('https://web.dhan.co/')"><span class="tool-icon">🏦</span><h3>Dhan Terminal</h3><p style="font-size:0.8rem; color:#888;">F&O / Options</p></div>
+                        <div class="tool-card"><span class="tool-icon">📊</span><h3>P&L Tracker</h3><p style="font-size:0.8rem; color:#888;">Daily Finance Management</p></div>
+                        <div class="tool-card"><span class="tool-icon">💰</span><h3>Expense Vault</h3><p style="font-size:0.8rem; color:#888;">Track personal spending</p></div>
                     </div>
                 `
             },
@@ -434,23 +450,33 @@
                     <div class="grid-layout" style="grid-template-columns: 1fr 1fr;">
                         <div class="tool-card" style="border-color: var(--theme-color);">
                             <span class="tool-icon">✍️</span><h3>Today's Story</h3>
+                            <p style="font-size:0.8rem; color:#888; margin-top:5px;">Jot down your daily thoughts, scenes, or animation scripts.</p>
                             <textarea id="thor-story-input" style="width:90%; height:150px; margin-top:15px; resize:none;" placeholder="Thunder strikes, and the scene begins..."></textarea>
                             <br><button class="action-btn" style="margin-top:15px;" onclick="saveThorStory()">SAVE TO VAULT</button>
                         </div>
+                        
                         <div class="tool-card">
                             <span class="tool-icon">📚</span><h3>Story Vault</h3>
-                            <div id="thor-vault-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;"></div>
+                            <p style="font-size:0.8rem; color:#888; margin-top:5px;">Click an entry to load cinematic dynamic text.</p>
+                            <div id="thor-vault-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;">
+                                </div>
                         </div>
+                    </div>
+                    <div class="grid-layout" style="margin-top: 25px;">
+                        <div class="tool-card"><span class="tool-icon">🎥</span><h3>K.K. Animation</h3><p style="font-size:0.8rem; color:#888;">Video setup & Duration checks</p></div>
+                        <div class="tool-card"><span class="tool-icon">🔥</span><h3>Shayari Vault</h3><p style="font-size:0.8rem; color:#888;">Personal verses & poetry</p></div>
                     </div>
                 `
             },
             spidey: {
                 color: '#ff0055', title: 'Agency <span class="glow-text">Web Hub</span>', subtitle: 'Google Workspace Direct Access',
                 html: `
+                    <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Google Workspace Suite</h2>
                     <div class="grid-layout">
-                        <div class="tool-card" onclick="window.open('https://docs.google.com')"><span class="tool-icon">📝</span><h3>Google Docs</h3></div>
-                        <div class="tool-card" onclick="window.open('https://sheets.google.com')"><span class="tool-icon">📊</span><h3>Google Sheets</h3></div>
-                        <div class="tool-card" onclick="window.open('https://drive.google.com')"><span class="tool-icon">☁️</span><h3>Google Drive</h3></div>
+                        <div class="tool-card" onclick="window.open('https://docs.google.com')"><span class="tool-icon">📝</span><h3>Google Docs</h3><p style="font-size:0.8rem; color:#888;">Contracts & Scripts</p></div>
+                        <div class="tool-card" onclick="window.open('https://sheets.google.com')"><span class="tool-icon">📊</span><h3>Google Sheets</h3><p style="font-size:0.8rem; color:#888;">Lead Automation DB</p></div>
+                        <div class="tool-card" onclick="window.open('https://drive.google.com')"><span class="tool-icon">☁️</span><h3>Google Drive</h3><p style="font-size:0.8rem; color:#888;">Cloud Storage Vault</p></div>
+                        <div class="tool-card" onclick="window.open('https://meet.google.com')"><span class="tool-icon">📹</span><h3>Google Meet</h3><p style="font-size:0.8rem; color:#888;">Client Meetings</p></div>
                     </div>
                 `
             },
@@ -458,18 +484,19 @@
                 color: '#00ffaa', title: 'AI <span class="glow-text">Nexus</span>', subtitle: 'Supreme Intelligence Portals',
                 html: `
                     <div class="grid-layout">
-                        <div class="tool-card" onclick="window.open('https://chatgpt.com')"><span class="tool-icon">🧠</span><h3>ChatGPT</h3></div>
-                        <div class="tool-card" onclick="window.open('https://gemini.google.com')"><span class="tool-icon">✨</span><h3>Google Gemini</h3></div>
-                        <div class="tool-card" onclick="window.open('https://www.meta.ai/')"><span class="tool-icon">🌐</span><h3>Meta AI</h3></div>
+                        <div class="tool-card" onclick="window.open('https://chatgpt.com')"><span class="tool-icon">🧠</span><h3>ChatGPT</h3><p style="font-size:0.8rem; color:#888;">General Intelligence</p></div>
+                        <div class="tool-card" onclick="window.open('https://gemini.google.com')"><span class="tool-icon">✨</span><h3>Google Gemini</h3><p style="font-size:0.8rem; color:#888;">Workspace Integration</p></div>
+                        <div class="tool-card" onclick="window.open('https://www.meta.ai/')"><span class="tool-icon">🌐</span><h3>Meta AI</h3><p style="font-size:0.8rem; color:#888;">Social Ecosystem AI</p></div>
                     </div>
                 `
             },
             starlord: {
                 color: '#aa00ff', title: 'Chill <span class="glow-text">Galaxy</span>', subtitle: 'Free Games & Stress Release',
                 html: `
+                    <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Stress Release Deck</h2>
                     <div class="grid-layout">
-                        <div class="tool-card" onclick="window.open('https://lofi.co/')"><span class="tool-icon">🎧</span><h3>Lofi Cafe</h3></div>
-                        <div class="tool-card" onclick="window.open('https://play2048.co/')"><span class="tool-icon">🔢</span><h3>2048</h3></div>
+                        <div class="tool-card" onclick="window.open('https://lofi.co/')"><span class="tool-icon">🎧</span><h3>Lofi Cafe</h3><p style="font-size:0.8rem; color:#888;">Focus & Relax Beats</p></div>
+                        <div class="tool-card" onclick="window.open('https://play2048.co/')"><span class="tool-icon">🔢</span><h3>2048</h3><p style="font-size:0.8rem; color:#888;">Brain Calm</p></div>
                     </div>
                 `
             }
@@ -484,32 +511,49 @@
             document.documentElement.style.setProperty('--theme-color', color);
             
             applyModuleWallpaper(id);
-
+            
+            // STRICT ISOLATION: Hide all sidebar nav buttons except Home and Active
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                if(!btn.classList.contains('home-btn')) { btn.style.display = 'none'; btn.classList.remove('active'); }
+                if(!btn.classList.contains('home-btn')) {
+                    btn.style.display = 'none';
+                    btn.classList.remove('active');
+                }
             });
             const activeBtn = document.getElementById('nav-' + id);
-            if(activeBtn) { activeBtn.style.display = 'block'; activeBtn.classList.add('active'); }
+            if(activeBtn) {
+                activeBtn.style.display = 'block';
+                activeBtn.classList.add('active');
+            }
 
+            // Inject Content
             contentArea.innerHTML = `
                 <div class="module-header" style="animation: fadeInDown 0.5s ease;">
-                    <div><h2>${mod.title}</h2><p style="color: #888; font-size: 0.9rem; margin-top: 5px; text-transform: uppercase;">${mod.subtitle}</p></div>
+                    <div>
+                        <h2>${mod.title}</h2>
+                        <p style="color: #888; font-size: 0.9rem; margin-top: 5px; text-transform: uppercase;">${mod.subtitle}</p>
+                    </div>
                     <button onclick="openSettings('${id}')" class="action-btn" style="border:none; font-size: 1.2rem; background: rgba(255,255,255,0.05);">⚙️ MODULE SETTINGS</button>
                 </div>
                 <div style="animation: fadeInDown 0.7s ease;">${mod.html}</div>
             `;
 
-            if(id === 'ironman') { resetTimerUI(); renderTimetable(); }
+            // Init specific scripts based on module
+            if(id === 'ironman') {
+                resetTimerUI();
+                autoSelectCurrentDay();
+                renderTimetable();
+            }
             if(id === 'cap') loadTradingView();
             if(id === 'thor') renderThorVault();
 
+            // Particle System Color Shift
             resetParticles(color);
         }
 
-        // --- MASTER TIMETABLE (Dynamic & Editable) ---
+        // --- MASTER TIMETABLE LOGIC (Dynamically Editable) ---
         let kkTimetable = JSON.parse(localStorage.getItem('kkTimetable')) || {
-            "Monday": [{time: "09:00 AM", sub: "Rachana Sharir"}],
-            "Tuesday": [{time: "09:00 AM", sub: "Kriya Sharir"}]
+            "Monday": [{time: "09:00 AM", sub: "Rachana Sharir (Anatomy)"}, {time: "11:30 AM", sub: "Kriya Sharir (Physiology)"}],
+            "Tuesday": [{time: "09:00 AM", sub: "Samhita Operations"}]
         };
 
         function renderTimetable() {
@@ -531,9 +575,9 @@
 
         function addTimetableEntry() {
             const day = document.getElementById('day-selector').value;
-            const time = document.getElementById('tt-time').value;
-            const sub = document.getElementById('tt-subject').value;
-            if(!time || !sub) return alert("Fill both time and subject!");
+            const time = document.getElementById('tt-time').value.trim();
+            const sub = document.getElementById('tt-subject').value.trim();
+            if(!time || !sub) return alert("Bhai, Time aur Subject dono fill karo!");
             
             if(!kkTimetable[day]) kkTimetable[day] = [];
             kkTimetable[day].push({time, sub});
@@ -548,96 +592,61 @@
             renderTimetable();
         }
 
-        // --- BAMS VAULT (Simulated Drive Local Upload) ---
+        function autoSelectCurrentDay() {
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const currentDay = days[new Date().getDay()];
+            const select = document.getElementById('day-selector');
+            if(select && currentDay !== "Sunday") {
+                select.value = currentDay;
+            }
+        }
+
+        // --- BAMS VAULT LOGIC (Simulated Drive / Note Saving) ---
         let vaultData = JSON.parse(localStorage.getItem('kkVaultData')) || {};
         
         function uploadToVault(category) {
-            let link = prompt(`Paste Google Drive Link or File Name to add to [${category}]:`);
-            if(link) {
+            let input = prompt(`Paste Google Drive Link OR Type Notes for [${category} Vault]:`);
+            if(input && input.trim() !== '') {
                 if(!vaultData[category]) vaultData[category] = [];
-                vaultData[category].push({ name: link.substring(0,30), url: link });
+                vaultData[category].push({ text: input });
                 localStorage.setItem('kkVaultData', JSON.stringify(vaultData));
-                alert("Saved to " + category + " Vault!");
+                alert("Successfully saved to " + category + " Vault!");
             }
         }
+
         function viewVault(category) {
             let items = vaultData[category] || [];
-            if(items.length === 0) return alert(category + " Vault is empty. Click '+' to add.");
-            let list = items.map((i, idx) => `[${idx+1}] ${i.name}`).join('\n');
-            alert(`--- ${category} VAULT ---\n${list}`);
-        }
-
-        // --- THOR VAULT ---
-        function saveThorStory() {
-            const input = document.getElementById('thor-story-input');
-            const text = input.value.trim();
-            if(!text) return;
-            let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
-            stories.unshift({ date: new Date().toLocaleString(), snippet: text.substring(0, 30)+'...', full: text });
-            localStorage.setItem('thorVaultData', JSON.stringify(stories));
-            input.value = ''; renderThorVault(); 
-        }
-        function renderThorVault() {
-            const vaultList = document.getElementById('thor-vault-list');
-            if(!vaultList) return;
-            let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
-            vaultList.innerHTML = stories.length ? stories.map((s, index) => 
-                `<div style="border-bottom: 1px solid rgba(255,170,0,0.3); padding: 8px 0; margin-bottom: 8px; cursor: pointer;" onclick="openThorStory(${index})">
-                    <span style="font-size:0.7rem; color:#ffaa00; display:block;">${s.date}</span>
-                    <span style="font-size:0.9rem; color:#ddd;">${s.snippet}</span>
-                 </div>`).join('') : '<p style="color:#777; font-size:0.8rem;">Vault is empty.</p>';
-        }
-        function openThorStory(index) {
-            let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
-            const text = stories[index].full;
-            document.getElementById('story-overlay').style.display = 'flex';
-            setTimeout(() => document.getElementById('story-overlay').style.opacity = '1', 10);
+            if(items.length === 0) return alert(category + " Vault is empty. Click '+' to add links or notes.");
             
-            const display = document.getElementById('story-text-display'); display.innerHTML = '';
-            let i = 0; clearInterval(typewriterInterval);
-            typewriterInterval = setInterval(() => {
-                if (i < text.length) { display.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>'; i++; } 
-                else clearInterval(typewriterInterval);
-            }, 30);
-        }
-        function closeThorStory() {
-            clearInterval(typewriterInterval); document.getElementById('story-overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('story-overlay').style.display = 'none', 500);
+            let list = items.map((i, idx) => `${idx+1}. ${i.text}`).join('\n\n');
+            alert(`--- ${category.toUpperCase()} VAULT DATA ---\n\n${list}`);
         }
 
-        // --- CAPTAIN TRADING ---
-        function loadTradingView() {
-            setTimeout(() => {
-                let container = document.getElementById('tradingview_cap');
-                if(!container) return; container.innerHTML = '';
-                let script = document.createElement('script'); script.src = 'https://s3.tradingview.com/tv.js';
-                script.onload = () => {
-                    new TradingView.widget({
-                        "autosize": true, "symbol": "BSE:SENSEX", "interval": "15", "timezone": "Asia/Kolkata",
-                        "theme": "dark", "style": "1", "locale": "en", "enable_publishing": false,
-                        "backgroundColor": "rgba(0, 0, 0, 1)", "gridColor": "rgba(255, 255, 255, 0.05)",
-                        "hide_top_toolbar": false, "allow_symbol_change": true, "container_id": "tradingview_cap"
-                    });
-                };
-                document.body.appendChild(script);
-            }, 100);
-        }
-
-        // --- IRONMAN TIMER ---
+        // --- 3. IRON MAN TIMER LOGIC ---
         let timeLeft = 25 * 60;
         function toggleTimer() {
-            let btn = document.querySelector('#hud-timer + .action-btn'); let display = document.getElementById('hud-timer');
+            let btn = document.querySelector('#hud-timer + .action-btn');
+            let display = document.getElementById('hud-timer');
+            if(!display) return;
+
             if(isFocusTimerRunning) {
-                clearInterval(timerInterval); isFocusTimerRunning = false; btn.innerText = "RESUME FOCUS";
+                clearInterval(timerInterval);
+                isFocusTimerRunning = false;
+                btn.innerText = "RESUME FOCUS";
             } else {
-                isFocusTimerRunning = true; btn.innerText = "PAUSE PROTOCOL";
+                isFocusTimerRunning = true;
+                btn.innerText = "PAUSE PROTOCOL";
                 timerInterval = setInterval(() => {
                     if(timeLeft > 0) {
-                        timeLeft--; let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
+                        timeLeft--;
+                        let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
                         display.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
                     } else {
-                        clearInterval(timerInterval); isFocusTimerRunning = false; display.innerText = "00:00";
-                        alert("Focus Session Complete!");
+                        clearInterval(timerInterval);
+                        isFocusTimerRunning = false;
+                        display.innerText = "00:00";
+                        btn.innerText = "SESSION COMPLETE";
+                        alert("Focus Session Complete! Mark 85 cooling down.");
                     }
                 }, 1000);
             }
@@ -648,33 +657,151 @@
             if(display) display.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
         }
 
-        // --- 3D PARTICLE ENGINE ---
-        const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
-        let particles = []; let pColor = '#ffffff';
+        // --- 4. CAPTAIN AMERICA TRADING WIDGET ---
+        function loadTradingView() {
+            setTimeout(() => {
+                let container = document.getElementById('tradingview_cap');
+                if(!container) return;
+                container.innerHTML = '';
+                let script = document.createElement('script');
+                script.src = 'https://s3.tradingview.com/tv.js';
+                script.onload = () => {
+                    new TradingView.widget({
+                        "autosize": true, "symbol": "BSE:SENSEX", "interval": "15", "timezone": "Asia/Kolkata",
+                        "theme": "dark", "style": "1", "locale": "en", "enable_publishing": false,
+                        "backgroundColor": "rgba(0, 0, 0, 1)", "gridColor": "rgba(255, 255, 255, 0.05)",
+                        "hide_top_toolbar": false, "allow_symbol_change": true,
+                        "container_id": "tradingview_cap"
+                    });
+                };
+                document.body.appendChild(script);
+            }, 100);
+        }
+
+        // --- 5. THOR STORY VAULT LOGIC (Cinematic Blank Page) ---
+        function saveThorStory() {
+            const input = document.getElementById('thor-story-input');
+            const text = input.value.trim();
+            if(!text) return alert("Write something first, Creator!");
+            
+            let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
+            const newStory = {
+                date: new Date().toLocaleString(),
+                snippet: text.substring(0, 30) + (text.length > 30 ? '...' : ''),
+                full: text
+            };
+            stories.unshift(newStory); 
+            localStorage.setItem('thorVaultData', JSON.stringify(stories));
+            
+            input.value = ''; 
+            renderThorVault(); 
+        }
+
+        function renderThorVault() {
+            const vaultList = document.getElementById('thor-vault-list');
+            if(!vaultList) return;
+            
+            let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
+            if(stories.length === 0) {
+                vaultList.innerHTML = '<p style="color:#777; font-size:0.8rem;">Vault is empty. Strike lightning on the page.</p>';
+                return;
+            }
+            
+            let html = '';
+            stories.forEach((s, index) => {
+                html += `<div style="border-bottom: 1px solid rgba(255,170,0,0.3); padding: 8px 0; margin-bottom: 8px; cursor: pointer;" onclick="openThorStory(${index})">
+                            <span style="font-size:0.7rem; color:#ffaa00; display:block;">${s.date}</span>
+                            <span style="font-size:0.9rem; color:#ddd; transition: color 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ddd'">${s.snippet}</span>
+                         </div>`;
+            });
+            vaultList.innerHTML = html;
+        }
+
+        function openThorStory(index) {
+            let stories = JSON.parse(localStorage.getItem('thorVaultData') || '[]');
+            const text = stories[index].full;
+            const overlay = document.getElementById('story-overlay');
+            const display = document.getElementById('story-text-display');
+            
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.style.opacity = '1', 10);
+            
+            display.innerHTML = '<span class="cursor"></span>';
+            let i = 0;
+            clearInterval(typewriterInterval);
+            
+            // Dynamic text animation
+            typewriterInterval = setInterval(() => {
+                if (i < text.length) {
+                    display.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
+                    i++;
+                } else {
+                    clearInterval(typewriterInterval);
+                }
+            }, 30); // Typing speed
+        }
+
+        function closeThorStory() {
+            const overlay = document.getElementById('story-overlay');
+            clearInterval(typewriterInterval);
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 500);
+        }
+
+        // --- 6. OPTIMIZED 3D PARTICLE ENGINE ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let pColor = '#ffffff';
 
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
+        window.addEventListener('resize', resize);
+        resize();
 
         class FastParticle {
             constructor() { this.reset(); this.z = Math.random() * 1000; }
-            reset() { this.x = (Math.random() - 0.5) * canvas.width * 2; this.y = (Math.random() - 0.5) * canvas.height * 2; this.z = 1000; this.speed = Math.random() * 2 + 1; }
-            update() { this.z -= this.speed; if(this.z <= 1) this.reset(); }
+            reset() {
+                this.x = (Math.random() - 0.5) * canvas.width * 2;
+                this.y = (Math.random() - 0.5) * canvas.height * 2;
+                this.z = 1000;
+                this.speed = Math.random() * 2 + 1;
+            }
+            update() {
+                this.z -= this.speed;
+                if(this.z <= 1) this.reset();
+            }
             draw() {
-                let px = (this.x / this.z) * 500 + canvas.width / 2; let py = (this.y / this.z) * 500 + canvas.height / 2;
-                let size = (1000 - this.z) / 500; let alpha = (1000 - this.z) / 1000;
+                let px = (this.x / this.z) * 500 + canvas.width / 2;
+                let py = (this.y / this.z) * 500 + canvas.height / 2;
+                let size = (1000 - this.z) / 500;
+                let alpha = (1000 - this.z) / 1000;
+
                 if (px < 0 || px > canvas.width || py < 0 || py > canvas.height) return;
-                ctx.fillStyle = pColor; ctx.globalAlpha = alpha * 0.5; ctx.beginPath(); ctx.arc(px, py, size, 0, Math.PI * 2); ctx.fill();
+
+                ctx.fillStyle = pColor;
+                ctx.globalAlpha = alpha * 0.5;
+                ctx.beginPath();
+                ctx.arc(px, py, size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
         function resetParticles(color) {
-            pColor = color; particles = []; let count = window.innerWidth > 800 ? 100 : 50; 
+            pColor = color;
+            particles = [];
+            let count = window.innerWidth > 800 ? 100 : 50; 
             for(let i=0; i<count; i++) particles.push(new FastParticle());
         }
 
-        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
         
-        resetParticles('#ffffff'); animate();
+        // Boot Sequence
+        resetParticles('#ffffff');
+        animate();
     </script>
 </body>
 </html>
