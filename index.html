@@ -3,630 +3,479 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Command Center | Pro Ultra 8K</title>
-    
+    <title>K.K. Command Center | Multiverse Edition</title>
     <style>
-        :root { 
-            --glow-focus: #ff2a2a; 
-            --glow-break: #00d4ff; 
-            --glow-trade: #ffaa00;
-            --main-transition: all 0.5s cubic-bezier(0.15, 0.85, 0.2, 1);
-            --hud-bg: rgba(255, 42, 42, 0.02);
-            --clock-glow: rgba(255, 42, 42, 0.4);
-        }
-        body { 
-            background-color: #020204; 
-            color: #fff; font-family: 'Segoe UI', -apple-system, sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden;
-            transition: background 0.5s ease;
+        :root {
+            --theme-color: #ff2a2a;
+            --bg-color: #030305;
+            --glass-bg: rgba(20, 20, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --transition-fast: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* 8K CINEMATIC TEXTURED BACKGROUND */
-        #canvas-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
-        .cinematic-vignette { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: radial-gradient(circle at center, transparent 0%, rgba(1, 1, 3, 0.85) 60%, rgba(0, 0, 0, 0.98) 100%),
-                        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 100%, 100% 4px, 6px 100%;
-            z-index: 0; pointer-events: none; 
+        body {
+            margin: 0; padding: 0; background-color: var(--bg-color); color: #fff;
+            font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden;
+            user-select: none; transition: background-color 0.5s ease;
         }
 
-        .left-sidebar, .main-wrapper, .header-bar { position: relative; z-index: 10; }
-
-        /* LEFT SIDEBAR HUD */
-        .left-sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 65px; background: rgba(2, 2, 4, 0.92); backdrop-filter: blur(25px); border-right: 1px solid rgba(255,255,255,0.03); z-index: 2500; display: flex; flex-direction: column; align-items: center; padding-top: 20px; box-shadow: 10px 0 40px rgba(0,0,0,0.8); }
-        .icon-btn { font-size: 1.5em; cursor: pointer; margin-bottom: 25px; opacity: 0.35; transition: var(--main-transition); width: 100%; text-align: center; padding: 12px 0; border-left: 3px solid transparent; }
-        .icon-btn:hover, .icon-btn.active { opacity: 1; transform: scale(1.08); filter: drop-shadow(0 0 15px var(--glow-focus)); border-left-color: var(--glow-focus); background: rgba(255,255,255,0.01); }
-
-        /* MAIN WRAPPER */
-        .main-wrapper { margin-left: 65px; flex: 1; display: flex; flex-direction: column; height: 100vh; width: calc(100% - 65px); position: relative; }
-        .header-bar { height: 90px; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-bottom: 1px solid rgba(255,255,255,0.03); backdrop-filter: blur(20px); z-index: 1500; }
-        
-        /* TIMER CONTROLS */
-        .timer-controls { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.01); padding: 5px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.03); }
-        .clock-container { position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
-        .clock-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-        .clock-bg-circle { fill: none; stroke: rgba(255,255,255,0.03); stroke-width: 2.5; }
-        .clock-progress-circle { fill: none; stroke: var(--glow-focus); stroke-width: 2.5; stroke-dasharray: 126; stroke-dashoffset: 126; transition: stroke-dashoffset 1s linear, stroke 0.4s ease; filter: drop-shadow(0 0 5px var(--glow-focus)); }
-        
-        .mode-badge { padding: 6px 12px; border-radius: 20px; font-weight: 800; border: 1px solid var(--glow-focus); color: var(--glow-focus); transition: var(--main-transition); letter-spacing: 1px; font-size: 0.7em; text-transform: uppercase; background: var(--hud-bg); }
-        .timer-display-wrapper { display: flex; flex-direction: column; }
-        #timer-display { font-size: 1.6em; font-family: 'Courier New', monospace; font-weight: 900; letter-spacing: 1px; color: #fff; }
-        .timer-running #timer-display { color: var(--glow-focus); text-shadow: 0 0 12px var(--glow-focus); }
-        .btn-timer { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.15); padding: 6px 18px; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-weight: bold; font-size: 0.8em; }
-        .btn-timer:hover { border-color: var(--glow-focus); background: var(--hud-bg); color: var(--glow-focus); box-shadow: 0 0 10px var(--hud-bg); }
-
-        /* CENTER SYSTEM: FIXED CENTER ALIGNMENT FOR THE CLOCK & HEADERS */
-        .home-screen { display: flex; flex: 1; justify-content: center; align-items: center; text-align: center; }
-        .center-hud-dashboard { display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; position: relative; }
-        
-        /* 8K DIGITAL ENGINE CLOCK */
-        .matrix-hologram-clock { position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; transition: var(--main-transition); }
-        .matrix-hologram-clock::before { content: ''; position: absolute; width: 105%; height: 105%; border: 1px dashed var(--glow-focus); border-radius: 50%; opacity: 0.25; animation: spinClockwise 25s linear infinite; box-shadow: inset 0 0 15px var(--hud-bg); }
-        .matrix-hologram-clock::after { content: ''; position: absolute; width: 92%; height: 92%; border: 1px double var(--glow-focus); border-radius: 50%; opacity: 0.15; animation: spinCounterClockwise 15s linear infinite; }
-        
-        @keyframes spinClockwise { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes spinCounterClockwise { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-
-        .clock-dial-svg { position: absolute; width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 0 15px var(--clock-glow)); }
-        .dial-ring-seconds { fill: none; stroke: var(--glow-focus); stroke-width: 1.5; stroke-dasharray: 628; stroke-dashoffset: 628; transition: stroke-dashoffset 0.2s cubic-bezier(0.4, 2.08, 0.55, 1); opacity: 0.75; }
-        
-        .clock-digital-core { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; z-index: 10; pointer-events: none; }
-        .hud-live-time { font-family: 'Courier New', monospace; font-size: 2.8em; font-weight: 900; letter-spacing: -1px; text-shadow: 0 0 20px var(--clock-glow); color: #ffffff; }
-        .hud-live-seconds { font-size: 0.45em; color: var(--glow-focus); font-weight: bold; margin-left: 2px; vertical-align: super; text-shadow: 0 0 5px var(--glow-focus); }
-        .hud-live-date { font-size: 0.7em; color: #888; font-weight: bold; letter-spacing: 2px; margin-top: 5px; text-transform: uppercase; }
-
-        /* BRAND HEADINGS UPGRADED */
-        .home-screen h1 { font-size: 3.2em; font-weight: 300; margin: 0; letter-spacing: 6px; text-transform: uppercase; text-shadow: 0 0 30px rgba(0,0,0,0.5); }
-        .home-screen b { font-weight: 900; transition: var(--main-transition); text-shadow: 0 0 20px var(--glow-focus); color: #fff; }
-
-        /* OVERLAYS & GRIDS */
-        .module-overlay { display: none; position: absolute; top: 90px; left: 0; right: 0; bottom: 0; background: rgba(3, 3, 5, 0.98); backdrop-filter: blur(35px); z-index: 1000; overflow-y: auto; padding: 40px; animation: slideUp 0.5s cubic-bezier(0.1, 0.9, 0.2, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .close-module-btn { background: rgba(255,255,255,0.02); color: #777; border: 1px solid rgba(255,255,255,0.06); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; float: right; transition: 0.3s; font-size: 0.75em; }
-        .close-module-btn:hover { background: #ff4444; border-color: #ff4444; color: white; box-shadow: 0 0 15px rgba(255, 68, 68, 0.3); }
-        .module-title { font-weight: 300; margin-top: 0; font-size: 2em; margin-bottom: 30px; letter-spacing: 1px; }
-        
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
-        .card { background: rgba(255,255,255,0.01); padding: 35px 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.03); transition: var(--main-transition); cursor: pointer; backdrop-filter: blur(10px); position: relative; }
-        .card:hover { transform: translateY(-4px); border-color: var(--glow-focus); background: var(--hud-bg); box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 15px var(--hud-bg); }
-        .icon { font-size: 40px; display: block; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
-        .input-field { width: 100%; padding: 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; color: white; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; }
-        .input-field:focus { border-color: var(--glow-focus); outline: none; box-shadow: 0 0 12px var(--hud-bg); }
-
-        /* DATA MANAGEMENT LISTS */
-        .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-item { background: rgba(255,255,255,0.01); padding: 16px 20px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--glow-focus); border-top: 1px solid rgba(255,255,255,0.01); }
-        .del-btn { background: transparent; border: 1px solid rgba(255,68,68,0.3); color: #ff4444; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.75em; }
-        .del-btn:hover { background: #ff4444; color: white; box-shadow: 0 0 12px rgba(255,68,68,0.3); }
-        
-        .popup-modal { display: none; position: fixed; top: 15%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(8,8,12,0.98); backdrop-filter: blur(30px); padding: 35px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); z-index: 3000; box-shadow: 0 25px 60px rgba(0,0,0,0.9); }
-        .overlay-bg { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 2999; backdrop-filter: blur(4px); }
-        .add-card { border: 1px dashed rgba(255,255,255,0.12); background: transparent; }
-        .delete-card { position: absolute; top: 12px; right: 12px; background: rgba(255,68,68,0.15); border: 1px solid rgba(255,68,68,0.2); border-radius: 50%; width: 22px; height: 22px; font-size: 10px; color: #ff4444; cursor: pointer; display: none; align-items: center; justify-content: center; }
-        .card:hover .delete-card { display: flex; }
-        .back-btn { background: rgba(255,255,255,0.02); color: white; border: 1px solid rgba(255,255,255,0.08); padding: 10px 18px; border-radius: 20px; cursor: pointer; margin-bottom: 25px; font-weight: bold; font-size: 0.8em; }
-
-        /* TRADING */
-        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
-        .chart-col { flex: 100%; min-width: 0; }
-        .side-col-wrapper { display: flex; gap: 20px; width: 100%; flex-wrap: wrap;} 
-        .side-col { flex: 1; min-width: 300px; display: flex; flex-direction: column; }
-        .panel { background: rgba(4,4,6,0.5); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.03); display: flex; flex-direction: column; box-sizing: border-box; flex-grow: 1; backdrop-filter: blur(15px); }
-        .chart-container { width: 100%; height: 55vh; min-height: 400px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); }
-
-        /* THEME VAULT SYSTEM PANEL */
-        .vault-trigger-btn {
-            position: fixed; right: 0; top: 50%; transform: translateY(-50%);
-            background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.05); border-right: none;
-            padding: 25px 12px; border-radius: 20px 0 0 20px; cursor: pointer;
-            z-index: 2500; display: flex; flex-direction: column; align-items: center; gap: 12px;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.6); transition: all 0.4s cubic-bezier(0.15, 0.85, 0.2, 1);
+        /* Optimized Canvas & Cinematic Vignette */
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; }
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
+            background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.95) 100%);
         }
-        .vault-trigger-btn:hover { background: rgba(255,255,255,0.01); border-color: var(--glow-focus); padding-right: 22px; box-shadow: -5px 0 25px var(--hud-bg); }
-        .vault-trigger-btn span { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 900; letter-spacing: 3px; color: #888; font-size: 0.8em; transition: 0.3s; }
-        .vault-trigger-btn:hover span { color: var(--glow-focus); text-shadow: 0 0 10px var(--glow-focus); }
 
-        #character-vault-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(1, 1, 3, 0.98); backdrop-filter: blur(45px);
-            z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.4s ease;
+        /* Lighting Flash Overlay */
+        #flash-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999;
+            background: white; opacity: 0; pointer-events: none; transition: opacity 0.15s ease-out;
         }
-        .vault-close { position: absolute; top: 35px; right: 45px; font-size: 1.6em; color: #555; cursor: pointer; transition: 0.3s; }
-        .vault-close:hover { color: #ff4444; }
-        
-        .vault-header { text-align: center; margin-bottom: 50px; }
-        .vault-header h2 { font-size: 2.2em; font-weight: 300; margin: 0; letter-spacing: 5px; text-transform: uppercase; }
-        .vault-header p { color: #444; margin: 5px 0 0 0; font-size: 0.85em; letter-spacing: 1px; }
 
-        .carousel-container { position: relative; width: 90vw; max-width: 1100px; display: flex; justify-content: center; align-items: center; gap: 30px; }
-        
-        /* THEME MATRIX HOOK CARDS */
-        .premium-char-card {
-            width: 280px; height: 390px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03);
-            border-radius: 16px; padding: 30px; display: flex; flex-direction: column; align-items: center;
-            justify-content: space-between; box-sizing: border-box; transition: var(--main-transition);
-            position: relative; overflow: hidden; cursor: pointer;
+        /* Typography & Headings */
+        h1, h2, h3 { margin: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
+        .glow-text { color: var(--theme-color); text-shadow: 0 0 15px var(--theme-color); font-weight: 900; }
+
+        /* --- STAGE 1: LANDING CAROUSEL --- */
+        #landing-stage {
+            height: 100vh; width: 100vw; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transition: opacity 0.5s ease, transform 0.5s ease;
         }
+        .landing-header { text-align: center; margin-bottom: 5vh; animation: fadeInDown 1s ease; }
         
-        #card-ironman:hover { border-color: #ff2a2a; box-shadow: 0 20px 45px rgba(255,42,42,0.12), inset 0 0 20px rgba(255,42,42,0.03); transform: translateY(-8px); }
-        #card-captainamerica:hover { border-color: #0077ff; box-shadow: 0 20px 45px rgba(0,119,255,0.12), inset 0 0 20px rgba(0,119,255,0.03); transform: translateY(-8px); }
-        #card-thor:hover { border-color: #ffaa00; box-shadow: 0 20px 45px rgba(255,170,0,0.12), inset 0 0 20px rgba(255,170,0,0.03); transform: translateY(-8px); }
+        .carousel-container {
+            display: flex; gap: 30px; padding: 20px 50px; max-width: 100vw; overflow-x: auto;
+            scroll-snap-type: x mandatory; scroll-behavior: smooth;
+            -ms-overflow-style: none; scrollbar-width: none; align-items: center;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
 
-        .char-hologram-circle { width: 100px; height: 100px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 2.8em; transition: 0.5s; }
-        .premium-char-card:hover .char-hologram-circle { transform: rotate(90deg) scale(1.05); border-style: solid; border-color: inherit; filter: drop-shadow(0 0 12px currentColor); }
+        .avenger-card {
+            min-width: 300px; height: 450px; background: var(--glass-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px;
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+            scroll-snap-align: center; cursor: pointer; transform: translateZ(0);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            position: relative; overflow: hidden;
+        }
+        .avenger-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
+        }
+        .avenger-card:hover { transform: translateY(-15px) scale(1.02); }
+        .avenger-card:hover::before { opacity: 1; }
+
+        .card-icon { font-size: 4rem; filter: drop-shadow(0 0 20px currentColor); transition: transform 0.5s ease; }
+        .avenger-card:hover .card-icon { transform: scale(1.1) translateY(-10px); }
+        .card-title { font-size: 1.5rem; font-weight: 800; text-align: center; letter-spacing: 3px; }
+        .card-desc { font-size: 0.85rem; color: #aaa; text-align: center; line-height: 1.5; margin-top: 10px; }
+
+        /* --- STAGE 2: MAIN DASHBOARD --- */
+        #dashboard-stage {
+            display: none; height: 100vh; width: 100vw; display: flex; opacity: 0;
+            transition: opacity 0.5s ease; flex-direction: row;
+        }
+
+        /* Sidebar Sidebar */
+        .sidebar {
+            width: 80px; background: rgba(5, 5, 8, 0.9); border-right: 1px solid var(--glass-border);
+            display: flex; flex-direction: column; align-items: center; padding-top: 30px; gap: 25px; z-index: 100;
+        }
+        .nav-btn {
+            font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: var(--transition-fast);
+            padding: 10px; border-radius: 12px;
+        }
+        .nav-btn:hover, .nav-btn.active {
+            opacity: 1; background: rgba(255,255,255,0.05); transform: scale(1.1);
+            filter: drop-shadow(0 0 10px var(--theme-color)); color: var(--theme-color);
+        }
+
+        /* Main Content Area */
+        .content-area { flex: 1; padding: 40px; overflow-y: auto; position: relative; z-index: 10; }
+        .module-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 30px; }
         
-        .char-details { text-align: center; width: 100%; }
-        .char-details h3 { font-size: 1.4em; margin: 15px 0 5px 0; letter-spacing: 1px; text-transform: uppercase; font-weight: 400; }
-        .char-details p { font-size: 0.8em; color: #444; margin: 0; line-height: 1.4; }
-        .premium-char-card:hover .char-details p { color: #999; }
-        .char-status-badge { font-size: 0.65em; font-weight: 900; padding: 4px 10px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); color: #555; letter-spacing: 1px; }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        
+        .tool-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 25px; cursor: pointer; transition: var(--transition-fast); backdrop-filter: blur(10px);
+        }
+        .tool-card:hover {
+            border-color: var(--theme-color); transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,255,255,0.02);
+        }
+        .tool-icon { font-size: 2rem; margin-bottom: 15px; display: inline-block; }
+        
+        /* Specific Tools Elements */
+        .timer-box { font-size: 3rem; font-family: monospace; font-weight: bold; color: var(--theme-color); text-shadow: 0 0 20px var(--theme-color); margin: 20px 0; }
+        .action-btn { background: transparent; border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 15px var(--theme-color); }
+        .status-badge { font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.1); float: right; }
 
-        .glitch-flash { position: fixed; top:0; left:0; width:100vw; height:100vh; background: #fff; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <audio id="audio-ironman" src="ironman.mp3"></audio>
-    <audio id="audio-captainamerica" src="captainamerica.mp3"></audio>
-    <audio id="audio-thor" src="thor.mp3"></audio>
+    <canvas id="bg-canvas"></canvas>
+    <div class="vignette"></div>
+    <div id="flash-overlay"></div>
 
-    <div class="glitch-flash" id="shockwave-flash"></div>
-    <canvas id="canvas-bg"></canvas>
-    <div class="cinematic-vignette"></div>
-
-    <div class="left-sidebar" id="sidebar">
-        <div class="icon-btn" onclick="openModule('workspace', this)" title="Digital Workspace">🚀</div>
-        <div class="icon-btn" onclick="openModule('trading', this)" title="Live Trading Terminal" style="color:var(--glow-trade);">📈</div>
-        <div class="icon-btn" onclick="openModule('academic', this)" title="BAMS Academic Hub">📖</div>
-        <div class="icon-btn" onclick="openModule('ai-hub', this)" title="AI Intelligence">🤖</div>
-        <div class="icon-btn" onclick="openModule('tasks', this)" title="Master Tasks">📝</div>
-        <div class="icon-btn" onclick="openModule('chill', this)" title="Chill Zone" style="color:var(--glow-break);">🎮</div>
-        <div class="icon-btn" onclick="togglePopup('settings-modal')" title="Settings & Backup" style="color:#aaa;">⚙️</div>
-    </div>
-
-    <div class="vault-trigger-btn" onclick="openVault()">
-        <span style="font-size:1.2em; margin-bottom: 2px;">⚡</span>
-        <span>EDITIONS</span>
-    </div>
-
-    <div id="character-vault-overlay">
-        <div class="vault-close" onclick="closeVault()">✖</div>
-        <div class="vault-header">
-            <h2>Select System Interface</h2>
-            <p>Deploy specialized core HUD configuration modules</p>
+    <div id="landing-stage">
+        <div class="landing-header">
+            <h2 style="color: #666; font-size: 1.2rem;">K.K. COMMAND CENTER</h2>
+            <h1>Select <span class="glow-text" style="color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.5);">Protocol</span></h1>
         </div>
+        
         <div class="carousel-container">
-            <div class="premium-char-card" id="card-ironman" style="color: #ff2a2a;" onclick="activateProtocol('ironman', '#ff2a2a')">
-                <div class="char-hologram-circle">🚀</div>
-                <div class="char-details">
-                    <h3>Iron Man</h3>
-                    <p>Jarvis UI. High energy particle distribution system enabled.</p>
+            <div class="avenger-card" style="color: #ff2a2a; border-color: rgba(255,42,42,0.2);" onclick="initProtocol('ironman', '#ff2a2a', 'Iron Man Protocol Activated. Academic Interface Online.')">
+                <div class="card-icon">🚀</div>
+                <div>
+                    <div class="card-title">IRON MAN</div>
+                    <div class="card-desc">BAMS Deep Focus Matrix<br>Samhitas & Anatomy Hub</div>
                 </div>
-                <div class="char-status-badge">STARK-7</div>
+                <div class="status-badge" style="border: 1px solid #ff2a2a;">MARK-85</div>
             </div>
-            <div class="premium-char-card" id="card-captainamerica" style="color: #0077ff;" onclick="activateProtocol('captainamerica', '#0077ff')">
-                <div class="char-hologram-circle">🛡️</div>
-                <div class="char-details">
-                    <h3>Captain</h3>
-                    <p>Tactical Shield Interface. Stable & focused operational workspace.</p>
+
+            <div class="avenger-card" style="color: #0077ff; border-color: rgba(0,119,255,0.2);" onclick="initProtocol('cap', '#0077ff', 'Captain America Protocol Activated. Tactical Shield Online.')">
+                <div class="card-icon">🛡️</div>
+                <div>
+                    <div class="card-title">CAPTAIN</div>
+                    <div class="card-desc">Wealth & Strategy Shield<br>Live Trading Terminal</div>
                 </div>
-                <div class="char-status-badge">SHIELD-02</div>
+                <div class="status-badge" style="border: 1px solid #0077ff;">STRATEGY-01</div>
             </div>
-            <div class="premium-char-card" id="card-thor" style="color: #ffaa00;" onclick="activateProtocol('thor', '#ffaa00')">
-                <div class="char-hologram-circle">⚡</div>
-                <div class="char-details">
-                    <h3>Thor Odinson</h3>
-                    <p>Asgardian Matrix. Lightning particle vectors with custom triggers.</p>
+
+            <div class="avenger-card" style="color: #ffaa00; border-color: rgba(255,170,0,0.2);" onclick="initProtocol('thor', '#ffaa00', 'Thor Protocol Activated. Creative Forge Online.')">
+                <div class="card-icon">⚡</div>
+                <div>
+                    <div class="card-title">THOR</div>
+                    <div class="card-desc">The Creator's Forge<br>Scripting & Animation</div>
                 </div>
-                <div class="char-status-badge">MJOLNIR</div>
+                <div class="status-badge" style="border: 1px solid #ffaa00;">MJOLNIR</div>
+            </div>
+
+            <div class="avenger-card" style="color: #ff0055; border-color: rgba(255,0,85,0.2);" onclick="initProtocol('spidey', '#ff0055', 'Spider-Man Protocol Activated. Agency Web Online.')">
+                <div class="card-icon">🕸️</div>
+                <div>
+                    <div class="card-title">SPIDER-MAN</div>
+                    <div class="card-desc">Agency Web Tracker<br>Social Media Management</div>
+                </div>
+                <div class="status-badge" style="border: 1px solid #ff0055;">PETER-P</div>
+            </div>
+
+            <div class="avenger-card" style="color: #00ffaa; border-color: rgba(0,255,170,0.2);" onclick="initProtocol('strange', '#00ffaa', 'Doctor Strange Protocol Activated. Cosmic Planner Online.')">
+                <div class="card-icon">👁️</div>
+                <div>
+                    <div class="card-title">DR. STRANGE</div>
+                    <div class="card-desc">Mystic Cosmic Planner<br>Planetary Transits & Visions</div>
+                </div>
+                <div class="status-badge" style="border: 1px solid #00ffaa;">EYE-AGAMOTTO</div>
+            </div>
+
+            <div class="avenger-card" style="color: #aa00ff; border-color: rgba(170,0,255,0.2);" onclick="initProtocol('starlord', '#aa00ff', 'Star-Lord Protocol Activated. Chill Galaxy Online.')">
+                <div class="card-icon">🎧</div>
+                <div>
+                    <div class="card-title">STAR-LORD</div>
+                    <div class="card-desc">Chill Galaxy Zone<br>Gaming & Lofi Beats</div>
+                </div>
+                <div class="status-badge" style="border: 1px solid #aa00ff;">MILANO</div>
             </div>
         </div>
     </div>
 
-    <div class="main-wrapper" id="main-wrapper">
-        <div class="header-bar" id="header">
-            <div class="timer-controls" id="timer-box">
-                <div class="clock-container">
-                    <svg class="clock-svg">
-                        <circle class="clock-bg-circle" cx="20" cy="20" r="17"></circle>
-                        <circle class="clock-progress-circle" id="clock-ring" cx="20" cy="20" r="17"></circle>
-                    </svg>
-                </div>
-                <div class="timer-display-wrapper">
-                    <span id="timer-display">25:00</span>
-                </div>
-                <button onclick="toggleTimer()" id="start-btn" class="btn-timer">START</button>
-                <span id="mode-badge" class="mode-badge">FOCUS MODE</span>
-            </div>
-            <div id="desktop-logo" style="font-size: 1.05em; font-weight: 300; letter-spacing: 2px; color: #666;">K.K. HQ</div>
+    <div id="dashboard-stage" style="display: none;">
+        <div class="sidebar">
+            <div class="nav-btn" onclick="returnToHome()" title="Home Base" style="color: white; border-bottom: 1px solid #333; padding-bottom: 20px;">⌂</div>
+            <div class="nav-btn active" id="nav-ironman" onclick="switchModule('ironman')" style="color: #ff2a2a;">🚀</div>
+            <div class="nav-btn" id="nav-cap" onclick="switchModule('cap')" style="color: #0077ff;">🛡️</div>
+            <div class="nav-btn" id="nav-thor" onclick="switchModule('thor')" style="color: #ffaa00;">⚡</div>
+            <div class="nav-btn" id="nav-spidey" onclick="switchModule('spidey')" style="color: #ff0055;">🕸️</div>
+            <div class="nav-btn" id="nav-strange" onclick="switchModule('strange')" style="color: #00ffaa;">👁️</div>
+            <div class="nav-btn" id="nav-starlord" onclick="switchModule('starlord')" style="color: #aa00ff;">🎧</div>
         </div>
 
-        <div class="home-screen" id="home-screen">
-            <div class="center-hud-dashboard">
-                <div class="matrix-hologram-clock" id="hologram-clock-housing">
-                    <svg class="clock-dial-svg">
-                        <circle class="dial-ring-seconds" id="hologram-second-arc" cx="120" cy="120" r="100"></circle>
-                    </svg>
-                    <div class="clock-digital-core">
-                        <div class="hud-live-time" id="live-time-string">00:00<span class="hud-live-seconds" id="live-seconds-string">00</span></div>
-                        <div class="hud-live-date" id="live-date-string">MON // JAN 01</div>
-                    </div>
-                </div>
-
-                <h1>Command <b id="branding-bold-logo">Center</b></h1>
-                <p style="color: #555; letter-spacing: 1px; font-size: 0.85em; margin-top: 12px; text-transform: uppercase;">Quantum Core Dashboard Init // Select Modules</p>
+        <div class="content-area" id="main-content">
             </div>
-        </div>
-
-        <div id="workspace" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Digital <b style="color:var(--glow-focus)">Operations</b></h2>
-            <div class="grid-container">
-                <div class="card" onclick="window.open('https://meet.google.com/new')"><span class="icon">🤝</span><h3>Meet (Sync)</h3></div>
-                <div class="card" onclick="window.open('https://shopify.com')"><span class="icon">🛒</span><h3>Shopify Store</h3></div>
-                <div class="card" onclick="window.open('https://mail.google.com')"><span class="icon">📧</span><h3>Gmail</h3></div>
-                <div class="card" onclick="window.open('https://drive.google.com')"><span class="icon">📁</span><h3>Drive</h3></div>
-                <div class="card" onclick="window.open('https://canva.com')"><span class="icon">🎨</span><h3>Canva Design</h3></div>
-            </div>
-        </div>
-
-        <div id="trading" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Live <b style="color:var(--glow-trade)">Trading Terminal</b></h2>
-            <div class="flex-row">
-                <div class="flex-col chart-col">
-                    <div class="panel" style="padding:10px;">
-                        <div class="chart-container">
-                            <div class="tradingview-widget-container" style="height:100%;width:100%">
-                              <div id="tradingview_advanced" style="height:100%;width:100%"></div>
-                              <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                              <script type="text/javascript">
-                              new TradingView.widget({
-                                "autosize": true, "symbol": "BSE:SENSEX", "interval": "15", "timezone": "Asia/Kolkata",
-                                "theme": "dark", "style": "1", "locale": "en", "enable_publishing": false,
-                                "allow_symbol_change": true, "hide_side_toolbar": false, "hide_top_toolbar": false,
-                                "withdateranges": true, "backgroundColor": "rgba(0, 0, 0, 1)", "gridColor": "rgba(68, 68, 68, 0.06)",
-                                "container_id": "tradingview_advanced"
-                              });
-                              </script>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="side-col-wrapper">
-                <div class="side-col">
-                    <div class="panel">
-                        <h3 style="margin: 0 0 15px 0; color: var(--glow-trade); font-weight: 400; letter-spacing: 1px;">📝 Paper Log</h3>
-                        <div style="display:flex; gap:12px;">
-                             <input type="text" id="trade-entry" class="input-field" placeholder="Entry Price" style="flex:1;">
-                             <input type="text" id="trade-sl" class="input-field" placeholder="Stop Loss" style="flex:1;">
-                        </div>
-                        <input type="text" id="trade-reason" class="input-field" placeholder="Execution Reason (Optional)">
-                        <button onclick="savePaperTrade()" style="width:100%; background:var(--glow-trade); color:black; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">Log System Trade</button>
-                        <ul id="tradeList" class="task-list" style="margin-top: 20px; overflow-y: auto; max-height: 180px;"></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="academic" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <div id="main-academic-view">
-                <h2 class="module-title">Academic <b style="color:var(--glow-focus)">Knowledge Base</b></h2>
-                <div class="grid-container">
-                    <div class="card" onclick="openSubject('Anatomy')"><span class="icon">🦴</span><h3>Anatomy</h3></div>
-                    <div class="card" onclick="openSubject('Physiology')"><span class="icon">🧪</span><h3>Physiology</h3></div>
-                    <div class="card" onclick="openSubject('Core')"><span class="icon">📜</span><h3>Core</h3></div>
-                    <div class="card" onclick="openSubject('Literature')"><span class="icon">🕉️</span><h3>Literature</h3></div>
-                    <div class="card" onclick="openSubject('Language')"><span class="icon">🔤</span><h3>Language</h3></div>
-                    <div class="card" onclick="openSubject('Clinical')"><span class="icon">🏥</span><h3>Clinical</h3></div>
-                    <div class="card" onclick="openSubject('Exam Vault')"><span class="icon">🎓</span><h3>Exam Vault</h3></div>
-                    <div class="card" onclick="openSubject('Library')"><span class="icon">✍️</span><h3>Library</h3></div>
-                </div>
-            </div>
-            <div id="subject-detail-view" style="display:none;">
-                <button class="back-btn" onclick="closeSubject()">⬅ Back to Subjects</button>
-                <h2 class="module-title" id="subject-title">Subject <b style="color:var(--glow-focus)">Hub</b></h2>
-                <div class="grid-container" id="grid-subject-specific"></div>
-            </div>
-        </div>
-
-        <div id="ai-hub" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Strategic <b style="color:var(--glow-focus)">AI Toolkit</b></h2>
-            <div class="grid-container">
-                <div class="card" onclick="window.open('https://gemini.google.com')"><span class="icon">✨</span><h3>Gemini AI</h3></div>
-                <div class="card" onclick="window.open('https://chatgpt.com')"><span class="icon">🧠</span><h3>ChatGPT</h3></div>
-                <div class="card" onclick="window.open('https://www.meta.ai')"><span class="icon">♾️</span><h3>Meta AI</h3></div>
-            </div>
-        </div>
-
-        <div id="tasks" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Master <b style="color:var(--glow-focus)">Task List</b></h2>
-            <div style="max-width: 600px; margin: 0 auto; background:rgba(0,0,0,0.2); padding:35px; border-radius:16px; border:1px solid rgba(255,255,255,0.03);">
-                <input type="text" id="taskInput" class="input-field" placeholder="What needs configuration? Type & press Enter..." onkeypress="handleTaskKeyPress(event)">
-                <ul id="taskList" class="task-list"></ul>
-            </div>
-        </div>
-
-        <div id="chill" class="module-overlay">
-            <button class="close-module-btn" onclick="closeAllModules()">✖ Close</button>
-            <h2 class="module-title">Chill <b style="color:var(--glow-break)">Zone</b></h2>
-            <div class="grid-container">
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://store.steampowered.com/')"><span class="icon">🚂</span><h3>Steam</h3></div>
-                <div class="card" style="border-color:var(--glow-break);" onclick="window.open('https://lofico.com/')"><span class="icon">🎧</span><h3>Lofi Radio</h3></div>
-            </div>
-        </div>
-    </div> 
-
-    <div class="overlay-bg" id="settings-overlay" onclick="togglePopup('settings-modal')"></div>
-    <div id="settings-modal" class="popup-modal">
-        <h3 style="margin-top:0; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 15px; font-weight: 400;">Settings Configuration</h3>
-        <div style="display: flex; gap: 12px; margin-top:15px;">
-            <div style="flex: 1;"><label style="color:#555; font-size:0.75em; font-weight:bold;">FOCUS (MINS)</label><input type="number" id="focus-time-input" value="25" class="input-field" style="margin-top:5px;"></div>
-            <div style="flex: 1;"><label style="color:#555; font-size:0.75em; font-weight:bold;">BREAK (MINS)</label><input type="number" id="break-time-input" value="5" class="input-field" style="margin-top:5px;"></div>
-        </div>
-        <button onclick="applySettings()" style="width:100%; background:var(--glow-focus); color:black; border:none; padding:14px; border-radius:8px; cursor:pointer; font-weight:bold; margin-bottom: 20px;">Update Quantum Timer</button>
-        <h4 style="margin-top:0; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; color: #00d4ff; font-weight: 400;">💾 Core Cloud Backup</h4>
-        <div style="display: flex; gap: 12px;">
-            <button onclick="exportData()" style="flex:1; background:transparent; color:#00d4ff; border:1px solid rgba(0,212,255,0.2); padding:12px; border-radius:8px; cursor:pointer;">Export Dataset</button>
-            <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
-            <button onclick="document.getElementById('importFile').click()" style="flex:1; background:transparent; color:#ffaa00; border:1px solid rgba(255,170,0,0.2); padding:12px; border-radius:8px; cursor:pointer;">Import Dataset</button>
-        </div>
-        <button onclick="togglePopup('settings-modal')" style="width:100%; background:transparent; color:#555; border:1px solid rgba(255,255,255,0.08); padding:12px; border-radius:8px; cursor:pointer; margin-top:20px;">Abort Configuration</button>
-    </div>
-
-    <div id="add-link-modal" class="popup-modal">
-        <h3 style="margin-top:0; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 15px; font-weight:400;">Inject Resource to <span id="modal-subject-name" style="color:var(--glow-focus);">Hub</span></h3>
-        <input type="text" id="new-name" placeholder="Resource Name" class="input-field" style="margin-top:10px;">
-        <input type="text" id="new-url" placeholder="Resource Path Matrix (URL)" class="input-field">
-        <button onclick="saveNewCard()" style="width:100%; background:var(--glow-focus); color:black; border:none; padding:14px; border-radius:8px; font-weight:bold; cursor:pointer;">Commit Link</button>
-        <button onclick="togglePopup('add-link-modal')" style="width:100%; background:transparent; color:#555; border:1px solid rgba(255,255,255,0.08); padding:12px; border-radius:8px; cursor:pointer; margin-top:12px;">Cancel Injection</button>
     </div>
 
     <script>
-        // --- UI & MODULE CORE NAVIGATION ---
-        function openModule(moduleId, btnElement) {
-            document.getElementById('home-screen').style.display = 'none';
-            document.querySelectorAll('.module-overlay').forEach(overlay => overlay.style.display = 'none');
-            document.querySelectorAll('.left-sidebar .icon-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(moduleId).style.display = 'block';
-            if(btnElement) btnElement.classList.add('active');
-            if(moduleId !== 'academic') closeSubject();
-        }
-        function closeAllModules() {
-            document.querySelectorAll('.module-overlay').forEach(overlay => overlay.style.display = 'none');
-            document.querySelectorAll('.left-sidebar .icon-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('home-screen').style.display = 'flex';
-        }
-        function togglePopup(id) { 
-            let m = document.getElementById(id); let overlay = document.getElementById('settings-overlay');
-            if(m.style.display === 'block') { m.style.display = 'none'; if(id === 'settings-modal') overlay.style.display = 'none'; } 
-            else { m.style.display = 'block'; if(id === 'settings-modal') overlay.style.display = 'block'; }
-        }
+        // --- 1. CORE ENGINE & NAVIGATION ---
+        const landingStage = document.getElementById('landing-stage');
+        const dashboardStage = document.getElementById('dashboard-stage');
+        const flashOverlay = document.getElementById('flash-overlay');
+        const contentArea = document.getElementById('main-content');
+        
+        let currentThemeColor = '#ff2a2a';
+        let isFocusTimerRunning = false;
+        let timerInterval;
 
-        // --- ACADEMIC RESOURCE ARCHITECTURE ---
-        let currentActiveSubject = null;
-        function openSubject(subjectName) { currentActiveSubject = subjectName; document.getElementById('main-academic-view').style.display = 'none'; document.getElementById('subject-detail-view').style.display = 'block'; document.getElementById('subject-title').innerHTML = `${subjectName} <b style="color:var(--glow-focus)">Library</b>`; document.getElementById('modal-subject-name').innerText = subjectName; renderSubjectSpecificLinks(); }
-        function closeSubject() { currentActiveSubject = null; document.getElementById('main-academic-view').style.display = 'block'; document.getElementById('subject-detail-view').style.display = 'none'; }
-        function getSubjectLinks(subject) { return JSON.parse(localStorage.getItem('subject_' + subject)) || []; }
-        function renderSubjectSpecificLinks() {
-            const container = document.getElementById('grid-subject-specific'); container.innerHTML = ""; let links = getSubjectLinks(currentActiveSubject);
-            links.forEach((item, index) => { container.innerHTML += `<div class="card" onclick="window.open('${item.url}')"><button class="delete-card" onclick="event.stopPropagation(); deleteCard(${index})">✖</button><span class="icon">📄</span><h3>${item.name}</h3></div>`; });
-            container.innerHTML += `<div class="card add-card" onclick="togglePopup('add-link-modal')"><span class="icon">➕</span><h3>Add Resource</h3></div>`;
-        }
-        function saveNewCard() { let name = document.getElementById('new-name').value, url = document.getElementById('new-url').value; if(name && url && currentActiveSubject) { let links = getSubjectLinks(currentActiveSubject); links.push({ name, url }); localStorage.setItem('subject_' + currentActiveSubject, JSON.stringify(links)); renderSubjectSpecificLinks(); togglePopup('add-link-modal'); document.getElementById('new-name').value = ""; document.getElementById('new-url').value = ""; } }
-        function deleteCard(index) { if(currentActiveSubject) { let links = getSubjectLinks(currentActiveSubject); links.splice(index, 1); localStorage.setItem('subject_' + currentActiveSubject, JSON.stringify(links)); renderSubjectSpecificLinks(); } }
-
-        // --- TASKS & PAPER TRADING ARCHIVE ---
-        function loadTasks() { let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || []; const list = document.getElementById('taskList'); list.innerHTML = ""; tasks.forEach((task, index) => { list.innerHTML += `<li class="task-item"><span style="font-size:1.05em; flex:1;">${task}</span><button class="del-btn" onclick="deleteTask(${index})">Done ✔</button></li>`; }); }
-        function handleTaskKeyPress(e) { if(e.key === 'Enter' && e.target.value.trim() !== '') { let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || []; tasks.push(e.target.value.trim()); localStorage.setItem('dailyTasks', JSON.stringify(tasks)); loadTasks(); e.target.value = ''; } }
-        function deleteTask(index) { let tasks = JSON.parse(localStorage.getItem('dailyTasks')) || []; tasks.splice(index, 1); localStorage.setItem('dailyTasks', JSON.stringify(tasks)); loadTasks(); }
-
-        function loadTrades() { let trades = JSON.parse(localStorage.getItem('paperTrades')) || []; const list = document.getElementById('tradeList'); if(!list) return; list.innerHTML = ""; trades.forEach((trade, index) => { list.innerHTML += `<li class="task-item"><div style="flex:1; font-size:0.9em; text-align: left;"><b>${trade.entry}</b> <br> <span style="color:#ffaa00; font-size:0.85em;">SL: ${trade.sl}</span></div><button class="del-btn" onclick="deleteTrade(${index})">✖</button></li>`; }); }
-        function savePaperTrade() { let entry = document.getElementById('trade-entry').value, sl = document.getElementById('trade-sl').value, reason = document.getElementById('trade-reason').value; if(entry) { let trades = JSON.parse(localStorage.getItem('paperTrades')) || []; trades.push({entry, sl, reason}); localStorage.setItem('paperTrades', JSON.stringify(trades)); loadTrades(); document.getElementById('trade-entry').value = ''; document.getElementById('trade-sl').value = ''; document.getElementById('trade-reason').value = ''; } }
-        function deleteTrade(index) { let trades = JSON.parse(localStorage.getItem('paperTrades')) || []; trades.splice(index, 1); localStorage.setItem('paperTrades', JSON.stringify(trades)); loadTrades(); }
-
-        // --- HUD FOCUS TIMER SYSTEM ---
-        let focusMin = 25, breakMin = 5, isFocus = true, timeLeft = focusMin * 60, isRunning = false, timerId = null;
-        function applySettings() {
-            focusMin = parseInt(document.getElementById('focus-time-input').value) || 25; breakMin = parseInt(document.getElementById('break-time-input').value) || 5;
-            clearInterval(timerId); isRunning = false; isFocus = true; timeLeft = focusMin * 60;
-            document.getElementById('start-btn').innerText = "START"; document.getElementById('timer-box').classList.remove('timer-running');
-            updateUI(); localStorage.setItem('kk_timer_settings', JSON.stringify({ focusMin, breakMin })); togglePopup('settings-modal');
-        }
-        function toggleTimer() { 
-            if(isRunning) { clearInterval(timerId); isRunning = false; document.getElementById('start-btn').innerText = "RESUME"; document.getElementById('timer-box').classList.remove('timer-running'); } 
-            else { isRunning = true; document.getElementById('start-btn').innerText = "PAUSE"; document.getElementById('timer-box').classList.add('timer-running'); timerId = setInterval(() => { if(timeLeft > 0) { timeLeft--; updateUI(); } else { clearInterval(timerId); isRunning = false; isFocus = !isFocus; timeLeft = (isFocus ? focusMin : breakMin) * 60; document.getElementById('mode-badge').innerText = isFocus ? "FOCUS MODE" : "BREAK MODE"; document.getElementById('start-btn').innerText = "START"; document.getElementById('timer-box').classList.remove('timer-running'); updateUI(); } }, 1000); } 
-        }
-        function updateUI() { 
-            let m = Math.floor(timeLeft/60), s = timeLeft%60; document.getElementById('timer-display').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; 
-            let totalDuration = (isFocus ? focusMin : breakMin) * 60;
-            document.getElementById('clock-ring').style.strokeDashoffset = 126 - (126 * (timeLeft / totalDuration));
-        }
-
-        function exportData() { let data = JSON.stringify(localStorage); let blob = new Blob([data], {type: "application/json"}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'KK_Backup.json'; a.click(); }
-        function importData(event) { let file = event.target.files[0]; if(!file) return; let reader = new FileReader(); reader.onload = function(e) { try { let data = JSON.parse(e.target.result); for (let key in data) { localStorage.setItem(key, data[key]); } alert("Dataset Synchronized!"); location.reload(); } catch(err) { alert("Sync Error."); } }; reader.readAsText(file); }
-
-        // --- REAL TIME 8K CINEMATIC ENGINE TRACKING CONTROLLER ---
-        function runRealTimeClock() {
-            const timeStr = document.getElementById('live-time-string');
-            const dateStr = document.getElementById('live-date-string');
-            const arcRing = document.getElementById('hologram-second-arc');
-            
-            setInterval(() => {
-                const now = new Date();
-                let hrs = now.getHours(), mins = now.getMinutes(), secs = now.getSeconds();
-                let ampm = hrs >= 12 ? 'PM' : 'AM';
-                hrs = hrs % 12; hrs = hrs ? hrs : 12; 
-                hrs = hrs < 10 ? '0'+hrs : hrs; mins = mins < 10 ? '0'+mins : mins; secs = secs < 10 ? '0'+secs : secs;
-                
-                timeStr.innerHTML = `${hrs}:${mins}<span class="hud-live-seconds">${secs} <font style="font-size:11px; font-family:sans-serif; font-weight:800; opacity:0.6;">${ampm}</font></span>`;
-                
-                const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
-                const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-                dateStr.innerText = `${days[now.getDay()]} // ${months[now.getMonth()]} ${now.getDate() < 10 ? '0'+now.getDate() : now.getDate()}`;
-                
-                let offset = 628 - (628 * (now.getSeconds() / 60));
-                arcRing.style.strokeDashoffset = offset;
-            }, 1000);
-        }
-
-        // --- AVENGERS INTEL VAULT DEPLOYMENT ---
-        let currentTheme = localStorage.getItem('kk_theme') || 'ironman';
-        function openVault() { document.getElementById('character-vault-overlay').style.display = 'flex'; setTimeout(() => document.getElementById('character-vault-overlay').style.opacity = '1', 10); }
-        function closeVault() { document.getElementById('character-vault-overlay').style.opacity = '0'; setTimeout(() => document.getElementById('character-vault-overlay').style.display = 'none', 400); }
-
-        function activateProtocol(themeId, themeColor) {
-            currentTheme = themeId;
-            localStorage.setItem('kk_theme', currentTheme);
-            
-            document.documentElement.style.setProperty('--glow-focus', themeColor);
-            document.documentElement.style.setProperty('--hud-bg', themeColor + '04');
-            document.documentElement.style.setProperty('--clock-glow', themeColor + '60');
-            
-            // Adjust borders, text colors, and custom element shadows
-            document.getElementById('mode-badge').style.borderColor = themeColor;
-            document.getElementById('mode-badge').style.color = themeColor;
-            document.getElementById('branding-bold-logo').style.textShadow = `0 0 20px ${themeColor}`;
-
-            // Inject structural dynamic styles safely into variables
-            const styleFallbackNode = document.getElementById('hologram-clock-housing');
-            if(styleFallbackNode) {
-                styleFallbackNode.style.setProperty('--glow-focus', themeColor);
-                styleFallbackNode.style.setProperty('--hud-bg', themeColor + '08');
-            }
-
-            // Pulse Wave Glitch Flash
-            let flash = document.getElementById('shockwave-flash'); flash.style.background = themeColor; flash.style.opacity = '0.12'; setTimeout(() => flash.style.opacity = '0', 250);
-
-            let audioNode = document.getElementById('audio-' + themeId);
-            if (audioNode) { document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; }); audioNode.play().catch(e => speakFallback(themeId)); }
-            else speakFallback(themeId);
-
-            closeVault(); resetParticles();
-        }
-
-        function speakFallback(name) {
+        function initProtocol(moduleName, color, voiceText) {
+            // TTS Voice Confirmation
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                let msg = new SpeechSynthesisUtterance(`${name} engine protocol loaded.`);
-                msg.pitch = 0.6; msg.rate = 1.0; window.speechSynthesis.speak(msg);
+                let msg = new SpeechSynthesisUtterance(voiceText);
+                msg.pitch = 0.8; msg.rate = 1.1;
+                window.speechSynthesis.speak(msg);
             }
+
+            // Lightning Flash FX
+            flashOverlay.style.backgroundColor = color;
+            flashOverlay.style.opacity = '0.8';
+            
+            setTimeout(() => {
+                flashOverlay.style.opacity = '0';
+                landingStage.style.display = 'none';
+                dashboardStage.style.display = 'flex';
+                setTimeout(() => { dashboardStage.style.opacity = '1'; }, 50);
+                
+                switchModule(moduleName, color);
+            }, 200);
         }
 
-        // --- 3D CINEMATIC AVENGER PARTICLE MATRIX CONTROLLER ---
-        const canvas = document.getElementById('canvas-bg');
+        function returnToHome() {
+            dashboardStage.style.opacity = '0';
+            setTimeout(() => {
+                dashboardStage.style.display = 'none';
+                landingStage.style.display = 'flex';
+                landingStage.style.opacity = '1';
+                document.documentElement.style.setProperty('--theme-color', '#fff');
+                resetParticles('#ffffff');
+            }, 500);
+        }
+
+        // --- 2. MODULE CONTENT GENERATOR ---
+        const modules = {
+            ironman: {
+                color: '#ff2a2a', title: 'Academic <span class="glow-text">Matrix</span>', subtitle: 'BAMS Interface & Focus Controls',
+                html: `
+                    <div style="display:flex; gap: 30px; margin-bottom: 30px;">
+                        <div class="tool-card" style="flex: 1; text-align: center; border-color: var(--theme-color);">
+                            <h3>Quantum Focus</h3>
+                            <div class="timer-box" id="hud-timer">25:00</div>
+                            <button class="action-btn" onclick="toggleTimer()">INITIATE FOCUS</button>
+                        </div>
+                        <div class="tool-card" style="flex: 2;">
+                            <h3 style="margin-bottom: 15px; color: var(--theme-color);">Daily Time Table Sync</h3>
+                            <p style="color:#aaa; font-size:0.9rem; line-height: 1.6;"><strong>08:00 AM:</strong> College Sync<br><strong>04:00 PM:</strong> Self-Study Deep Work<br><strong>08:00 PM:</strong> Freelance Operations</p>
+                        </div>
+                    </div>
+                    <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Core BAMS Library</h2>
+                    <div class="grid-layout">
+                        <div class="tool-card"><span class="tool-icon">📜</span><h3>Samhitas</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Charaka & Sushruta Vault</p></div>
+                        <div class="tool-card"><span class="tool-icon">🦴</span><h3>Rachana Sharir</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Anatomy Blueprints</p></div>
+                        <div class="tool-card"><span class="tool-icon">🧪</span><h3>Kriya Sharir</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Physiological Operations</p></div>
+                        <div class="tool-card"><span class="tool-icon">🩸</span><h3>Dhatus & Srotas</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Channel Networks</p></div>
+                        <div class="tool-card"><span class="tool-icon">🎓</span><h3>Exam Vault</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Past Papers & Terminals</p></div>
+                    </div>
+                `
+            },
+            cap: {
+                color: '#0077ff', title: 'Tactical <span class="glow-text">Trading Terminal</span>', subtitle: 'Capital Allocation & Market Defense',
+                html: `
+                    <div style="width: 100%; height: 400px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,119,255,0.3); margin-bottom: 30px;">
+                        <div class="tradingview-widget-container" style="height:100%;width:100%">
+                            <div id="tradingview_cap" style="height:100%;width:100%"></div>
+                        </div>
+                    </div>
+                    <div class="grid-layout">
+                        <div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><span class="tool-icon">📈</span><h3>Angel One</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Execution Platform</p></div>
+                        <div class="tool-card" onclick="window.open('https://web.dhan.co/')"><span class="tool-icon">🏦</span><h3>Dhan Terminal</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Options & F&O</p></div>
+                        <div class="tool-card" onclick="window.open('https://shopify.com')"><span class="tool-icon">🛒</span><h3>Aura Fit</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">E-commerce Revenue</p></div>
+                        <div class="tool-card"><span class="tool-icon">📝</span><h3>Paper Log</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Risk & SL Journal</p></div>
+                    </div>
+                `
+            },
+            thor: {
+                color: '#ffaa00', title: 'Creative <span class="glow-text">Forge</span>', subtitle: 'Scriptwriting & Content Architecture',
+                html: `
+                    <div class="grid-layout">
+                        <div class="tool-card" style="grid-column: span 2;">
+                            <span class="tool-icon">🎬</span><h3>Story of Dediapada</h3>
+                            <p style="font-size:0.8rem; color:#888; margin-top:5px;">Active Project. Character Focus: <strong>Charey</strong>.</p>
+                            <textarea style="width:100%; height:100px; margin-top:15px; background:rgba(0,0,0,0.5); border:1px solid #ffaa00; color:white; padding:10px; border-radius:8px;" placeholder="Draft script lines here..."></textarea>
+                        </div>
+                        <div class="tool-card"><span class="tool-icon">🎥</span><h3>K.K. Animation</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Video setup & Duration checks</p></div>
+                        <div class="tool-card"><span class="tool-icon">✍️</span><h3>Shayari Vault</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Personal quotes & verses</p></div>
+                    </div>
+                `
+            },
+            spidey: {
+                color: '#ff0055', title: 'Agency <span class="glow-text">Web Hub</span>', subtitle: 'Real Estate & Social Pipeline',
+                html: `
+                    <div class="grid-layout">
+                        <div class="tool-card"><span class="tool-icon">🏢</span><h3>Grow with K.K.</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Real Estate Marketing</p></div>
+                        <div class="tool-card"><span class="tool-icon">🤝</span><h3>DDK Freelancers</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Client Acquisition</p></div>
+                        <div class="tool-card"><span class="tool-icon">🤖</span><h3>Lead Automator</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Maps to Sheets Script Status</p></div>
+                        <div class="tool-card"><span class="tool-icon">📅</span><h3>Partner Sync</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Tasks with Darshan</p></div>
+                    </div>
+                `
+            },
+            strange: {
+                color: '#00ffaa', title: 'Cosmic <span class="glow-text">Vision</span>', subtitle: 'Astrology & Startup Roadmap',
+                html: `
+                    <div class="grid-layout">
+                        <div class="tool-card"><span class="tool-icon">♊</span><h3>Mithun Rashi Tracker</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Daily transit impacts on business</p></div>
+                        <div class="tool-card"><span class="tool-icon">🚀</span><h3>Organic Vision</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Startup framework (Video features enabled)</p></div>
+                        <div class="tool-card"><span class="tool-icon">✨</span><h3>Gemini / AI Hub</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Access premium subscriptions</p></div>
+                    </div>
+                `
+            },
+            starlord: {
+                color: '#aa00ff', title: 'Chill <span class="glow-text">Galaxy</span>', subtitle: 'Gaming & Light Hustle',
+                html: `
+                    <div class="grid-layout">
+                        <div class="tool-card" onclick="window.open('https://store.steampowered.com')"><span class="tool-icon">🎮</span><h3>Steam Library</h3></div>
+                        <div class="tool-card"><span class="tool-icon">🟥</span><h3>Rockstar Games</h3></div>
+                        <div class="tool-card"><span class="tool-icon">🟦</span><h3>Discord Sync</h3></div>
+                        <div class="tool-card"><span class="tool-icon">💰</span><h3>Micro-Tasks</h3><p style="font-size:0.8rem; color:#888; margin-top:5px;">Clickworker / RapidWorkers</p></div>
+                    </div>
+                `
+            }
+        };
+
+        function switchModule(id, overrideColor = null) {
+            const mod = modules[id];
+            if(!mod) return;
+            
+            let color = overrideColor || mod.color;
+            document.documentElement.style.setProperty('--theme-color', color);
+            
+            // Update Sidebar UI
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById('nav-' + id);
+            if(activeBtn) activeBtn.classList.add('active');
+
+            // Inject Content
+            contentArea.innerHTML = `
+                <div class="module-header" style="animation: fadeInDown 0.5s ease;">
+                    <div>
+                        <h2>${mod.title}</h2>
+                        <p style="color: #888; font-size: 0.9rem; margin-top: 5px; text-transform: uppercase;">${mod.subtitle}</p>
+                    </div>
+                </div>
+                <div style="animation: fadeInDown 0.7s ease;">${mod.html}</div>
+            `;
+
+            // Init specific scripts based on module
+            if(id === 'ironman') resetTimerUI();
+            if(id === 'cap') loadTradingView();
+
+            // Particle System Color Shift
+            resetParticles(color);
+        }
+
+        // --- 3. IRON MAN TIMER LOGIC ---
+        let timeLeft = 25 * 60;
+        function toggleTimer() {
+            let btn = document.querySelector('.action-btn');
+            let display = document.getElementById('hud-timer');
+            if(!display) return;
+
+            if(isFocusTimerRunning) {
+                clearInterval(timerInterval);
+                isFocusTimerRunning = false;
+                btn.innerText = "RESUME FOCUS";
+            } else {
+                isFocusTimerRunning = true;
+                btn.innerText = "PAUSE PROTOCOL";
+                timerInterval = setInterval(() => {
+                    if(timeLeft > 0) {
+                        timeLeft--;
+                        let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
+                        display.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+                    } else {
+                        clearInterval(timerInterval);
+                        isFocusTimerRunning = false;
+                        display.innerText = "00:00";
+                        btn.innerText = "SESSION COMPLETE";
+                        alert("Focus Session Complete!");
+                    }
+                }, 1000);
+            }
+        }
+        function resetTimerUI() {
+            let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
+            let display = document.getElementById('hud-timer');
+            if(display) display.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        }
+
+        // --- 4. CAPTAIN AMERICA TRADING WIDGET ---
+        function loadTradingView() {
+            setTimeout(() => {
+                let container = document.getElementById('tradingview_cap');
+                if(!container) return;
+                container.innerHTML = '';
+                let script = document.createElement('script');
+                script.src = 'https://s3.tradingview.com/tv.js';
+                script.onload = () => {
+                    new TradingView.widget({
+                        "autosize": true, "symbol": "BSE:SENSEX", "interval": "15", "timezone": "Asia/Kolkata",
+                        "theme": "dark", "style": "1", "locale": "en", "enable_publishing": false,
+                        "backgroundColor": "rgba(0, 0, 0, 1)", "gridColor": "rgba(255, 255, 255, 0.05)",
+                        "hide_top_toolbar": true, "container_id": "tradingview_cap"
+                    });
+                };
+                document.body.appendChild(script);
+            }, 100);
+        }
+
+        // --- 5. OPTIMIZED 3D PARTICLE ENGINE ---
+        const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; resetParticles(); });
+        let pColor = '#ffffff';
 
-        class AdvancedCinematicParticle {
-            constructor() { this.reset(); }
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class FastParticle {
+            constructor() { this.reset(); this.z = Math.random() * 1000; }
             reset() {
-                // 3D Space Coordinates positioning relative to center clock core
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.z = Math.random() * 2000 + 200; // Deep Virtual Z-Axis Field
-                
-                this.size = Math.random() * 2 + 0.5;
-                this.speedZ = Math.random() * 4 + 2; // Forward projection velocity
-                this.alpha = 0;
-                this.angle = Math.random() * Math.PI * 2;
-                this.spinSpeed = (Math.random() - 0.5) * 0.03;
-                this.forkLength = Math.random() * 25 + 10;
+                this.x = (Math.random() - 0.5) * canvas.width * 2;
+                this.y = (Math.random() - 0.5) * canvas.height * 2;
+                this.z = 1000;
+                this.speed = Math.random() * 2 + 1;
             }
             update() {
-                this.z -= this.speedZ; // Step forward out of 3D matrix depth
-                if (this.z <= 0) this.reset();
-
-                // Compute standard 3D to 2D perspective scale projections
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height / 2;
-                
-                this.projX = (this.x - centerX) * (1000 / this.z) + centerX;
-                this.projY = (this.y - centerY) * (1000 / this.z) + centerY;
-                this.projSize = this.size * (1000 / this.z);
-
-                this.alpha = (2000 - this.z) / 2000;
-                this.angle += this.spinSpeed;
-
-                // Edge boundaries wrap-around safety
-                if (this.projX < -50 || this.projX > canvas.width + 50 || this.projY < -50 || this.projY > canvas.height + 50) {
-                    this.reset();
-                }
+                this.z -= this.speed;
+                if(this.z <= 1) this.reset();
             }
             draw() {
-                if (!this.projX || !this.projY) return;
+                let px = (this.x / this.z) * 500 + canvas.width / 2;
+                let py = (this.y / this.z) * 500 + canvas.height / 2;
+                let size = (1000 - this.z) / 500;
+                let alpha = (1000 - this.z) / 1000;
+
+                if (px < 0 || px > canvas.width || py < 0 || py > canvas.height) return;
+
+                ctx.fillStyle = pColor;
+                ctx.globalAlpha = alpha * 0.5;
                 ctx.beginPath();
-                
-                if (currentTheme === 'ironman') {
-                    // STARK ARC CORE FLUID FLUX: Concentric micro rings scaling outwards
-                    ctx.arc(this.projX, this.projY, this.projSize * 1.5, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 42, 42, ${this.alpha * 0.4})`;
-                    ctx.fill();
-                    if(this.z < 600) {
-                        ctx.beginPath();
-                        ctx.arc(this.projX, this.projY, this.projSize * 3, 0, Math.PI * 2);
-                        ctx.strokeStyle = `rgba(255, 42, 42, ${this.alpha * 0.15})`;
-                        ctx.stroke();
-                    }
-                } else if (currentTheme === 'captainamerica') {
-                    // SHIELD STRATEGIC MATRIX: Intersecting micro grid crosses and star anchors
-                    ctx.save();
-                    ctx.translate(this.projX, this.projY);
-                    ctx.rotate(this.angle);
-                    ctx.strokeStyle = `rgba(0, 119, 255, ${this.alpha * 0.5})`;
-                    ctx.lineWidth = 0.8;
-                    ctx.strokeRect(-this.projSize, -this.projSize, this.projSize * 2, this.projSize * 2);
-                    ctx.restore();
-                } else if (currentTheme === 'thor') {
-                    // ASGARDIAN PLASMA FORKS: Chaotic lightning sparks emanating relative to center
-                    ctx.moveTo(this.projX, this.projY);
-                    let targetX = this.projX + Math.sin(this.angle) * this.forkLength * (1000 / this.z);
-                    let targetY = this.projY + Math.cos(this.angle) * this.forkLength * (1000 / this.z);
-                    ctx.lineTo(targetX, targetY);
-                    ctx.strokeStyle = `rgba(255, 170, 0, ${this.alpha * 0.85})`;
-                    ctx.lineWidth = Math.random() * 1.2 + 0.4;
-                    ctx.stroke();
-                }
+                ctx.arc(px, py, size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
-        function resetParticles() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        function resetParticles(color) {
+            pColor = color;
             particles = [];
-            let maxCount = window.innerWidth > 768 ? 140 : 60;
-            for (let i = 0; i < maxCount; i++) { particles.push(new AdvancedCinematicParticle()); }
+            let count = window.innerWidth > 800 ? 100 : 50; // Optimized for no lag
+            for(let i=0; i<count; i++) particles.push(new FastParticle());
         }
 
-        function drawBackgroundGrid() {
-            ctx.strokeStyle = currentTheme === 'ironman' ? 'rgba(255,42,42,0.015)' : (currentTheme === 'captainamerica' ? 'rgba(0,119,255,0.015)' : 'rgba(255,170,0,0.012)');
-            ctx.lineWidth = 0.5;
-            let step = 60;
-            for (let x = 0; x < canvas.width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
-            for (let y = 0; y < canvas.height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
-        }
-
-        function animateRender() {
-            ctx.fillStyle = "rgba(2, 2, 4, 0.25)"; // Fluid fade trail layer
+        function animate() {
+            ctx.fillStyle = 'rgba(2, 2, 4, 0.3)'; // Trail effect
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            drawBackgroundGrid();
             particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateRender);
+            requestAnimationFrame(animate);
         }
-
-        window.onload = () => { 
-            let savedSettings = JSON.parse(localStorage.getItem('kk_timer_settings'));
-            if(savedSettings) { focusMin = savedSettings.focusMin; breakMin = savedSettings.breakMin; timeLeft = focusMin * 60; document.getElementById('focus-time-input').value = focusMin; document.getElementById('break-time-input').value = breakMin; }
-            let colorMap = { 'ironman': '#ff2a2a', 'captainamerica': '#0077ff', 'thor': '#ffaa00' };
-            activateProtocol(currentTheme, colorMap[currentTheme] || '#ff2a2a');
-            updateUI(); loadTasks(); loadTrades(); runRealTimeClock(); resetParticles(); animateRender(); 
-        };
+        
+        // Boot Sequence
+        resetParticles('#ffffff');
+        animate();
     </script>
 </body>
 </html>
