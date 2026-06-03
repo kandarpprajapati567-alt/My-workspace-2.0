@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Command Center | Phase 2.2</title>
+    <title>K.K. Command Center | Phase 2.3 JARVIS Edition</title>
     <style>
         :root {
             --theme-color: #ff2a2a;
@@ -69,7 +69,7 @@
         .nav-btn.active { opacity: 1; transform: scale(1.2); filter: drop-shadow(0 0 10px var(--theme-color)); color: var(--theme-color); }
 
         .content-area { flex: 1; padding: 40px; overflow-y: auto; position: relative; z-index: 10; }
-        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
 
         .tool-card {
             background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px;
@@ -79,7 +79,8 @@
         
         .action-btn { background: transparent; border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
         .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 15px var(--theme-color); }
-        .add-btn { position: absolute; top: 15px; right: 15px; background: var(--theme-color); color: #000; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; cursor: pointer; z-index: 10; }
+        .add-btn { position: absolute; top: 15px; right: 15px; background: var(--theme-color); color: #000; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; transition: 0.3s; z-index: 10;}
+        .add-btn:hover { transform: scale(1.1); box-shadow: 0 0 10px var(--theme-color); }
         
         input, select, textarea { background: rgba(0,0,0,0.6); border: 1px solid var(--theme-color); color: white; padding: 8px; border-radius: 8px; outline: none; }
         
@@ -107,7 +108,7 @@
     <div id="bg-wallpaper"></div>
     <canvas id="bg-canvas"></canvas>
     <div class="vignette"></div>
-    <div id="mic-status">🎙️ Listening...</div>
+    <div id="mic-status">🎙️ Listening for commands...</div>
 
     <div class="overlay-modal" id="settings-overlay">
         <div class="modal-box" style="width: 400px; text-align:center;">
@@ -165,7 +166,7 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 5vh;">
-            <h2 style="color: #888;">K.K. COMMAND CENTER v2.2</h2>
+            <h2 style="color: #888;">K.K. COMMAND CENTER v2.3</h2>
             <h1>Select <span class="glow-text" style="color: #fff;">Protocol</span></h1>
         </div>
         <div class="carousel-container">
@@ -249,18 +250,21 @@
                         </div>
                     </div>
                     
-                    <h3>BAMS Vaults <span style="font-size:0.8rem; color:#aaa;">(Click to open App Grid)</span></h3>
+                    <h3>BAMS Vaults <span style="font-size:0.8rem; color:#aaa;">(All Subjects Restored)</span></h3>
                     <div class="grid-layout" style="margin-top:15px;">
                         <div class="tool-card" onclick="openVault('Samhita')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Samhita')">+</button><span class="tool-icon">📜</span><h3>Samhita</h3></div>
-                        <div class="tool-card" onclick="openVault('Anatomy')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Anatomy')">+</button><span class="tool-icon">🦴</span><h3>Anatomy</h3></div>
-                        <div class="tool-card" onclick="openVault('Physiology')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Physiology')">+</button><span class="tool-icon">🧪</span><h3>Physiology</h3></div>
+                        <div class="tool-card" onclick="openVault('Anatomy')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Anatomy')">+</button><span class="tool-icon">🦴</span><h3>Anatomy</h3><p style="font-size:0.8rem; color:#888;">Rachana Sharir</p></div>
+                        <div class="tool-card" onclick="openVault('Physiology')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Physiology')">+</button><span class="tool-icon">🧪</span><h3>Physiology</h3><p style="font-size:0.8rem; color:#888;">Kriya Sharir</p></div>
+                        <div class="tool-card" onclick="openVault('Padarth Vigyan')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Padarth Vigyan')">+</button><span class="tool-icon">⚛️</span><h3>Padarth Vigyan</h3></div>
+                        <div class="tool-card" onclick="openVault('Sanskrit')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Sanskrit')">+</button><span class="tool-icon">🕉️</span><h3>Sanskrit</h3></div>
                         <div class="tool-card" onclick="openVault('Exam Vault')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Exam Vault')">+</button><span class="tool-icon">🎓</span><h3>Exam Vault</h3></div>
+                        <div class="tool-card" onclick="openVault('Sloka Library')"><button class="add-btn" onclick="event.stopPropagation(); openVault('Sloka Library')">+</button><span class="tool-icon">✨</span><h3>Sloka Library</h3></div>
                     </div>
                 `
             },
             cap: { color: '#0077ff', title: 'Tactical Terminal', html: `<div id="tradingview_cap" style="height:60vh; border-radius:15px; overflow:hidden; border:1px solid #0077ff; margin-bottom:20px;"></div><div class="grid-layout"><div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><h3>Angel One</h3></div><div class="tool-card" onclick="window.open('https://web.dhan.co/')"><h3>Dhan</h3></div></div>` },
-            thor: { color: '#ffaa00', title: 'Creative Forge', html: `<div class="grid-layout"><div class="tool-card"><h3>Write Story</h3><textarea id="thor-story" style="width:95%; height:100px; margin-top:10px;"></textarea><br><button class="action-btn" style="margin-top:10px;" onclick="saveText('Story')">Save</button></div><div class="tool-card"><h3>Story Vault</h3><div id="list-Story" style="margin-top:10px; max-height:150px; overflow-y:auto;"></div></div></div><div class="grid-layout" style="margin-top:20px;"><div class="tool-card"><h3>K.K. Animation</h3><textarea id="thor-anim" style="width:95%; height:50px;"></textarea><button class="action-btn" style="margin-top:10px;" onclick="saveText('Animation')">Save</button><div id="list-Animation" style="margin-top:10px;"></div></div><div class="tool-card"><h3>Shayari Vault</h3><textarea id="thor-shayari" style="width:95%; height:50px;"></textarea><button class="action-btn" style="margin-top:10px;" onclick="saveText('Shayari')">Save</button><div id="list-Shayari" style="margin-top:10px;"></div></div></div>` },
-            spidey: { color: '#ff0055', title: 'Agency Web', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Sheets</h3></div><div class="tool-card" onclick="window.open('https://drive.google.com')"><h3>Drive</h3></div></div>` },
+            thor: { color: '#ffaa00', title: 'Creative Forge', html: `<div class="grid-layout"><div class="tool-card"><h3>Write Story</h3><textarea id="thor-story" style="width:95%; height:100px; margin-top:10px;" placeholder="Charey enters the scene..."></textarea><br><button class="action-btn" style="margin-top:10px;" onclick="saveText('Story')">Save</button></div><div class="tool-card"><h3>Story Vault</h3><div id="list-Story" style="margin-top:10px; max-height:150px; overflow-y:auto;"></div></div></div><div class="grid-layout" style="margin-top:20px;"><div class="tool-card"><h3>K.K. Animation</h3><textarea id="thor-anim" style="width:95%; height:50px;" placeholder="Check duration spelling..."></textarea><button class="action-btn" style="margin-top:10px;" onclick="saveText('Animation')">Save</button><div id="list-Animation" style="margin-top:10px;"></div></div><div class="tool-card"><h3>Shayari Vault</h3><textarea id="thor-shayari" style="width:95%; height:50px;"></textarea><button class="action-btn" style="margin-top:10px;" onclick="saveText('Shayari')">Save</button><div id="list-Shayari" style="margin-top:10px;"></div></div></div>` },
+            spidey: { color: '#ff0055', title: 'Agency Web', html: `<p style="color:#aaa; margin-bottom:15px;">DDK Freelancers & Grow with K.K. Leads</p><div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Sheets</h3></div><div class="tool-card" onclick="window.open('https://drive.google.com')"><h3>Drive</h3></div></div>` },
             strange: { color: '#00ffaa', title: 'AI Nexus', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://chatgpt.com')"><h3>ChatGPT</h3></div><div class="tool-card" onclick="window.open('https://gemini.google.com')"><h3>Gemini</h3></div></div>` },
             starlord: { color: '#aa00ff', title: 'Chill Galaxy', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://lofi.co')"><h3>Lofi Cafe</h3></div><div class="tool-card" onclick="window.open('https://popit.click/')"><h3>Pop It Simulator</h3></div><div class="tool-card" onclick="openTicTacToe()"><h3>Tic-Tac-Toe</h3></div></div>` }
         };
@@ -309,7 +313,7 @@
 
         function switchModule(id) { renderModule(id); }
 
-        // --- Wallpaper Settings (Compress to avoid quota issues) ---
+        // --- Wallpaper Settings ---
         function applyWallpaper(id) {
             bgWallpaper.style.backgroundImage = settingsData[id]?.bg ? `url('${settingsData[id].bg}')` : 'none';
         }
@@ -333,7 +337,7 @@
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',300); }
 
         // --- Timetable Logic ---
-        let kkTimetable = JSON.parse(localStorage.getItem('kkTimetableV2')) || {"Monday": []};
+        let kkTimetable = JSON.parse(localStorage.getItem('kkTimetableV2')) || {"Monday": [{time: "09:00 AM", sub: "Rachana Sharir (Anatomy)"}]};
         function renderTimetable() {
             let day = document.getElementById('day-selector').value;
             let data = kkTimetable[day] || [];
@@ -362,6 +366,7 @@
         // --- Focus Timer ---
         function toggleTimer() {
             let display = document.getElementById('hud-timer'); let btn = document.getElementById('focus-btn');
+            if(!display) return;
             if(isFocusTimerRunning) { clearInterval(timerInterval); isFocusTimerRunning = false; btn.innerText = "START"; }
             else {
                 let mins = parseInt(document.getElementById('focus-mins').value) || 25;
@@ -420,18 +425,21 @@
         function openText(type, i) {
             let txt = textVaults[type][i].text;
             document.getElementById('text-modal-title').innerText = type.toUpperCase() + " LOG";
-            document.getElementById('story-text-display').innerText = txt; // Cinematic typing logic simplified to avoid lag
+            document.getElementById('story-text-display').innerText = txt; 
             openModal('text-overlay');
         }
 
-        // --- Voice Control (Speech Recognition) ---
+        // --- Voice Control (Ultimate JARVIS Expansion) ---
         let recognition; let micTimeout; let micMode = 'off';
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(SpeechRecognition) {
             recognition = new SpeechRecognition();
             recognition.continuous = true; recognition.lang = 'en-US';
             recognition.onresult = (e) => {
-                let cmd = e.results[e.results.length - 1][0].transcript.toLowerCase();
+                let cmd = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
+                console.log("Voice Command: ", cmd);
+
+                // Modules
                 if(cmd.includes("home")) returnToHome();
                 else if(cmd.includes("iron man") || cmd.includes("matrix")) initProtocol('ironman', '#ff2a2a');
                 else if(cmd.includes("captain") || cmd.includes("terminal")) initProtocol('cap', '#0077ff');
@@ -439,6 +447,25 @@
                 else if(cmd.includes("spider") || cmd.includes("agency")) initProtocol('spidey', '#ff0055');
                 else if(cmd.includes("strange") || cmd.includes("nexus")) initProtocol('strange', '#00ffaa');
                 else if(cmd.includes("star") || cmd.includes("galaxy")) initProtocol('starlord', '#aa00ff');
+                
+                // Settings & Modals
+                else if(cmd.includes("open setting")) openModal('settings-overlay');
+                else if(cmd.includes("close setting") || cmd.includes("close")) {
+                    closeModal('settings-overlay'); closeModal('vault-overlay'); closeModal('text-overlay'); closeModal('game-overlay');
+                }
+
+                // Timers
+                else if(cmd.includes("start focus") || cmd.includes("start timer")) { if(!isFocusTimerRunning) toggleTimer(); }
+                else if(cmd.includes("stop focus") || cmd.includes("stop timer") || cmd.includes("pause")) { if(isFocusTimerRunning) toggleTimer(); }
+
+                // Direct Vault Access (Only works if Iron Man module is active, or we switch to it first)
+                else if(cmd.includes("samhita")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Samhita'); }
+                else if(cmd.includes("anatomy") || cmd.includes("rachana")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Anatomy'); }
+                else if(cmd.includes("physiology") || cmd.includes("kriya")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Physiology'); }
+                else if(cmd.includes("padarth")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Padarth Vigyan'); }
+                else if(cmd.includes("sanskrit")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Sanskrit'); }
+                else if(cmd.includes("exam")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Exam Vault'); }
+                else if(cmd.includes("sloka")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Sloka Library'); }
             };
             recognition.onend = () => { if(micMode === 'all') recognition.start(); };
         }
@@ -462,7 +489,6 @@
             if(board[i] !== "") return;
             board[i] = currentPlayer;
             let cells = document.getElementById('tictactoe-board').children; cells[i].innerText = currentPlayer; cells[i].style.color = currentPlayer === 'X' ? '#ff2a2a' : '#00ffaa';
-            // simple win check
             const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
             for(let w of wins) { if(board[w[0]] && board[w[0]]===board[w[1]] && board[w[1]]===board[w[2]]) { alert(currentPlayer + " Wins!"); return initTicTacToe(); } }
             currentPlayer = currentPlayer === "X" ? "O" : "X";
