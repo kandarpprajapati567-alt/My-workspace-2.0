@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Command Center | Phase 2.3 JARVIS Edition</title>
+    <title>K.K. Command Center | Phase 2.4 Agentic Edition</title>
     <style>
         :root {
             --theme-color: #ff2a2a;
@@ -166,7 +166,7 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 5vh;">
-            <h2 style="color: #888;">K.K. COMMAND CENTER v2.3</h2>
+            <h2 style="color: #888;">K.K. COMMAND CENTER v2.4</h2>
             <h1>Select <span class="glow-text" style="color: #fff;">Protocol</span></h1>
         </div>
         <div class="carousel-container">
@@ -429,18 +429,54 @@
             openModal('text-overlay');
         }
 
+        // ==========================================
+        // NEW PHASE 2.4: AGENTIC AI & TTS LOGIC
+        // ==========================================
+        
+        // 1. Text-To-Speech (JARVIS Voice)
+        function speakOut(text) {
+            if('speechSynthesis' in window) {
+                const synth = window.speechSynthesis;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-IN'; // Indian English accent
+                utterance.rate = 1;
+                synth.speak(utterance);
+            }
+        }
+
+        // 2. Fetch API Call to server.js
+        async function askJARVISAgent(userPrompt, agentType = "core") {
+            try {
+                const response = await fetch('/api/agent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: userPrompt, agentType: agentType })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    console.log("JARVIS:", data.message);
+                    return data.message;
+                } else {
+                    return "Sorry sir, there is an issue with the AI core.";
+                }
+            } catch (error) {
+                console.error("Network Error:", error);
+                return "Systems Offline. Cannot connect to backend server.";
+            }
+        }
+
         // --- Voice Control (Ultimate JARVIS Expansion) ---
         let recognition; let micTimeout; let micMode = 'off';
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(SpeechRecognition) {
             recognition = new SpeechRecognition();
-            recognition.continuous = true; recognition.lang = 'en-US';
+            recognition.continuous = true; recognition.lang = 'en-IN'; // Or en-US
             recognition.onresult = (e) => {
                 let cmd = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
                 console.log("Voice Command: ", cmd);
 
-                // Modules
-                if(cmd.includes("home")) returnToHome();
+                // Modules Navigation
+                if(cmd.includes("home") || cmd.includes("close protocol")) returnToHome();
                 else if(cmd.includes("iron man") || cmd.includes("matrix")) initProtocol('ironman', '#ff2a2a');
                 else if(cmd.includes("captain") || cmd.includes("terminal")) initProtocol('cap', '#0077ff');
                 else if(cmd.includes("thor") || cmd.includes("forge")) initProtocol('thor', '#ffaa00');
@@ -458,7 +494,7 @@
                 else if(cmd.includes("start focus") || cmd.includes("start timer")) { if(!isFocusTimerRunning) toggleTimer(); }
                 else if(cmd.includes("stop focus") || cmd.includes("stop timer") || cmd.includes("pause")) { if(isFocusTimerRunning) toggleTimer(); }
 
-                // Direct Vault Access (Only works if Iron Man module is active, or we switch to it first)
+                // Direct Vault Access
                 else if(cmd.includes("samhita")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Samhita'); }
                 else if(cmd.includes("anatomy") || cmd.includes("rachana")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Anatomy'); }
                 else if(cmd.includes("physiology") || cmd.includes("kriya")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Physiology'); }
@@ -466,6 +502,28 @@
                 else if(cmd.includes("sanskrit")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Sanskrit'); }
                 else if(cmd.includes("exam")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Exam Vault'); }
                 else if(cmd.includes("sloka")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Sloka Library'); }
+                
+                // ==========================================
+                // PHASE 2.4: AGENTIC AI TRIGGER
+                // ==========================================
+                // If user command starts with trigger words or doesn't match above rules
+                else if(cmd.includes("jarvis") || cmd.includes("kk") || cmd.includes("what") || cmd.includes("how") || cmd.includes("tell me")) {
+                    
+                    document.getElementById('mic-status').innerText = "🧠 JARVIS Processing...";
+                    
+                    let agentType = "core";
+                    // Intelligent routing based on current module
+                    if (currentModule === 'ironman' || cmd.includes("bams") || cmd.includes("ayurveda")) {
+                        agentType = "bams";
+                    } else if (currentModule === 'cap' || cmd.includes("market") || cmd.includes("nifty") || cmd.includes("trade")) {
+                        agentType = "trading";
+                    }
+
+                    askJARVISAgent(cmd, agentType).then(reply => {
+                        speakOut(reply); // AI speaks back
+                        document.getElementById('mic-status').innerText = "🎙️ Listening for commands...";
+                    });
+                }
             };
             recognition.onend = () => { if(micMode === 'all') recognition.start(); };
         }
