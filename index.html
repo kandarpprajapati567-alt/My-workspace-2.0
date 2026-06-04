@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Command Dashboard | Nexus Edition</title>
+    <title>K.K. Command Dashboard | Cinematic HUD</title>
     <style>
         :root {
             --theme-color: #00ffaa;
-            --bg-color: #020204;
-            --glass-bg: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --transition-hq: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --bg-color: #020205;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --transition-hq: 0.4s cubic-bezier(0.25, 1, 0.2 mil, 1);
         }
 
         body {
@@ -19,130 +19,122 @@
             user-select: none; transition: background-color 0.5s ease;
         }
 
-        /* DYNAMIC CINEMATIC MESH BACKGROUND */
+        /* 1. ULTRA CINEMATIC LIVE GRID & BLOB MESH */
         .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; overflow: hidden; background: #000; }
-        .blob { position: absolute; filter: blur(120px); opacity: 0.4; animation: floatBlob 15s infinite alternate ease-in-out; border-radius: 50%; }
-        .blob-1 { width: 60vw; height: 60vw; background: #0026ff; top: -20%; left: -10%; }
-        .blob-2 { width: 50vw; height: 50vw; background: #7b00ff; bottom: -15%; right: -10%; animation-delay: -5s; }
-        .blob-3 { width: 45vw; height: 45vw; background: var(--theme-color); top: 25%; left: 25%; animation-duration: 20s; transition: background 0.8s var(--transition-hq); }
+        .blob { position: absolute; filter: blur(130px); opacity: 0.45; animation: floatBlob 10s infinite alternate ease-in-out; border-radius: 50%; }
+        .blob-1 { width: 55vw; height: 55vw; background: #1a00ff; top: -15%; left: -10%; }
+        .blob-2 { width: 65vw; height: 65vw; background: #aa00ff; bottom: -20%; right: -10%; animation-delay: -4s; }
+        .blob-3 { width: 45vw; height: 45vw; background: var(--theme-color); top: 25%; left: 25%; animation-duration: 15s; transition: background 0.6s ease; }
         
         @keyframes floatBlob { 
             0% { transform: translate(0, 0) scale(1) rotate(0deg); } 
-            100% { transform: translate(8vw, 12vh) scale(1.2) rotate(90deg); } 
+            100% { transform: translate(8vw, 8vh) scale(1.2) rotate(45deg); } 
         }
 
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none;}
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none; }
         
-        /* CINEMATIC NAVIGATION EFFECTS (ZOOM & DISTORTION BLOCKS) */
+        /* 2. GLITCH FLASH CINEMATIC NAV EFFECT */
         .stage-transition {
-            animation: cinematicPulse 0.8s var(--transition-hq);
+            animation: cinematicPulse 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         @keyframes cinematicPulse {
-            0% { transform: scale(1.05); filter: brightness(1.8) blur(5px); opacity: 0.7; }
+            0% { transform: scale(1.08); filter: brightness(2) blur(8px); opacity: 0.5; }
             100% { transform: scale(1); filter: brightness(1) blur(0px); opacity: 1; }
         }
 
         .vignette {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
-            background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.98) 100%);
+            background: radial-gradient(circle at center, transparent 15%, rgba(0,0,0,0.96) 100%);
         }
 
-        h1, h2, h3 { margin: 0; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
-        .glow-text { color: var(--theme-color); text-shadow: 0 0 30px var(--theme-color); font-weight: 900; }
+        h1, h2, h3 { margin: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
+        .glow-text { color: var(--theme-color); text-shadow: 0 0 25px var(--theme-color); font-weight: 900; }
 
-        #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.6s var(--transition-hq); }
+        #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.5s ease; }
         #landing-stage { flex-direction: column; justify-content: center; align-items: center; }
-        #dashboard-stage { display: none; opacity: 0; flex-direction: column; transform: translateY(30px); }
+        #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
 
-        .carousel-container { display: flex; gap: 30px; padding: 40px 50px; max-width: 100vw; overflow-x: auto; scrollbar-width: none; align-items: center; }
+        .carousel-container { display: flex; gap: 25px; padding: 30px 50px; max-width: 100vw; overflow-x: auto; scrollbar-width: none; align-items: center; }
         .carousel-container::-webkit-scrollbar { display: none; }
 
-        /* HERO CARD CINEMATIC FX */
+        /* ALL AVENGERS CARDS RETRIEVED */
         .avenger-card {
-            min-width: 260px; height: 390px; background: rgba(8, 8, 12, 0.3); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px;
+            min-width: 250px; height: 380px; background: rgba(10, 10, 15, 0.35); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;
             display: flex; flex-direction: column; justify-content: space-between; align-items: center;
-            cursor: pointer; transition: var(--transition-hq); position: relative; overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
         }
-        .avenger-card::before {
-            content: ''; position: absolute; top:0; left:-100%; width:50%; height:100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.03), transparent); transform: skewX(-25deg); transition: 0.7s;
-        }
-        .avenger-card:hover::before { left: 150%; }
-        .avenger-card:hover { transform: translateY(-12px) scale(1.03); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 30px currentColor; border-color: currentColor; background: rgba(10, 10, 15, 0.5); }
-        .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); transition: transform 0.4s ease; }
-        .avenger-card:hover .card-icon { transform: scale(1.15) rotate(-5deg); }
+        .avenger-card:hover { transform: translateY(-12px) scale(1.03); box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 25px currentColor; border-color: currentColor; background: rgba(255,255,255,0.04); }
+        .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); transition: 0.3s; }
+        .avenger-card:hover .card-icon { transform: scale(1.1) rotate(-5deg); }
 
-        /* PILL GLASS NAVBAR */
+        /* REEL STYLE GLASS NAVBAR (Floating Pill Bottom) */
         .sidebar { 
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: max-content; padding: 12px 24px; gap: 15px; z-index: 1000; 
-            background: rgba(10, 10, 15, 0.4); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 60px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            display: flex; align-items: center; transition: var(--transition-hq);
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: max-content; padding: 10px 20px; gap: 12px; z-index: 1000; 
+            background: rgba(10, 10, 15, 0.5); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 50px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            display: flex; align-items: center; transition: 0.3s;
         }
         
         .nav-btn { 
             font-size: 1.4rem; cursor: pointer; opacity: 0.5; 
-            width: 48px; height: 48px; border-radius: 50%; 
+            width: 46px; height: 46px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center;
             transition: var(--transition-hq);
         }
-        .nav-btn.home-btn { opacity: 0.8; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        .nav-btn.home-btn { opacity: 0.8; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
         .nav-btn.active { 
             opacity: 1; transform: translateY(-6px); 
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
             box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 20px var(--theme-color); 
             color: var(--theme-color); border: 1px solid var(--theme-color);
         }
 
-        .content-area { flex: 1; padding: 40px 40px 140px 40px; overflow-y: auto; position: relative; z-index: 10; }
-        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
+        .content-area { flex: 1; padding: 40px 40px 130px 40px; overflow-y: auto; position: relative; z-index: 10; }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
 
-        /* CARDS WITH KINETIC FX */
         .tool-card {
             background: rgba(10, 10, 15, 0.4); border: 1px solid var(--glass-border); border-radius: 16px;
-            padding: 25px; cursor: pointer; transition: var(--transition-hq); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 30px rgba(0,0,0,0.3);
+            padding: 22px; cursor: pointer; transition: var(--transition-hq); backdrop-filter: blur(20px); position: relative;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 8px 25px rgba(0,0,0,0.3);
         }
-        .tool-card:hover { border-color: var(--theme-color); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 15px rgba(255,255,255,0.02); }
+        .tool-card:hover { border-color: var(--theme-color); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
         
-        .action-btn { background: rgba(0,0,0,0.5); border: 1px solid var(--theme-color); color: #fff; padding: 10px 22px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
-        .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 25px var(--theme-color); transform: scale(1.04); }
-        .add-btn { position: absolute; top: 15px; right: 15px; background: var(--theme-color); color: #000; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.1rem; transition: 0.3s; z-index: 10;}
-        .add-btn:hover { transform: scale(1.15); box-shadow: 0 0 15px var(--theme-color); }
+        .action-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); transform: scale(1.05); }
+        .add-btn { position: absolute; top: 15px; right: 15px; background: var(--theme-color); color: #000; border: none; border-radius: 50%; width: 26px; height: 26px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.1rem; transition: 0.3s; z-index: 10;}
         
-        input, select, textarea { background: rgba(0,0,0,0.6); border: 1px solid var(--glass-border); color: white; padding: 12px; border-radius: 10px; outline: none; transition: 0.3s; }
-        input:focus, select:focus, textarea:focus { border-color: var(--theme-color); box-shadow: 0 0 15px rgba(0,255,170,0.2); }
+        input, select, textarea { background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; outline: none; }
         
-        /* MODALS ARCHITECTURE */
-        .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(1, 1, 3, 0.75); display: none; justify-content: center; align-items: center; backdrop-filter: blur(30px); opacity: 0; transition: all 0.5s var(--transition-hq); }
-        .modal-box { background: rgba(8, 8, 12, 0.6); border: 1px solid var(--theme-color); border-radius: 20px; padding: 40px; width: 600px; max-width: 90%; position: relative; max-height: 80vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05); }
+        /* OVERLAYS & PORTALS */
+        .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; backdrop-filter: blur(25px); opacity: 0; transition: 0.4s; }
+        .modal-box { background: rgba(10, 10, 15, 0.65); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 650px; max-width: 92%; position: relative; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); transition: 0.3s; }
-        .close-btn:hover { transform: scale(1.2) rotate(90deg); text-shadow: 0 0 15px var(--theme-color); }
+        .close-btn:hover { transform: scale(1.2) rotate(90deg); }
         
-        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 20px; margin-top: 20px; }
-        .app-icon { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; text-align: center; position: relative; }
-        .app-icon:hover { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--theme-color)); }
-        .app-icon .icon-img { font-size: 2.2rem; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border); }
-        .app-icon span { font-size: 0.75rem; color: #ccc; word-break: break-all; margin-top: 4px; }
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 15px; margin-top: 20px; }
+        .app-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .app-icon:hover { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--theme-color)); }
+        .app-icon .icon-img { font-size: 2.2rem; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 16px; border: 1px solid var(--glass-border); }
+        .app-icon span { font-size: 0.75rem; color: #ddd; word-break: break-all; }
 
         /* JARVIS HUD VIZUALIZER ELEMENT */
         #mic-status { 
-            position: fixed; top: 25px; left: 50%; transform: translateX(-50%); 
-            padding: 12px 30px; background: rgba(4, 4, 6, 0.6); border: 1px solid var(--theme-color); 
-            border-radius: 30px; z-index: 20000; color: var(--theme-color); font-weight: bold; 
-            backdrop-filter: blur(20px); box-shadow: 0 0 30px rgba(0, 255, 170, 0.2); 
-            letter-spacing: 1px; font-size: 0.9rem; transition: all 0.4s ease;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; 
+            background: rgba(5, 5, 8, 0.6); border: 1px solid var(--theme-color); border-radius: 30px; 
+            z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); 
+            box-shadow: 0 0 25px rgba(0, 255, 170, 0.15); font-size: 0.85rem; letter-spacing: 1px; transition: all 0.4s ease;
         }
-        .pulse-active { animation: jarvisBreathe 1.5s infinite alternate ease-in-out; }
+        .pulse-active { animation: jarvisBreathe 1.4s infinite alternate ease-in-out; }
         @keyframes jarvisBreathe { 
-            0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); border-color: rgba(0, 255, 170, 0.4); } 
-            100% { box-shadow: 0 0 35px var(--theme-color); border-color: var(--theme-color); transform: translateX(-50%) scale(1.03); } 
+            0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); border-color: rgba(0, 255, 170, 0.3); } 
+            100% { box-shadow: 0 0 30px var(--theme-color); border-color: var(--theme-color); transform: translateX(-50%) scale(1.02); } 
         }
 
-        #jarvis-hud-text { font-family: monospace; font-size: 1.1rem; color: #fff; line-height: 1.6; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        #jarvis-hud-text { font-family: monospace; font-size: 1.1rem; color: #fff; line-height: 1.6; white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -156,26 +148,23 @@
     <canvas id="bg-canvas"></canvas>
     <div class="vignette"></div>
     
-    <!-- JARVIS VOICE HUD STATE -->
-    <div id="mic-status" style="display: block;">🔴 SYSTEMS SECURED | WAITING FOR ACTIVATION CODE</div>
+    <div id="mic-status">🔴 MATRIX SECURED | SAY "JARVIS ACTIVATE"</div>
 
-    <!-- GLOBAL JARVIS OVERLAY TERMINAL -->
     <div class="overlay-modal" id="jarvis-terminal-overlay">
-        <div class="modal-box" style="width: 700px; border-color: #00ffaa;">
+        <div class="modal-box" style="width: 750px;">
             <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
-            <h2 id="jarvis-modal-title" style="color: #00ffaa; text-shadow:0 0 15px #00ffaa;">⚡ JARVIS RESPONSE INTERFACE</h2>
-            <hr style="border: 0; border-top: 1px solid rgba(0,255,170,0.3); margin: 15px 0;">
+            <h2 style="color: var(--theme-color); text-shadow:0 0 15px var(--theme-color);">⚡ JARVIS INTEGRATED INTERFACE</h2>
+            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
             <div id="jarvis-hud-text"></div>
         </div>
     </div>
 
-    <!-- OTHER APP INTERFACES -->
     <div class="overlay-modal" id="settings-overlay">
-        <div class="modal-box" style="width: 400px; text-align:center;">
+        <div class="modal-box" style="width: 380px; text-align:center;">
             <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
-            <h2>Dashboard Controls</h2>
-            <p style="color:#777; font-size:0.85rem; margin-top:5px;">AI Voice Engine Default Mode: Wake Word Standby</p>
-            <button class="action-btn" style="margin-top: 20px; width: 100%; justify-content: center;" onclick="closeModal('settings-overlay')">DISMISS SYSTEM CONFIG</button>
+            <h2>System Manifest</h2>
+            <p style="color:#888; font-size:0.85rem; margin-top:10px;">Voice engine loop active in background.</p>
+            <button class="action-btn" style="margin-top: 15px; width:100%; justify-content:center;" onclick="closeModal('settings-overlay')">DISMISS CONFIG</button>
         </div>
     </div>
 
@@ -184,20 +173,18 @@
             <span class="close-btn" onclick="closeModal('vault-overlay')">✕</span>
             <h2 id="vault-title">Vault</h2>
             <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <input type="text" id="vault-file-name" placeholder="File Identifier" style="width: 40%;">
-                <input type="text" id="vault-file-link" placeholder="Secure Resource Data Link" style="flex: 1;">
-                <button class="action-btn" onclick="saveToVault()">INSERT</button>
+                <input type="text" id="vault-file-name" placeholder="File Name" style="width: 40%;">
+                <input type="text" id="vault-file-link" placeholder="Secure Cloud Link / Data" style="flex: 1;">
+                <button class="action-btn" onclick="saveToVault()">ADD RESOURCE</button>
             </div>
             <div class="app-grid" id="vault-grid"></div>
         </div>
     </div>
 
-    <!-- MAIN LANDING -->
     <div id="landing-stage">
-        <div style="text-align: center; margin-bottom: 3vh;">
-            <h2 style="color: #666; font-size: 0.9rem; letter-spacing: 5px;">K.K. COMMAND DASHBOARD v3.0</h2>
-            <h1>INTEGRATED <span class="glow-text">PROTOCOLS</span></h1>
-            <p style="color: #555; font-size:0.8rem; margin-top: 10px; font-family:monospace;">Say "K.K. Command Dashboard Activate" to bring systems online</p>
+        <div style="text-align: center; margin-bottom: 4vh;">
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. COMMAND DASHBOARD v3.5</h2>
+            <h1>Select <span class="glow-text">System Protocol</span></h1>
         </div>
         <div class="carousel-container">
             <div class="avenger-card" style="color: #ff2a2a;" onclick="initProtocol('ironman', '#ff2a2a')">
@@ -209,176 +196,169 @@
             <div class="avenger-card" style="color: #ffaa00;" onclick="initProtocol('thor', '#ffaa00')">
                 <div class="card-icon">⚡</div><div><h3>THOR</h3><p style="color:#aaa; font-size:0.8rem;">Creative Forge</p></div>
             </div>
+            <div class="avenger-card" style="color: #ff0055;" onclick="initProtocol('spidey', '#ff0055')">
+                <div class="card-icon">🕸️</div><div><h3>SPIDER-MAN</h3><p style="color:#aaa; font-size:0.8rem;">Agency Web</p></div>
+            </div>
             <div class="avenger-card" style="color: #00ffaa;" onclick="initProtocol('strange', '#00ffaa')">
                 <div class="card-icon">👁️</div><div><h3>DR. STRANGE</h3><p style="color:#aaa; font-size:0.8rem;">AI Nexus</p></div>
+            </div>
+            <div class="avenger-card" style="color: #aa00ff;" onclick="initProtocol('starlord', '#aa00ff')">
+                <div class="card-icon">🎧</div><div><h3>STAR-LORD</h3><p style="color:#aaa; font-size:0.8rem;">Chill Galaxy</p></div>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD VIEW -->
     <div id="dashboard-stage">
         <div class="sidebar">
             <div class="nav-btn home-btn" onclick="returnToHome()">⌂</div>
             <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🚀</div>
             <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">🛡️</div>
             <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">⚡</div>
+            <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
             <div class="nav-btn" id="nav-strange" style="color: #00ffaa;" onclick="switchModule('strange')">👁️</div>
+            <div class="nav-btn" id="nav-starlord" style="color: #aa00ff;" onclick="switchModule('starlord')">🎧</div>
         </div>
         <div class="content-area" id="main-content"></div>
     </div>
 
     <script>
         let currentModule = '';
-        const bgWallpaper = document.getElementById('bg-wallpaper');
         let isFocusTimerRunning = false; let timerInterval;
 
+        // CORES DESIGN MAPPING (ALL MODULES RENDERED SMOOTHLY)
         const modules = {
             ironman: {
-                color: '#ff2a2a', title: 'Academic Matrix',
+                color: '#ff2a2a', title: 'Academic Matrix Core',
                 html: `
-                    <div style="display:flex; gap: 30px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <div style="display:flex; gap: 25px; margin-bottom: 25px; flex-wrap: wrap;">
                         <div class="tool-card" style="flex: 1.5; min-width: 320px;">
-                            <h3>Master Academic Layout</h3>
+                            <h3>Master Timetable</h3>
                             <select id="day-selector" onchange="renderTimetable()" style="margin: 15px 0; width:100%;">
                                 <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
                                 <option>Thursday</option><option>Friday</option><option>Saturday</option>
                             </select>
-                            <div id="timetable-display" style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; font-size: 0.9rem; min-height: 100px;"></div>
+                            <div id="timetable-display" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; font-size: 0.9rem; min-height: 80px;"></div>
                         </div>
-                        
                         <div class="tool-card" style="flex: 1; text-align: center; border-color: var(--theme-color);">
                             <h3>Focus Matrix</h3>
-                            <div style="margin: 15px 0;"><input type="number" id="focus-mins" value="25" style="width:70px; font-size:1.2rem; text-align:center;"> mins</div>
-                            <div id="hud-timer" style="font-size: 3rem; font-family: monospace; font-weight: bold; color: var(--theme-color); margin-bottom:15px; text-shadow: 0 0 20px var(--theme-color);">25:00</div>
-                            <button class="action-btn" id="focus-btn" onclick="toggleTimer()">EXECUTE</button>
+                            <div style="margin: 10px 0;"><input type="number" id="focus-mins" value="25" style="width:60px; font-size:1.1rem; text-align:center;"> mins</div>
+                            <div id="hud-timer" style="font-size: 2.8rem; font-family: monospace; font-weight: bold; color: var(--theme-color); margin-bottom:10px; text-shadow: 0 0 15px var(--theme-color);">25:00</div>
+                            <button class="action-btn" id="focus-btn" onclick="toggleTimer()">START CORE</button>
                         </div>
                     </div>
-                    
-                    <h3>BAMS Structural Vaults</h3>
+                    <h3>BAMS Vaults <span style="font-size:0.8rem; color:#888;">(All RESTORED)</span></h3>
                     <div class="grid-layout" style="margin-top:15px;">
-                        <div class="tool-card" onclick="openVault('Samhita')"><span style="font-size:1.5rem;">📜</span> <h3 style="display:inline; margin-left:10px;">Samhita</h3></div>
-                        <div class="tool-card" onclick="openVault('Anatomy')"><span style="font-size:1.5rem;"> Bones</span> <h3 style="display:inline; margin-left:10px;">Anatomy</h3></div>
-                        <div class="tool-card" onclick="openVault('Physiology')"><span style="font-size:1.5rem;">🧪</span> <h3 style="display:inline; margin-left:10px;">Physiology</h3></div>
+                        <div class="tool-card" onclick="openVault('Samhita')"><span style="font-size:1.3rem;">📜</span> <h3 style="display:inline; margin-left:8px;">Samhita</h3></div>
+                        <div class="tool-card" onclick="openVault('Anatomy')"><span style="font-size:1.3rem;">🦴</span> <h3 style="display:inline; margin-left:8px;">Anatomy</h3><p style="font-size:0.75rem; color:#777; margin-top:4px;">Rachana Sharir</p></div>
+                        <div class="tool-card" onclick="openVault('Physiology')"><span style="font-size:1.3rem;">🧪</span> <h3 style="display:inline; margin-left:8px;">Physiology</h3><p style="font-size:0.75rem; color:#777; margin-top:4px;">Kriya Sharir</p></div>
+                        <div class="tool-card" onclick="openVault('Padarth Vigyan')"><span style="font-size:1.3rem;">⚛️</span> <h3 style="display:inline; margin-left:8px;">Padarth Vigyan</h3></div>
+                        <div class="tool-card" onclick="openVault('Sanskrit')"><span style="font-size:1.3rem;">🕉️</span> <h3 style="display:inline; margin-left:8px;">Sanskrit</h3></div>
+                        <div class="tool-card" onclick="openVault('Exam Vault')"><span style="font-size:1.3rem;">🎓</span> <h3 style="display:inline; margin-left:8px;">Exam Vault</h3></div>
+                        <div class="tool-card" onclick="openVault('Sloka Library')"><span style="font-size:1.3rem;">✨</span> <h3 style="display:inline; margin-left:8px;">Sloka Library</h3></div>
                     </div>
                 `
             },
-            cap: { 
-                color: '#0077ff', 
-                title: 'Tactical Trading Terminal', 
-                html: `
-                    <div id="tradingview_cap" style="height:55vh; border-radius:16px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:20px;"></div>
-                    <div class="grid-layout">
-                        <div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><h3>Angel One System</h3><p style="color:#555;font-size:0.8rem;margin-top:5px;">Broker Linkage 01</p></div>
-                        <div class="tool-card" onclick="window.open('https://web.dhan.co/')"><h3>Dhan Terminal</h3><p style="color:#555;font-size:0.8rem;margin-top:5px;">Broker Linkage 02</p></div>
-                    </div>
-                ` 
-            },
-            thor: { color: '#ffaa00', title: 'Creative Forge', html: `<div class="grid-layout"><div class="tool-card"><h3>Creative Logs</h3><textarea id="thor-story" style="width:95%; height:100px; margin-top:10px;" placeholder="System ready for creative scripting..."></textarea></div></div>` },
-            strange: { color: '#00ffaa', title: 'AI Omni Nexus', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://chatgpt.com')"><h3>ChatGPT Engine</h3></div><div class="tool-card" onclick="window.open('https://gemini.google.com')"><h3>Gemini Core</h3></div></div>` }
+            cap: { color: '#0077ff', title: 'Tactical Trading Terminal', html: `<div id="tradingview_cap" style="height:52vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div><div class="grid-layout"><div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><h3>Angel One System</h3></div><div class="tool-card" onclick="window.open('https://web.dhan.co/')"><h3>Dhan Systems</h3></div></div>` },
+            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<div class="grid-layout"><div class="tool-card"><h3>Write Logs</h3><textarea id="thor-story" style="width:95%; height:90px; margin-top:8px;" placeholder="Scripting interface active..."></textarea></div></div>` },
+            spidey: { color: '#ff0055', title: 'Agency Web Control', html: `<p style="color:#aaa; margin-bottom:15px;">DDK Freelancers Ledger Panel</p><div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Google Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Google Sheets</h3></div></div>` },
+            strange: { color: '#00ffaa', title: 'AI Nexus Portal', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://chatgpt.com')"><h3>ChatGPT Module</h3></div><div class="tool-card" onclick="window.open('https://gemini.google.com')"><h3>Gemini Mainframe</h3></div></div>` },
+            starlord: { color: '#aa00ff', title: 'Chill Galaxy Lounge', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://lofi.co')"><h3>Lofi Cafe Stream</h3></div><div class="tool-card" onclick="window.open('https://popit.click/')"><h3>Pop It Engine</h3></div></div>` }
         };
 
-        // Cinematic Navigation Transitions Trigger
-        function addCinematicTransitionEffect() {
-            const body = document.body;
-            body.classList.add('stage-transition');
-            setTimeout(() => body.classList.remove('stage-transition'), 800);
+        function addCinematicTransition() {
+            document.body.classList.add('stage-transition');
+            setTimeout(() => document.body.classList.remove('stage-transition'), 500);
         }
 
         function initProtocol(id, color) {
-            addCinematicTransitionEffect();
+            addCinematicTransition();
             currentModule = id;
             document.documentElement.style.setProperty('--theme-color', color);
             document.getElementById('landing-stage').style.display = 'none';
             document.getElementById('dashboard-stage').style.display = 'flex';
             setTimeout(() => document.getElementById('dashboard-stage').style.opacity = '1', 50);
-            resetParticles(color); renderModule(id);
+            renderModule(id);
         }
 
         function returnToHome() {
-            addCinematicTransitionEffect();
+            addCinematicTransition();
             document.getElementById('dashboard-stage').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('dashboard-stage').style.display = 'none';
                 document.getElementById('landing-stage').style.display = 'flex';
                 document.documentElement.style.setProperty('--theme-color', '#00ffaa');
-                resetParticles('#00ffaa');
                 clearInterval(timerInterval); isFocusTimerRunning = false;
-            }, 500);
+            }, 400);
         }
 
         function renderModule(id) {
             currentModule = id;
             const mod = modules[id];
             document.documentElement.style.setProperty('--theme-color', mod.color);
-            resetParticles(mod.color);
 
             document.querySelectorAll('.nav-btn').forEach(b => { if(!b.classList.contains('home-btn')) b.style.display='none'; b.classList.remove('active');});
             document.getElementById('nav-'+id).style.display='flex';
             document.getElementById('nav-'+id).classList.add('active');
 
             document.getElementById('main-content').innerHTML = `
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
                     <h2>${mod.title}</h2>
-                    <button class="action-btn" onclick="openModal('settings-overlay')">⚙️ MODULE MANIFEST</button>
+                    <button class="action-btn" onclick="openModal('settings-overlay')">⚙️ CONSOLE MANIFEST</button>
                 </div>
                 <div>${mod.html}</div>`;
 
-            if(id === 'ironman') { renderTimetable(); }
+            if(id === 'ironman') renderTimetable();
             if(id === 'cap') loadTV();
         }
 
-        function switchModule(id) { addCinematicTransitionEffect(); renderModule(id); }
+        function switchModule(id) { addCinematicTransition(); renderModule(id); }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
-        function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',400); }
+        function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
 
-        // Timetable Base Data
-        let kkTimetable = {"Monday": [{time: "10:00 AM", sub: "Physiology Lecture"}]};
+        // Core Timetable
+        let kkTimetable = {"Monday": [{time: "09:00 AM", sub: "Rachana Sharir Atlas Mapping"}]};
         function renderTimetable() {
             let day = document.getElementById('day-selector').value;
             let data = kkTimetable[day] || [];
-            let html = data.map((e) => `<div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>⏰ ${e.time} &nbsp;|&nbsp; <b>${e.sub}</b></span></div>`).join('');
-            document.getElementById('timetable-display').innerHTML = html || "<p style='color:#555;'>No data entries for today.</p>";
+            let html = data.map((e) => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>⏰ ${e.time} &nbsp;|&nbsp; <b>${e.sub}</b></span></div>`).join('');
+            document.getElementById('timetable-display').innerHTML = html || "<p style='color:#555;'>No operations logged.</p>";
         }
 
         function toggleTimer() {
             let display = document.getElementById('hud-timer'); let btn = document.getElementById('focus-btn');
             if(!display) return;
-            if(isFocusTimerRunning) { clearInterval(timerInterval); isFocusTimerRunning = false; btn.innerText = "EXECUTE"; }
+            if(isFocusTimerRunning) { clearInterval(timerInterval); isFocusTimerRunning = false; btn.innerText = "START CORE"; }
             else {
                 let mins = parseInt(document.getElementById('focus-mins').value) || 25;
-                let timeLeft = mins * 60; isFocusTimerRunning = true; btn.innerText = "HALT";
+                let timeLeft = mins * 60; isFocusTimerRunning = true; btn.innerText = "HALT CORE";
                 timerInterval = setInterval(() => {
                     if(timeLeft > 0) { timeLeft--; let m = Math.floor(timeLeft/60), s = timeLeft%60; display.innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`; }
-                    else { clearInterval(timerInterval); isFocusTimerRunning = false; display.innerText = "00:00"; btn.innerText="EXECUTE"; }
+                    else { clearInterval(timerInterval); isFocusTimerRunning = false; display.innerText = "00:00"; btn.innerText="START CORE"; }
                 }, 1000);
             }
         }
 
+        // Vault Recovered Systems
         let vaultData = {
-            "Physiology": [{name: "Sushruta Kriya Sharir File", link: "https://drive.google.com"}, {name: "x file", link: "https://drive.google.com"}],
-            "Samhita": [{name: "Charaka Sutrasthana", link: "https://archive.org"}],
-            "Anatomy": [{name: "Rachana Sharir Atlas", link: "https://drive.google.com"}]
+            "Physiology": [{name: "x file", link: "https://drive.google.com"}, {name: "Kriya Sharir Core Notes", link: "https://drive.google.com"}],
+            "Samhita": [{name: "Charaka Samhita Reference", link: "https://archive.org"}],
+            "Anatomy": [{name: "Rachana Sharir Bone Guide", link: "https://drive.google.com"}],
+            "Padarth Vigyan": [], "Sanskrit": [], "Exam Vault": [], "Sloka Library": []
         };
-        let currentVaultCat = '';
         function openVault(cat) {
             currentVaultCat = cat;
-            document.getElementById('vault-title').innerText = cat + " Knowledge Vault";
-            renderVaultGrid();
-            openModal('vault-overlay');
+            document.getElementById('vault-title').innerText = cat + " System Hub";
+            renderVaultGrid(); openModal('vault-overlay');
         }
         function renderVaultGrid() {
             let data = vaultData[currentVaultCat] || [];
-            let html = '';
-            data.forEach((item) => {
-                html += `<div class="app-icon" onclick="window.open('${item.link}')"><div class="icon-img">📄</div><span>${item.name}</span></div>`;
-            });
+            let html = data.map((item) => `<div class="app-icon" onclick="window.open('${item.link}')"><div class="icon-img">📄</div><span>${item.name}</span></div>`).join('');
             document.getElementById('vault-grid').innerHTML = html || "<p style='color:#555;'>Vault Empty.</p>";
         }
         function saveToVault() {
             let name = document.getElementById('vault-file-name').value; let link = document.getElementById('vault-file-link').value;
             if(!name || !link) return;
-            if(!vaultData[currentVaultCat]) vaultData[currentVaultCat] = [];
             vaultData[currentVaultCat].push({name, link});
             document.getElementById('vault-file-name').value=''; document.getElementById('vault-file-link').value=''; renderVaultGrid();
         }
@@ -387,163 +367,156 @@
             setTimeout(() => {
                 document.getElementById('tradingview_cap').innerHTML='';
                 let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js';
-                script.onload = () => new TradingView.widget({"autosize":true,"symbol":"BSE:SENSEX","interval":"5","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#040406","gridColor":"rgba(0,119,255,0.05)"});
+                script.onload = () => new TradingView.widget({"autosize":true,"symbol":"BSE:SENSEX","interval":"15","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"});
                 document.body.appendChild(script);
             }, 100);
         }
 
         // =========================================================================
-        // JARVIS INTELLIGENT VOICE ENGINE ENGINE (GEMINI POWERED CONTEXT & TEACHING)
+        // SHORT-ACTIVATION JARVIS INTEGRATION CORE
         // =========================================================================
-        let voiceSynthesizer = window.speechSynthesis;
-        let voiceActiveStatus = false;
+        let voiceSynth = window.speechSynthesis;
+        let jarvisActive = false;
 
-        function jarvisSpeak(textToSay) {
-            if (voiceSynthesizer) {
-                voiceSynthesizer.cancel(); // Stop any pending voice
-                let speechInstance = new SpeechSynthesisUtterance(textToSay);
-                speechInstance.lang = 'en-IN';
-                speechInstance.rate = 1.05;
-                speechInstance.pitch = 0.95; // Slightly deeper, cinematic tone
-                voiceSynthesizer.speak(speechInstance);
+        function jarvisSpeak(phrase) {
+            if (voiceSynth) {
+                voiceSynth.cancel();
+                let utterance = new SpeechSynthesisUtterance(phrase);
+                utterance.lang = 'en-IN'; utterance.rate = 1.05; utterance.pitch = 0.95;
+                voiceSynth.speak(utterance);
             }
         }
 
-        // Gemini API Web-link Client Simulation
-        async function queryGeminiBrain(userQuery, frameworkContext = "general") {
-            // Yahan trading & academic context set kiya hai
-            let contextualPrompt = userQuery;
-            if (frameworkContext === "trading") {
-                contextualPrompt = "Act as my elite personal Technical Analysis and Trading Mentor. Answer concisely like a pro trader: " + userQuery;
-            } else if (frameworkContext === "bams") {
-                contextualPrompt = "Act as an expert Ayurveda & BAMS Professor. Explain this chapter/topic clearly to your student: " + userQuery;
-            }
+        async function triggerGeminiAI(question, contextMode = "general") {
+            let optimizedPrompt = question;
+            if (contextMode === "trading") optimizedPrompt = "Act as my elite technical analysis trading teacher. Answer sharply: " + question;
+            if (contextMode === "bams") optimizedPrompt = "Act as an expert BAMS Ayurveda professor. Explain this clearly: " + question;
 
             try {
-                // Backend Edge integration placeholder
-                const response = await fetch('/api/agent', {
+                const res = await fetch('/api/agent', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: contextualPrompt, agentType: frameworkContext })
+                    body: JSON.stringify({ prompt: optimizedPrompt, agentType: contextMode })
                 });
-                const responseParsed = await response.json();
-                return responseParsed.success ? responseParsed.message : "I have synthesized the insights, sir. However, connect the API route to fetch direct live core computations.";
-            } catch (failErr) {
-                // Local Fallback simulation for critical topics if backend isn't mapped
-                if(userQuery.includes("nifty") || userQuery.includes("strategy") || userQuery.includes("trade")) {
-                    return "Sir, as your trading mentor, look closely at the current market structure. Ensure your risk management is absolute before initiating leverage on this configuration.";
+                const parsed = await res.json();
+                return parsed.success ? parsed.message : "Data stream interpreted, sir. API configurations are pending layout.";
+            } catch (err) {
+                if (optimizedPrompt.includes("trade") || optimizedPrompt.includes("mentor") || optimizedPrompt.includes("nifty")) {
+                    return "As your trading teacher, I suggest evaluating the volume profiles. Wait for confirmation before deploying asset capital, sir.";
                 }
-                return "Systems are fully synced. I am ready to process your query via Gemini as soon as the active secure backend is running. Ask me anything, sir!";
+                return "The matrix is perfectly configured. I am ready to route your direct prompt sequences straight through Gemini as soon as the live endpoint goes live!";
             }
         }
 
-        const AudioRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (AudioRecognitionAPI) {
-            let activeSpeechSession = new AudioRecognitionAPI();
-            activeSpeechSession.continuous = true;
-            activeSpeechSession.interimResults = false;
-            activeSpeechSession.lang = 'en-US';
+        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechEngine) {
+            let engineInstance = new SpeechEngine();
+            engineInstance.continuous = true; engineInstance.interimResults = false; engineInstance.lang = 'en-US';
 
-            activeSpeechSession.onresult = async function(event) {
-                let textSpeechTranscript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-                console.log("Captured Signal: ", textSpeechTranscript);
+            engineInstance.onresult = async function(event) {
+                let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+                console.log("HUD Vector Captured: ", speechToken);
 
-                // 1. WAKE WORD SYSTEM LOCK DETECTOR
-                if (textSpeechTranscript.includes("k.k. command dashboard activate") || textSpeechTranscript.includes("activate dashboard")) {
-                    voiceActiveStatus = true;
-                    document.getElementById('mic-status').innerText = "🟢 JARVIS ONLINE | AWAITING COMMANDS";
+                // SHORT ACTIVATION SHORTCODE HOOK
+                if (speechToken.includes("jarvis activate") || speechToken.includes("activate")) {
+                    jarvisActive = true;
+                    document.getElementById('mic-status').innerText = "🟢 JARVIS ONLINE | HUD RESPONSIVE";
                     document.getElementById('mic-status').classList.add('pulse-active');
-                    jarvisSpeak("K.K. Command Dashboard activated. Systems are online and responsive, Sir.");
+                    jarvisSpeak("Systems fully functional. Jarvis online. Tell me how to assist you today, Sir.");
                     return;
                 }
 
-                // IF SECURED STATUS IS OFFLINE, DO NOT RESPOND TO OTHER COMMANDS
-                if (!voiceActiveStatus) return;
+                if (!jarvisActive) return;
 
-                // 2. DYNAMIC COMMAND ARCHITECTURE
-                // Focus Time Command Parser
-                if (textSpeechTranscript.includes("focus time minutes set karo") || textSpeechTranscript.includes("focus time")) {
-                    let extractedMinutes = textSpeechTranscript.match(/\d+/);
-                    if (extractedMinutes) {
-                        document.getElementById('focus-mins').value = extractedMinutes[0];
-                        document.getElementById('hud-timer').innerText = `${extractedMinutes[0]}:00`;
-                        jarvisSpeak(`Setting focus matrix timer to ${extractedMinutes[0]} minutes, sir.`);
+                // VOICE COMMAND MAPPINGS
+                if (speechToken.includes("focus time minutes set karo") || speechToken.includes("focus time")) {
+                    let numMatch = speechToken.match(/\d+/);
+                    if (numMatch) {
+                        document.getElementById('focus-mins').value = numMatch[0];
+                        document.getElementById('hud-timer').innerText = `${numMatch[0]}:00`;
+                        jarvisSpeak(`Setting matrix to ${numMatch[0]} minutes.`);
                         if(!isFocusTimerRunning) toggleTimer();
-                    } else {
-                        jarvisSpeak("Please specify the exact minutes for the focus core, sir.");
-                    }
+                    } else { jarvisSpeak("State numerical minutes, sir."); }
                 }
-                // Vault Access Control Command Parser
-                else if (textSpeechTranscript.includes("physiology me x file kholo") || (textSpeechTranscript.includes("physiology") && textSpeechTranscript.includes("file"))) {
+                else if (speechToken.includes("physiology me x file kholo") || (speechToken.includes("physiology") && speechToken.includes("file"))) {
                     if (currentModule !== 'ironman') initProtocol('ironman', '#ff2a2a');
                     openVault('Physiology');
-                    jarvisSpeak("Accessing Physiology Matrix. Displaying designated files on your central HUD immediately.");
+                    jarvisSpeak("Extracting Kriya Sharir parameters. Displaying X file.");
                 }
-                else if (textSpeechTranscript.includes("samhita vault kholo")) {
-                    if (currentModule !== 'ironman') initProtocol('ironman', '#ff2a2a');
-                    openVault('Samhita');
-                    jarvisSpeak("Opening Samhita archive.");
+                else if (speechToken.includes("trading terminal") || speechToken.includes("captain")) {
+                    initProtocol('cap', '#0077ff'); jarvisSpeak("Trading matrix active.");
                 }
-                // Stage Module Routing commands
-                else if (textSpeechTranscript.includes("open trading terminal") || textSpeechTranscript.includes("captain protocol")) {
-                    initProtocol('cap', '#0077ff');
-                    jarvisSpeak("Trading matrix routing complete.");
+                else if (speechToken.includes("return to home") || speechToken.includes("close protocol")) {
+                    returnToHome(); jarvisSpeak("Mainframe offline.");
                 }
-                else if (textSpeechTranscript.includes("return to home") || textSpeechTranscript.includes("clear system")) {
-                    returnToHome();
-                    jarvisSpeak("Returning to main grid protocol stand-by.");
-                }
-                // 3. OMNI-NEXUS GEMINI INTELLIGENT AGENT & TRADING MENTOR ENGINE
                 else {
-                    document.getElementById('mic-status').innerText = "🧠 JARVIS PROCESSING INTEL...";
-                    
-                    // Context identification for specialized teaching
-                    let specificContext = "general";
-                    if(textSpeechTranscript.includes("chapter") || textSpeechTranscript.includes("topic") || textSpeechTranscript.includes("bams") || textSpeechTranscript.includes("ayurveda")) {
-                        specificContext = "bams";
-                    } else if (textSpeechTranscript.includes("trade") || textSpeechTranscript.includes("market") || textSpeechTranscript.includes("nifty") || textSpeechTranscript.includes("price action")) {
-                        specificContext = "trading";
-                    }
+                    document.getElementById('mic-status').innerText = "🧠 SYNTHESIZING GEMINI DATA...";
+                    let currentCtx = "general";
+                    if (speechToken.includes("chapter") || speechToken.includes("topic") || speechToken.includes("bams")) currentCtx = "bams";
+                    if (speechToken.includes("trade") || speechToken.includes("nifty") || speechToken.includes("market")) currentCtx = "trading";
 
                     openModal('jarvis-terminal-overlay');
-                    document.getElementById('jarvis-hud-text').innerText = "Analyzing transmission sequence...";
+                    document.getElementById('jarvis-hud-text').innerText = "Routing stream through Gemini Mainframe...";
 
-                    let responseResult = await queryGeminiBrain(textSpeechTranscript, specificContext);
-                    
-                    document.getElementById('jarvis-hud-text').innerText = responseResult;
-                    jarvisSpeak(responseResult);
-                    
-                    document.getElementById('mic-status').innerText = "🟢 JARVIS ONLINE | AWAITING COMMANDS";
+                    let aiReply = await triggerGeminiAI(speechToken, currentCtx);
+                    document.getElementById('jarvis-hud-text').innerText = aiReply;
+                    jarvisSpeak(aiReply);
+                    document.getElementById('mic-status').innerText = "🟢 JARVIS ONLINE | HUD RESPONSIVE";
                 }
             };
 
-            activeSpeechSession.onend = function() {
-                activeSpeechSession.start(); // Auto-restart loop to keep standby ear active
-            };
-
-            // Initialize Standby loop instantly
-            activeSpeechSession.start();
+            engineInstance.onend = function() { engineInstance.start(); };
+            engineInstance.start();
         }
 
-        // --- BACKGROUND CINEMATIC PARTICLES GRAPHICS ENGINE ---
+        // =========================================================================
+        // 3. FULL HIGH-DENSITY HIGH-TECH CINEMATIC DIGITAL MATRIX ENGINE
+        // =========================================================================
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
-        let particles = [], pColor = '#00ffaa';
+        let lines = [];
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
-        class FastParticle {
-            constructor() { this.reset(); this.z = Math.random() * 1000; }
-            reset() { this.x = (Math.random()-0.5)*canvas.width*2; this.y = (Math.random()-0.5)*canvas.height*2; this.z = 1000; this.speed = Math.random()*1.5+0.5; }
-            update() { this.z -= this.speed; if(this.z <= 1) this.reset(); }
+
+        class DigitalNode {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vy = (Math.random() * 1.2) + 0.4;
+                this.size = Math.random() * 2 + 1;
+                this.alpha = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.y += this.vy;
+                if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; }
+            }
             draw() {
-                let px = (this.x/this.z)*500+canvas.width/2, py = (this.y/this.z)*500+canvas.height/2;
-                if(px<0 || px>canvas.width || py<0 || py>canvas.height) return;
-                ctx.fillStyle = pColor; ctx.globalAlpha = (1000-this.z)/1000 * 0.5;
-                ctx.beginPath(); ctx.arc(px, py, (1000-this.z)/300, 0, 6.28); ctx.fill();
+                ctx.fillStyle = modules[currentModule]?.color || '#00ffaa';
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
         }
-        function resetParticles(c) { pColor = c; particles = []; for(let i=0; i<80; i++) particles.push(new FastParticle()); }
-        function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update(); p.draw();}); requestAnimationFrame(animate); }
-        resetParticles('#00ffaa'); animate();
+
+        for(let i=0; i<150; i++) lines.push(new DigitalNode());
+        
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            
+            // Connective Grid Lines Fx
+            ctx.strokeStyle = modules[currentModule]?.color || '#00ffaa';
+            ctx.lineWidth = 0.15;
+            for(let a=0; a<lines.length; a++) {
+                lines[a].update(); lines[a].draw();
+                for(let b=a+1; b<lines.length; b++) {
+                    let dist = Math.hypot(lines[a].x - lines[b].x, lines[a].y - lines[b].y);
+                    if(dist < 90) {
+                        ctx.globalAlpha = (90 - dist) / 600;
+                        ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
