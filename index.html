@@ -471,11 +471,12 @@
         if(SpeechRecognition) {
             recognition = new SpeechRecognition();
             recognition.continuous = true; recognition.lang = 'en-IN'; // Or en-US
+            
             recognition.onresult = (e) => {
                 let cmd = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
                 console.log("Voice Command: ", cmd);
 
-                // Modules Navigation
+                // 1. System Navigation & Controls (सिस्टम कमांड्स)
                 if(cmd.includes("home") || cmd.includes("close protocol")) returnToHome();
                 else if(cmd.includes("iron man") || cmd.includes("matrix")) initProtocol('ironman', '#ff2a2a');
                 else if(cmd.includes("captain") || cmd.includes("terminal")) initProtocol('cap', '#0077ff');
@@ -484,17 +485,14 @@
                 else if(cmd.includes("strange") || cmd.includes("nexus")) initProtocol('strange', '#00ffaa');
                 else if(cmd.includes("star") || cmd.includes("galaxy")) initProtocol('starlord', '#aa00ff');
                 
-                // Settings & Modals
                 else if(cmd.includes("open setting")) openModal('settings-overlay');
                 else if(cmd.includes("close setting") || cmd.includes("close")) {
                     closeModal('settings-overlay'); closeModal('vault-overlay'); closeModal('text-overlay'); closeModal('game-overlay');
                 }
 
-                // Timers
                 else if(cmd.includes("start focus") || cmd.includes("start timer")) { if(!isFocusTimerRunning) toggleTimer(); }
                 else if(cmd.includes("stop focus") || cmd.includes("stop timer") || cmd.includes("pause")) { if(isFocusTimerRunning) toggleTimer(); }
 
-                // Direct Vault Access
                 else if(cmd.includes("samhita")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Samhita'); }
                 else if(cmd.includes("anatomy") || cmd.includes("rachana")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Anatomy'); }
                 else if(cmd.includes("physiology") || cmd.includes("kriya")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Physiology'); }
@@ -503,24 +501,24 @@
                 else if(cmd.includes("exam")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Exam Vault'); }
                 else if(cmd.includes("sloka")) { if(currentModule!=='ironman')switchModule('ironman'); openVault('Sloka Library'); }
                 
-                // ==========================================
-                // PHASE 2.4: AGENTIC AI TRIGGER
-                // ==========================================
-                // If user command starts with trigger words or doesn't match above rules
-                else if(cmd.includes("jarvis") || cmd.includes("kk") || cmd.includes("what") || cmd.includes("how") || cmd.includes("tell me")) {
-                    
+                // 2. JARVIS AI BRAIN (God Mode Fix - अगर ऊपर का कोई कमांड नहीं है, तो वो सीधा AI से बात करेगा)
+                else {
                     document.getElementById('mic-status').innerText = "🧠 JARVIS Processing...";
                     
                     let agentType = "core";
-                    // Intelligent routing based on current module
-                    if (currentModule === 'ironman' || cmd.includes("bams") || cmd.includes("ayurveda")) {
+                    
+                    // अगर आप BAMS मॉड्यूल में हैं या पढ़ाई की बात कर रहे हैं
+                    if (currentModule === 'ironman' || cmd.includes("bams") || cmd.includes("ayurveda") || cmd.includes("shlok")) {
                         agentType = "bams";
-                    } else if (currentModule === 'cap' || cmd.includes("market") || cmd.includes("nifty") || cmd.includes("trade")) {
+                    } 
+                    // अगर आप ट्रेडिंग मॉड्यूल में हैं या शेयर मार्केट की बात कर रहे हैं
+                    else if (currentModule === 'cap' || cmd.includes("market") || cmd.includes("nifty") || cmd.includes("trade")) {
                         agentType = "trading";
                     }
 
+                    // AI को मैसेज भेजें और जवाब बुलवाएं
                     askJARVISAgent(cmd, agentType).then(reply => {
-                        speakOut(reply); // AI speaks back
+                        speakOut(reply); // AI की आवाज़
                         document.getElementById('mic-status').innerText = "🎙️ Listening for commands...";
                     });
                 }
