@@ -373,18 +373,58 @@
         }
 
         // =========================================================================
-        // SHORT-ACTIVATION JARVIS INTEGRATION CORE
+        // GEMINI FREQUENCY CONVERSATIONAL JARVIS CORE (TRUE AI PERSONALIZATION)
         // =========================================================================
         let voiceSynth = window.speechSynthesis;
         let jarvisActive = false;
 
+        // JARVIS Voice Profile Calibration
         function jarvisSpeak(phrase) {
             if (voiceSynth) {
-                voiceSynth.cancel();
+                voiceSynth.cancel(); // Stop any pending robotic overlaps
                 let utterance = new SpeechSynthesisUtterance(phrase);
-                utterance.lang = 'en-IN'; utterance.rate = 1.05; utterance.pitch = 0.95;
+                
+                // India-English base engine with calibrated tone
+                utterance.lang = 'en-IN'; 
+                utterance.rate = 1.02;  // Natural conversational speed
+                utterance.pitch = 0.90; // Grounded, deep tech presence
+
                 voiceSynth.speak(utterance);
             }
+        }
+
+        // Custom AI Dialogues for Interface Actions
+        const aiDialogueMatrix = {
+            ironman: [
+                "Academic Core activated. Sharir and Samhita databases are online, Sir. Let's crush this session.",
+                "Iron Man protocol engaged. BAMS vaults initialized. Ready when you are, Sir."
+            ],
+            captain: [
+                "Tactical Terminal deployed, Sir. Angel One and Dhan systems ready to track market flows.",
+                "Captain protocol online. Chart parameters loaded. Deploy capital with absolute precision, Sir."
+            ],
+            thor: [
+                "Creative Forge open. Ready to lock in your next script or log your thoughts, Sir.",
+                "Thor core initialized. The script matrix is listening. Let's create something cinematic."
+            ],
+            spidey: [
+                "Agency Web Control deployed. Workspaces and sheets are live. Time to scale the venture, Sir.",
+                "Spidey protocol active. Web ledger and documents are synced. Ready for operations."
+            ],
+            strange: [
+                "AI Nexus Portal fully calibrated. The mainframes are at your absolute command, Sir.",
+                "Doctor Strange protocol initialized. The neural gates are responsive."
+            ],
+            starlord: [
+                "Lounge mode active, Sir. Cosmic frequencies and low-fi engines are live. Time to unwind.",
+                "Star-Lord protocol engaged. Relaxing system parameters. Enjoy the vibe, Sir."
+            ]
+        };
+
+        // Quick helper to pick a dynamic, conversational response
+        function getAiResponse(coreId) {
+            const responses = aiDialogueMatrix[coreId];
+            return responses[Math.floor(Math.random() * responses.length)];
         }
 
         async function triggerGeminiAI(question, contextMode = "general") {
@@ -411,53 +451,119 @@
         const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechEngine) {
             let engineInstance = new SpeechEngine();
-            engineInstance.continuous = true; engineInstance.interimResults = false; engineInstance.lang = 'en-US';
+            engineInstance.continuous = true; 
+            engineInstance.interimResults = false; 
+            engineInstance.lang = 'en-US';
 
             engineInstance.onresult = async function(event) {
                 let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
                 console.log("HUD Vector Captured: ", speechToken);
 
-                // SHORT ACTIVATION SHORTCODE HOOK
+                // 1. CHILL SYSTEM WAKE-UP
                 if (speechToken.includes("jarvis activate") || speechToken.includes("activate")) {
                     jarvisActive = true;
                     document.getElementById('mic-status').innerText = "🟢 JARVIS ONLINE | HUD RESPONSIVE";
                     document.getElementById('mic-status').classList.add('pulse-active');
-                    jarvisSpeak("Systems fully functional. Jarvis online. Tell me how to assist you today, Sir.");
+                    jarvisSpeak("All systems functional and calibrated, Sir. Jarvis online. What's the play today?");
                     return;
                 }
 
                 if (!jarvisActive) return;
 
-                // VOICE COMMAND MAPPINGS
-                if (speechToken.includes("focus time minutes set karo") || speechToken.includes("focus time")) {
+                // 2. PROTOCOL SWITCHING LOGIC WITH EMOTIVE DIALOGUES
+                if (speechToken.includes("open iron man") || speechToken.includes("academic matrix") || speechToken.includes("iron man core")) {
+                    initProtocol('ironman', '#ff2a2a');
+                    jarvisSpeak(getAiResponse('ironman'));
+                }
+                else if (speechToken.includes("open captain") || speechToken.includes("trading terminal") || speechToken.includes("captain core")) {
+                    initProtocol('cap', '#0077ff');
+                    jarvisSpeak(getAiResponse('cap'));
+                }
+                else if (speechToken.includes("open thor") || speechToken.includes("creative forge") || speechToken.includes("thor core")) {
+                    initProtocol('thor', '#ffaa00');
+                    jarvisSpeak(getAiResponse('thor'));
+                }
+                else if (speechToken.includes("open spider man") || speechToken.includes("agency web") || speechToken.includes("spidey core")) {
+                    initProtocol('spidey', '#ff0055');
+                    jarvisSpeak(getAiResponse('spidey'));
+                }
+                else if (speechToken.includes("open doctor strange") || speechToken.includes("ai nexus") || speechToken.includes("strange core")) {
+                    initProtocol('strange', '#00ffaa');
+                    jarvisSpeak(getAiResponse('strange'));
+                }
+                else if (speechToken.includes("open star lord") || speechToken.includes("galaxy lounge") || speechToken.includes("star lord core")) {
+                    initProtocol('starlord', '#aa00ff');
+                    jarvisSpeak(getAiResponse('starlord'));
+                }
+
+                // 3. SEAMLESS INTERFACE CONTROLS
+                else if (speechToken.includes("return to home") || speechToken.includes("go back") || speechToken.includes("close protocol")) {
+                    returnToHome();
+                    jarvisSpeak("Mainframe cleared. Returning to system overview. Standing by, Sir.");
+                }
+                else if (speechToken.includes("open configuration") || speechToken.includes("open settings")) {
+                    openModal('settings-overlay');
+                    jarvisSpeak("Pulling up the system manifest console right away.");
+                }
+                else if (speechToken.includes("dismiss config") || speechToken.includes("close console")) {
+                    closeModal('settings-overlay');
+                    jarvisSpeak("Console manifest secured and minimized.");
+                }
+
+                // 4. FOCUS MATRIX TIMER (With real-time conversation)
+                else if (speechToken.includes("focus time set karo") || speechToken.includes("set focus to") || speechToken.includes("timer minutes")) {
                     let numMatch = speechToken.match(/\d+/);
                     if (numMatch) {
-                        document.getElementById('focus-mins').value = numMatch[0];
-                        document.getElementById('hud-timer').innerText = `${numMatch[0]}:00`;
-                        jarvisSpeak(`Setting matrix to ${numMatch[0]} minutes.`);
-                        if(!isFocusTimerRunning) toggleTimer();
-                    } else { jarvisSpeak("State numerical minutes, sir."); }
+                        if (currentModule !== 'ironman') initProtocol('ironman', '#ff2a2a');
+                        setTimeout(() => {
+                            document.getElementById('focus-mins').value = numMatch[0];
+                            document.getElementById('hud-timer').innerText = `${numMatch[0]<10?'0'+numMatch[0]:numMatch[0]}:00`;
+                            jarvisSpeak(`Matrix locked for ${numMatch[0]} minutes. Let's maintain complete focus, Sir. Initializing countdown.`);
+                            if(!isFocusTimerRunning) toggleTimer();
+                        }, 200);
+                    } else { 
+                        jarvisSpeak("Give me a specific number of minutes, Sir, and I'll spin up the matrix."); 
+                    }
                 }
-                else if (speechToken.includes("physiology me x file kholo") || (speechToken.includes("physiology") && speechToken.includes("file"))) {
+                else if (speechToken.includes("stop timer") || speechToken.includes("halt timer")) {
+                    if (isFocusTimerRunning) {
+                        toggleTimer();
+                        jarvisSpeak("Focus core has been halted. Take a breath, Sir.");
+                    } else {
+                        jarvisSpeak("There is no active countdown running at the moment.");
+                    }
+                }
+
+                // 5. DEEP SYSTEM VAULTS
+                else if (speechToken.includes("open vault") || speechToken.includes("vault kholo")) {
                     if (currentModule !== 'ironman') initProtocol('ironman', '#ff2a2a');
-                    openVault('Physiology');
-                    jarvisSpeak("Extracting Kriya Sharir parameters. Displaying X file.");
+                    
+                    if (speechToken.includes("physiology") || speechToken.includes("kriya sharir")) {
+                        openVault('Physiology'); jarvisSpeak("Decoupling Kriya Sharir parameters. Physiology vault is open, Sir.");
+                    } else if (speechToken.includes("anatomy") || speechToken.includes("rachana sharir")) {
+                        openVault('Anatomy'); jarvisSpeak("Rachana Sharir architectural blueprints extracted. Anatomy vault loaded.");
+                    } else if (speechToken.includes("samhita") || speechToken.includes("charaka")) {
+                        openVault('Samhita'); jarvisSpeak("Decrypting Charaka Samhita archives. The texts are illuminated, Sir.");
+                    } else {
+                        jarvisSpeak("I've got multiple vaults locked. Specify whether you need Samhita, Anatomy, or Physiology, Sir.");
+                    }
                 }
-                else if (speechToken.includes("trading terminal") || speechToken.includes("captain")) {
-                    initProtocol('cap', '#0077ff'); jarvisSpeak("Trading matrix active.");
+                else if (speechToken.includes("close vault")) {
+                    closeModal('vault-overlay');
+                    jarvisSpeak("Vault secured. Enclosing data blocks back into storage.");
                 }
-                else if (speechToken.includes("return to home") || speechToken.includes("close protocol")) {
-                    returnToHome(); jarvisSpeak("Mainframe offline.");
-                }
+
+                // 6. TRUE CORE: DIRECT CONVERSATION THROUGH THE MAINFRAME
                 else {
                     document.getElementById('mic-status').innerText = "🧠 SYNTHESIZING GEMINI DATA...";
                     let currentCtx = "general";
-                    if (speechToken.includes("chapter") || speechToken.includes("topic") || speechToken.includes("bams")) currentCtx = "bams";
+                    if (speechToken.includes("chapter") || speechToken.includes("topic") || speechToken.includes("bams") || speechToken.includes("sharir")) currentCtx = "bams";
                     if (speechToken.includes("trade") || speechToken.includes("nifty") || speechToken.includes("market")) currentCtx = "trading";
 
                     openModal('jarvis-terminal-overlay');
                     document.getElementById('jarvis-hud-text').innerText = "Routing stream through Gemini Mainframe...";
 
+                    // Direct fallback to Gemini's actual conversational response
                     let aiReply = await triggerGeminiAI(speechToken, currentCtx);
                     document.getElementById('jarvis-hud-text').innerText = aiReply;
                     jarvisSpeak(aiReply);
