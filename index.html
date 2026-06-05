@@ -3,496 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Command Dashboard | Cinematic HUD</title>
+    <title>K.K. Personal Dashboard</title>
     <style>
-        :root {
-            --theme-color: #00ffaa;
-            --bg-color: #020205;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.06);
-            --transition-hq: 0.4s cubic-bezier(0.25, 1, 0.2, 1);
-        }
-
+        /* Dark Universe Background Theme */
         body {
-            margin: 0; padding: 0; background-color: var(--bg-color); color: #fff;
-            font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden;
-            user-select: none; transition: background-color 0.5s ease;
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            background-image: radial-gradient(circle at center, #0a0514 0%, #000000 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
-        .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; overflow: hidden; background: #000; }
-        .blob { position: absolute; filter: blur(130px); opacity: 0.45; animation: floatBlob 10s infinite alternate ease-in-out; border-radius: 50%; }
-        .blob-1 { width: 55vw; height: 55vw; background: #1a00ff; top: -15%; left: -10%; }
-        .blob-2 { width: 65vw; height: 65vw; background: #aa00ff; bottom: -20%; right: -10%; animation-delay: -4s; }
-        .blob-3 { width: 45vw; height: 45vw; background: var(--theme-color); top: 25%; left: 25%; animation-duration: 15s; transition: background 0.6s ease; }
-        
-        @keyframes floatBlob { 
-            0% { transform: translate(0, 0) scale(1) rotate(0deg); } 
-            100% { transform: translate(8vw, 8vh) scale(1.2) rotate(45deg); } 
+        /* Glassmorphism Panel (Like your photo references) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px;
+            width: 85%;
+            max-width: 800px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease-in-out;
+            pointer-events: none; /* Disabled until activated */
         }
 
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none; }
-        
-        .stage-transition { animation: cinematicPulse 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes cinematicPulse {
-            0% { transform: scale(1.08); filter: brightness(2) blur(8px); opacity: 0.5; }
-            100% { transform: scale(1); filter: brightness(1) blur(0px); opacity: 1; }
+        .active-panel {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            box-shadow: 0 0 40px rgba(0, 150, 255, 0.2);
         }
 
-        .vignette {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
-            background: radial-gradient(circle at center, transparent 15%, rgba(0,0,0,0.96) 100%);
+        /* Subject Cards */
+        .subject-cards {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        h1, h2, h3 { margin: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
-        .glow-text { color: var(--theme-color); text-shadow: 0 0 25px var(--theme-color); font-weight: 900; }
-
-        #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.5s ease; }
-        #landing-stage { flex-direction: column; justify-content: center; align-items: center; }
-        #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
-
-        .carousel-container { display: flex; gap: 25px; padding: 30px 50px; max-width: 100vw; overflow-x: auto; scrollbar-width: none; align-items: center; }
-        .carousel-container::-webkit-scrollbar { display: none; }
-
-        .avenger-card {
-            min-width: 250px; height: 380px; background: rgba(10, 10, 15, 0.35); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;
-            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
-            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-        }
-        .avenger-card:hover { transform: translateY(-12px) scale(1.03); box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 25px currentColor; border-color: currentColor; background: rgba(255,255,255,0.04); }
-        .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); transition: 0.3s; }
-        .avenger-card:hover .card-icon { transform: scale(1.1) rotate(-5deg); }
-
-        .sidebar { 
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            width: max-content; padding: 10px 20px; gap: 12px; z-index: 1000; 
-            background: rgba(10, 10, 15, 0.5); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 50px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            display: flex; align-items: center; transition: 0.3s;
-        }
-        
-        .nav-btn { 
-            font-size: 1.4rem; cursor: pointer; opacity: 0.5; 
-            width: 46px; height: 46px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center;
-            transition: var(--transition-hq);
-        }
-        .nav-btn.home-btn { opacity: 0.8; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
-        .nav-btn.active { 
-            opacity: 1; transform: translateY(-6px); 
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 20px var(--theme-color); 
-            color: var(--theme-color); border: 1px solid var(--theme-color);
+        .card {
+            background: rgba(0, 150, 255, 0.05);
+            border: 1px solid rgba(0, 150, 255, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+            min-width: 120px;
         }
 
-        .content-area { flex: 1; padding: 40px 40px 130px 40px; overflow-y: auto; position: relative; z-index: 10; }
-        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
-
-        .tool-card {
-            background: rgba(10, 10, 15, 0.4); border: 1px solid var(--glass-border); border-radius: 16px;
-            padding: 22px; cursor: pointer; transition: var(--transition-hq); backdrop-filter: blur(20px); position: relative;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 8px 25px rgba(0,0,0,0.3);
-        }
-        .tool-card:hover { border-color: var(--theme-color); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
-        
-        .action-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
-        .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); transform: scale(1.05); }
-        
-        input, select, textarea { background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; outline: none; }
-        
-        .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; backdrop-filter: blur(25px); opacity: 0; transition: 0.4s; }
-        .modal-box { background: rgba(10, 10, 15, 0.65); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 650px; max-width: 92%; position: relative; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); transition: 0.3s; }
-        .close-btn:hover { transform: scale(1.2) rotate(90deg); }
-        
-        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 15px; margin-top: 20px; }
-        .app-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; text-align: center; }
-        .app-icon:hover { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--theme-color)); }
-        .app-icon .icon-img { font-size: 2.2rem; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 16px; border: 1px solid var(--glass-border); }
-        .app-icon span { font-size: 0.75rem; color: #ddd; word-break: break-all; }
-
-        #mic-status { 
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; 
-            background: rgba(5, 5, 8, 0.6); border: 1px solid var(--theme-color); border-radius: 30px; 
-            z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); 
-            box-shadow: 0 0 25px rgba(0, 255, 170, 0.15); font-size: 0.85rem; letter-spacing: 1px; transition: all 0.4s ease;
-        }
-        .pulse-active { animation: voiceBreathe 1.4s infinite alternate ease-in-out; }
-        @keyframes voiceBreathe { 
-            0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); border-color: rgba(0, 255, 170, 0.3); } 
-            100% { box-shadow: 0 0 30px var(--theme-color); border-color: var(--theme-color); transform: translateX(-50%) scale(1.02); } 
+        .card:hover {
+            background: rgba(0, 150, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.4);
+            transform: translateY(-5px);
         }
 
-        #voice-hud-text { font-family: monospace; font-size: 1.1rem; color: #fff; line-height: 1.6; white-space: pre-wrap; }
+        h1 {
+            color: #00d2ff;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
     </style>
 </head>
 <body>
 
-    <div class="bg-mesh">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-    
-    <canvas id="bg-canvas"></canvas>
-    <div class="vignette"></div>
-    
-    <div id="mic-status">🔴 MATRIX SECURED | SAY "K.K. VOICE ACTIVATE"</div>
-
-    <div class="overlay-modal" id="voice-terminal-overlay">
-        <div class="modal-box" style="width: 750px;">
-            <span class="close-btn" onclick="closeModal('voice-terminal-overlay')">✕</span>
-            <h2 style="color: var(--theme-color); text-shadow:0 0 15px var(--theme-color);">⚡ K.K. VOICE INTERFACE</h2>
-            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
-            <div id="voice-hud-text"></div>
+    <!-- Iron Man Academy Hub -->
+    <div id="ironManHub" class="glass-panel">
+        <h1>Iron Man: Academy Hub</h1>
+        <p>Welcome back, K.K. All systems online.</p>
+        
+        <div class="subject-cards">
+            <div class="card">📚 Samhitas</div>
+            <div class="card">🧬 Rachana Sharir</div>
+            <div class="card">🧠 Kriya Sharir</div>
         </div>
-    </div>
-
-    <div class="overlay-modal" id="settings-overlay">
-        <div class="modal-box" style="width: 380px; text-align:center;">
-            <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
-            <h2>System Manifest</h2>
-            <p style="color:#888; font-size:0.85rem; margin-top:10px;">Voice engine loop active in background.</p>
-            <button class="action-btn" style="margin-top: 15px; width:100%; justify-content:center;" onclick="closeModal('settings-overlay')">DISMISS CONFIG</button>
-        </div>
-    </div>
-
-    <div class="overlay-modal" id="vault-overlay">
-        <div class="modal-box">
-            <span class="close-btn" onclick="closeModal('vault-overlay')">✕</span>
-            <h2 id="vault-title">Vault</h2>
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <input type="text" id="vault-file-name" placeholder="File Name" style="width: 40%;">
-                <input type="text" id="vault-file-link" placeholder="Secure Cloud Link" style="flex: 1;">
-                <button class="action-btn" onclick="saveToVault()">ADD RESOURCE</button>
-            </div>
-            <div class="app-grid" id="vault-grid"></div>
-        </div>
-    </div>
-
-    <div id="landing-stage">
-        <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. COMMAND DASHBOARD v3.5</h2>
-            <h1>Select <span class="glow-text">System Protocol</span></h1>
-        </div>
-        <div class="carousel-container">
-            <div class="avenger-card" style="color: #ff2a2a;" onclick="initProtocol('ironman', '#ff2a2a')">
-                <div class="card-icon">🚀</div><div><h3>IRON MAN</h3><p style="color:#aaa; font-size:0.8rem;">Academic Matrix</p></div>
-            </div>
-            <div class="avenger-card" style="color: #0077ff;" onclick="initProtocol('cap', '#0077ff')">
-                <div class="card-icon">🛡️</div><div><h3>CAPTAIN</h3><p style="color:#aaa; font-size:0.8rem;">Tactical Terminal</p></div>
-            </div>
-            <div class="avenger-card" style="color: #ffaa00;" onclick="initProtocol('thor', '#ffaa00')">
-                <div class="card-icon">⚡</div><div><h3>THOR</h3><p style="color:#aaa; font-size:0.8rem;">Creative Forge</p></div>
-            </div>
-            <div class="avenger-card" style="color: #ff0055;" onclick="initProtocol('spidey', '#ff0055')">
-                <div class="card-icon">🕸️</div><div><h3>SPIDER-MAN</h3><p style="color:#aaa; font-size:0.8rem;">Agency Web</p></div>
-            </div>
-            <div class="avenger-card" style="color: #00ffaa;" onclick="initProtocol('strange', '#00ffaa')">
-                <div class="card-icon">👁️</div><div><h3>DR. STRANGE</h3><p style="color:#aaa; font-size:0.8rem;">AI Nexus</p></div>
-            </div>
-            <div class="avenger-card" style="color: #aa00ff;" onclick="initProtocol('starlord', '#aa00ff')">
-                <div class="card-icon">🎧</div><div><h3>STAR-LORD</h3><p style="color:#aaa; font-size:0.8rem;">Chill Galaxy</p></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="dashboard-stage">
-        <div class="sidebar">
-            <div class="nav-btn home-btn" onclick="returnToHome()">⌂</div>
-            <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🚀</div>
-            <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">🛡️</div>
-            <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">⚡</div>
-            <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
-            <div class="nav-btn" id="nav-strange" style="color: #00ffaa;" onclick="switchModule('strange')">👁️</div>
-            <div class="nav-btn" id="nav-starlord" style="color: #aa00ff;" onclick="switchModule('starlord')">🎧</div>
-        </div>
-        <div class="content-area" id="main-content"></div>
+        
+        <div id="aiResponse" style="margin-top: 25px; color: #00ffcc; font-style: italic;"></div>
     </div>
 
     <script>
-        let currentModule = '';
-        let isFocusTimerRunning = false; let timerInterval;
-
-        const modules = {
-            ironman: {
-                color: '#ff2a2a', title: 'Academic Matrix Core',
-                html: `
-                    <div style="display:flex; gap: 25px; margin-bottom: 25px; flex-wrap: wrap;">
-                        <div class="tool-card" style="flex: 1.5; min-width: 320px;">
-                            <h3>Master Timetable</h3>
-                            <select id="day-selector" onchange="renderTimetable()" style="margin: 15px 0; width:100%;">
-                                <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
-                                <option>Thursday</option><option>Friday</option><option>Saturday</option>
-                            </select>
-                            <div id="timetable-display" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; font-size: 0.9rem; min-height: 80px;"></div>
-                        </div>
-                        <div class="tool-card" style="flex: 1; text-align: center; border-color: var(--theme-color);">
-                            <h3>Focus Matrix</h3>
-                            <div style="margin: 10px 0;"><input type="number" id="focus-mins" value="25" style="width:60px; font-size:1.1rem; text-align:center;"> mins</div>
-                            <div id="hud-timer" style="font-size: 2.8rem; font-family: monospace; font-weight: bold; color: var(--theme-color); margin-bottom:10px; text-shadow: 0 0 15px var(--theme-color);">25:00</div>
-                            <button class="action-btn" id="focus-btn" onclick="toggleTimer()">START CORE</button>
-                        </div>
-                    </div>
-                    <h3>BAMS Vaults</h3>
-                    <div class="grid-layout" style="margin-top:15px;">
-                        <div class="tool-card" onclick="openVault('Samhita')"><span style="font-size:1.3rem;">📜</span> <h3 style="display:inline; margin-left:8px;">Samhita</h3></div>
-                        <div class="tool-card" onclick="openVault('Anatomy')"><span style="font-size:1.3rem;">🦴</span> <h3 style="display:inline; margin-left:8px;">Anatomy</h3></div>
-                        <div class="tool-card" onclick="openVault('Physiology')"><span style="font-size:1.3rem;">🧪</span> <h3 style="display:inline; margin-left:8px;">Physiology</h3></div>
-                        <div class="tool-card" onclick="openVault('Padarth Vigyan')"><span style="font-size:1.3rem;">⚛️</span> <h3 style="display:inline; margin-left:8px;">Padarth Vigyan</h3></div>
-                    </div>
-                `
-            },
-            cap: { color: '#0077ff', title: 'Tactical Trading Terminal', html: `<div id="tradingview_cap" style="height:52vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div><div class="grid-layout"><div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><h3>Angel One System</h3></div><div class="tool-card" onclick="window.open('https://web.dhan.co/')"><h3>Dhan Systems</h3></div></div>` },
-            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<div class="grid-layout"><div class="tool-card"><h3>Write Logs</h3><textarea id="thor-story" style="width:95%; height:90px; margin-top:8px;" placeholder="Scripting interface active..."></textarea></div></div>` },
-            spidey: { color: '#ff0055', title: 'Agency Web Control', html: `<p style="color:#aaa; margin-bottom:15px;">DDK Freelancers Ledger Panel</p><div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Google Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Google Sheets</h3></div></div>` },
-            strange: { color: '#00ffaa', title: 'AI Nexus Portal', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://chatgpt.com')"><h3>ChatGPT Module</h3></div><div class="tool-card" onclick="window.open('https://gemini.google.com')"><h3>Gemini Mainframe</h3></div></div>` },
-            starlord: { color: '#aa00ff', title: 'Chill Galaxy Lounge', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://lofi.co')"><h3>Lofi Cafe Stream</h3></div><div class="tool-card" onclick="window.open('https://popit.click/')"><h3>Pop It Engine</h3></div></div>` }
-        };
-
-        function addCinematicTransition() {
-            document.body.classList.add('stage-transition');
-            setTimeout(() => document.body.classList.remove('stage-transition'), 500);
-        }
-
-        function initProtocol(id, color) {
-            addCinematicTransition();
-            currentModule = id;
-            document.documentElement.style.setProperty('--theme-color', color);
-            document.getElementById('landing-stage').style.display = 'none';
-            document.getElementById('dashboard-stage').style.display = 'flex';
-            setTimeout(() => document.getElementById('dashboard-stage').style.opacity = '1', 50);
-            renderModule(id);
-        }
-
-        function returnToHome() {
-            addCinematicTransition();
-            document.getElementById('dashboard-stage').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('dashboard-stage').style.display = 'none';
-                document.getElementById('landing-stage').style.display = 'flex';
-                document.documentElement.style.setProperty('--theme-color', '#00ffaa');
-                clearInterval(timerInterval); isFocusTimerRunning = false;
-            }, 400);
-        }
-
-        function renderModule(id) {
-            currentModule = id;
-            const mod = modules[id];
-            document.documentElement.style.setProperty('--theme-color', mod.color);
-
-            document.querySelectorAll('.nav-btn').forEach(b => { if(!b.classList.contains('home-btn')) b.style.display='none'; b.classList.remove('active');});
-            document.getElementById('nav-'+id).style.display='flex';
-            document.getElementById('nav-'+id).classList.add('active');
-
-            document.getElementById('main-content').innerHTML = `
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
-                    <h2>${mod.title}</h2>
-                    <button class="action-btn" onclick="openModal('settings-overlay')">⚙️ CONSOLE MANIFEST</button>
-                </div>
-                <div>${mod.html}</div>`;
-
-            if(id === 'ironman') renderTimetable();
-            if(id === 'cap') loadTV();
-        }
-
-        function switchModule(id) { addCinematicTransition(); renderModule(id); }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
-        function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
-
-        let kkTimetable = {"Monday": [{time: "09:00 AM", sub: "Rachana Sharir Atlas Mapping"}]};
-        function renderTimetable() {
-            let day = document.getElementById('day-selector').value;
-            let data = kkTimetable[day] || [];
-            let html = data.map((e) => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>⏰ ${e.time} &nbsp;|&nbsp; <b>${e.sub}</b></span></div>`).join('');
-            document.getElementById('timetable-display').innerHTML = html || "<p style='color:#555;'>No operations logged.</p>";
-        }
-
-        function toggleTimer() {
-            let display = document.getElementById('hud-timer'); let btn = document.getElementById('focus-btn');
-            if(!display) return;
-            if(isFocusTimerRunning) { clearInterval(timerInterval); isFocusTimerRunning = false; btn.innerText = "START CORE"; }
-            else {
-                let mins = parseInt(document.getElementById('focus-mins').value) || 25;
-                let timeLeft = mins * 60; isFocusTimerRunning = true; btn.innerText = "HALT CORE";
-                timerInterval = setInterval(() => {
-                    if(timeLeft > 0) { timeLeft--; let m = Math.floor(timeLeft/60), s = timeLeft%60; display.innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`; }
-                    else { clearInterval(timerInterval); isFocusTimerRunning = false; display.innerText = "00:00"; btn.innerText="START CORE"; }
-                }, 1000);
-            }
-        }
-
-        let vaultData = { "Physiology": [], "Samhita": [], "Anatomy": [], "Padarth Vigyan": [] };
-        function openVault(cat) {
-            currentVaultCat = cat;
-            document.getElementById('vault-title').innerText = cat + " System Hub";
-            renderVaultGrid(); openModal('vault-overlay');
-        }
-        function renderVaultGrid() {
-            let data = vaultData[currentVaultCat] || [];
-            let html = data.map((item) => `<div class="app-icon" onclick="window.open('${item.link}')"><div class="icon-img">📄</div><span>${item.name}</span></div>`).join('');
-            document.getElementById('vault-grid').innerHTML = html || "<p style='color:#555;'>Vault Empty.</p>";
-        }
-        function saveToVault() {
-            let name = document.getElementById('vault-file-name').value; let link = document.getElementById('vault-file-link').value;
-            if(!name || !link) return;
-            vaultData[currentVaultCat].push({name, link});
-            document.getElementById('vault-file-name').value=''; document.getElementById('vault-file-link').value=''; renderVaultGrid();
-        }
-
-        function loadTV() {
-            setTimeout(() => {
-                document.getElementById('tradingview_cap').innerHTML='';
-                let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js';
-                script.onload = () => new TradingView.widget({"autosize":true,"symbol":"BSE:SENSEX","interval":"15","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"});
-                document.body.appendChild(script);
-            }, 100);
-        }
-
-        // =========================================================================
-        // K.K. VOICE - CONVERSATIONAL CORE
-        // =========================================================================
-        let voiceSynth = window.speechSynthesis;
-        let kkVoiceActive = false;
-
-        function aiSpeak(phrase) {
-            if (voiceSynth) {
-                voiceSynth.cancel(); 
-                let utterance = new SpeechSynthesisUtterance(phrase);
-                utterance.lang = 'en-IN'; 
-                utterance.rate = 1.05;  // More energetic, conversational speed
-                utterance.pitch = 0.95; 
-                voiceSynth.speak(utterance);
-            }
-        }
-
-        const aiDialogueMatrix = {
-            ironman: ["Academic Core activated. Sharir aur Samhita databases online hain. Let's study.", "Iron Man protocol engaged. BAMS vaults initialized."],
-            captain: ["Tactical Terminal deployed. Market track karne ke liye system ready hai.", "Captain protocol online. Chart parameters loaded."],
-            thor: ["Creative Forge open. Scripts aur naye ideas lock karne ka time aa gaya hai.", "Thor core initialized. The matrix is listening."],
-            spidey: ["Agency Web Control deployed. Workspaces aur sheets live hain. Let's scale DDK Freelancers.", "Spidey protocol active. Web ledger synced."],
-            strange: ["AI Nexus Portal calibrated. Mainframes ready hain.", "Doctor Strange protocol initialized."],
-            starlord: ["Lounge mode active. Chill vibes aur lofi streams live hain. Take a break.", "Star-Lord protocol engaged."]
-        };
-
-        function getAiResponse(coreId) {
-            const responses = aiDialogueMatrix[coreId];
-            return responses[Math.floor(Math.random() * responses.length)];
-        }
-
-        async function triggerGeminiAI(question, contextMode = "general") {
-            try {
-                const res = await fetch('/api/agent', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: question, agentType: contextMode })
-                });
-                const parsed = await res.json();
-                return parsed.success ? parsed.message : "Network error, K.K. Voice offline hai abhi.";
-            } catch (err) {
-                return "Backend connect nahi ho raha. Check your server.";
-            }
-        }
-
-        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechEngine) {
-            let engineInstance = new SpeechEngine();
-            engineInstance.continuous = true; 
-            engineInstance.interimResults = false; 
-            engineInstance.lang = 'en-IN'; // Set to recognize Hinglish accents better
-
-            engineInstance.onresult = async function(event) {
-                let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-                console.log("HUD Vector Captured: ", speechToken);
-
-                // WAKE UP
-                if (speechToken.includes("kk voice activate") || speechToken.includes("k k voice activate") || speechToken.includes("k.k. voice activate")) {
-                    kkVoiceActive = true;
-                    document.getElementById('mic-status').innerText = "🟢 K.K. VOICE ONLINE | LISTENING";
-                    document.getElementById('mic-status').classList.add('pulse-active');
-                    aiSpeak("System live hai. K.K. Voice activated. Boliye, kya plan hai aaj ka?");
-                    return;
-                }
-
-                if (!kkVoiceActive) return;
-
-                // MODULES
-                if (speechToken.includes("open iron man") || speechToken.includes("academic matrix")) {
-                    initProtocol('ironman', '#ff2a2a'); aiSpeak(getAiResponse('ironman'));
-                }
-                else if (speechToken.includes("open captain") || speechToken.includes("trading terminal")) {
-                    initProtocol('cap', '#0077ff'); aiSpeak(getAiResponse('cap'));
-                }
-                else if (speechToken.includes("open thor") || speechToken.includes("creative forge")) {
-                    initProtocol('thor', '#ffaa00'); aiSpeak(getAiResponse('thor'));
-                }
-                else if (speechToken.includes("open spider man") || speechToken.includes("agency web")) {
-                    initProtocol('spidey', '#ff0055'); aiSpeak(getAiResponse('spidey'));
-                }
-                else if (speechToken.includes("open doctor strange") || speechToken.includes("ai nexus")) {
-                    initProtocol('strange', '#00ffaa'); aiSpeak(getAiResponse('strange'));
-                }
-                else if (speechToken.includes("open star lord") || speechToken.includes("galaxy lounge")) {
-                    initProtocol('starlord', '#aa00ff'); aiSpeak(getAiResponse('starlord'));
-                }
-                else if (speechToken.includes("return to home") || speechToken.includes("go back")) {
-                    returnToHome(); aiSpeak("Mainframe cleared. System overview par waapas aa gaye.");
-                }
-
-                // AI CONVERSATION
-                else {
-                    document.getElementById('mic-status').innerText = "🧠 K.K. VOICE THINKING...";
-                    let currentCtx = "general";
-                    if (speechToken.includes("bams") || speechToken.includes("sharir") || speechToken.includes("samhita")) currentCtx = "bams";
-                    if (speechToken.includes("trade") || speechToken.includes("nifty") || speechToken.includes("market") || speechToken.includes("sensex")) currentCtx = "trading";
-
-                    openModal('voice-terminal-overlay');
-                    document.getElementById('voice-hud-text').innerText = "Processing through K.K. Voice...";
-
-                    let aiReply = await triggerGeminiAI(speechToken, currentCtx);
-                    document.getElementById('voice-hud-text').innerText = aiReply;
-                    aiSpeak(aiReply);
-                    document.getElementById('mic-status').innerText = "🟢 K.K. VOICE ONLINE | LISTENING";
-                }
-            };
-
-            engineInstance.onend = function() { engineInstance.start(); };
-            engineInstance.start();
-        }
-
-        // BACKGROUND ANIMATION
-        const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
-        let lines = [];
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
-
-        class DigitalNode {
-            constructor() {
-                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
-                this.vy = (Math.random() * 1.2) + 0.4; this.size = Math.random() * 2 + 1; this.alpha = Math.random() * 0.5 + 0.1;
-            }
-            update() { this.y += this.vy; if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; } }
-            draw() { ctx.fillStyle = modules[currentModule]?.color || '#00ffaa'; ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
-        }
-
-        for(let i=0; i<150; i++) lines.push(new DigitalNode());
+        // --- VOICE RECOGNITION LOGIC ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
         
-        function animate() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.strokeStyle = modules[currentModule]?.color || '#00ffaa'; ctx.lineWidth = 0.15;
-            for(let a=0; a<lines.length; a++) {
-                lines[a].update(); lines[a].draw();
-                for(let b=a+1; b<lines.length; b++) {
-                    let dist = Math.hypot(lines[a].x - lines[b].x, lines[a].y - lines[b].y);
-                    if(dist < 90) { ctx.globalAlpha = (90 - dist) / 600; ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke(); }
-                }
+        recognition.continuous = true;
+        recognition.lang = 'en-IN'; // Set to Indian English for better accent detection
+
+        recognition.onresult = function(event) {
+            const current = event.resultIndex;
+            const transcript = event.results[current][0].transcript.toLowerCase();
+            console.log("Heard: " + transcript);
+
+            // The Trigger Command
+            if (transcript.includes("command dashboard activate")) {
+                activateIronMan();
             }
-            requestAnimationFrame(animate);
+        };
+
+        function activateIronMan() {
+            document.getElementById('ironManHub').classList.add('active-panel');
+            speak("Academy Hub activated. Ready for your commands, K.K.");
         }
-        animate();
+
+        // --- TEXT TO SPEECH (System Voice) ---
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(text);
+            synth.speak(utterance);
+        }
+
+        // --- 2 MINUTE MIC TIMER LOGIC ---
+        recognition.start();
+        console.log("Mic is listening for the trigger word...");
+        
+        setTimeout(() => {
+            recognition.stop();
+            console.log("Mic turned off after 2 minutes to save battery.");
+        }, 120000); // 120,000 ms = 2 minutes
+
+        // --- GEMINI API PLACEHOLDER ---
+        async function askGemini(prompt) {
+            // Function ready to connect your Gemini API Key
+        }
     </script>
 </body>
 </html>
