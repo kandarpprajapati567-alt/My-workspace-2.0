@@ -3,141 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Personal Dashboard</title>
+    <title>K.K. Cinematic Dashboard</title>
+    <!-- 3D Model Engine -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
     <style>
-        /* Dark Universe Background Theme */
+        /* The Dark Cinematic Universe */
         body {
             margin: 0;
-            padding: 0;
-            background-color: #050505;
-            background-image: radial-gradient(circle at center, #0a0514 0%, #000000 100%);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             overflow: hidden;
+            background: #020202 url('https://cdn.pixabay.com/photo/2020/03/18/20/01/space-4943503_1280.jpg') no-repeat center center/cover;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
         }
 
-        /* Glassmorphism Panel (Like your photo references) */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
+        /* 3D Model Container */
+        model-viewer {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            /* Adds a glowing drop-shadow behind the 3D model */
+            filter: drop-shadow(0px 0px 30px rgba(0, 195, 255, 0.4));
+        }
+
+        /* High-End Glassmorphism UI */
+        .ui-layer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            z-index: 10;
+            background: rgba(10, 10, 20, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 25px;
             padding: 40px;
-            width: 85%;
-            max-width: 800px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            text-align: center;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 0 50px rgba(0, 150, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
             opacity: 0;
-            transform: scale(0.9);
-            transition: all 0.8s ease-in-out;
-            pointer-events: none; /* Disabled until activated */
+            pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .active-panel {
+        .ui-active {
             opacity: 1;
-            transform: scale(1);
+            transform: translate(-50%, -50%) scale(1);
             pointer-events: auto;
-            box-shadow: 0 0 40px rgba(0, 150, 255, 0.2);
-        }
-
-        /* Subject Cards */
-        .subject-cards {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .card {
-            background: rgba(0, 150, 255, 0.05);
-            border: 1px solid rgba(0, 150, 255, 0.2);
-            padding: 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .card:hover {
-            background: rgba(0, 150, 255, 0.15);
-            box-shadow: 0 0 20px rgba(0, 150, 255, 0.4);
-            transform: translateY(-5px);
         }
 
         h1 {
-            color: #00d2ff;
-            text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+            text-align: center;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 30px;
+        }
+
+        /* Holographic Subject Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .hologram-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 0, 0, 0.5));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hologram-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,255,255,0.2) 10%, transparent 40%);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .hologram-card:hover::before { opacity: 1; }
+        .hologram-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+            border-color: #00ffff;
+        }
+
+        /* Status HUD */
+        #statusHUD {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 20;
+            color: #00ffcc;
+            font-family: monospace;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #00ffcc;
         }
     </style>
 </head>
 <body>
 
-    <!-- Iron Man Academy Hub -->
-    <div id="ironManHub" class="glass-panel">
-        <h1>Iron Man: Academy Hub</h1>
-        <p>Welcome back, K.K. All systems online.</p>
-        
-        <div class="subject-cards">
-            <div class="card">📚 Samhitas</div>
-            <div class="card">🧬 Rachana Sharir</div>
-            <div class="card">🧠 Kriya Sharir</div>
+    <!-- 3D IRON MAN MODEL (Cinematic Background) -->
+    <!-- Note: I put a free Sketchfab Iron Man GLB file link here. You can change the 'src' to any high-end .glb file you want -->
+    <model-viewer 
+        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SciFiHelmet/glTF-Binary/SciFiHelmet.glb" 
+        camera-controls 
+        auto-rotate 
+        rotation-per-second="30deg"
+        camera-orbit="0deg 75deg 105%"
+        environment-image="neutral" 
+        shadow-intensity="1">
+    </model-viewer>
+
+    <!-- System Status HUD -->
+    <div id="statusHUD">MIC STATUS: WAITING FOR COMMAND...</div>
+
+    <!-- The Glassmorphism UI Hub -->
+    <div id="academyHub" class="ui-layer">
+        <h1>Iron Man Protocol</h1>
+        <div class="grid-container">
+            <div class="hologram-card">Padartha Vigyana</div>
+            <div class="hologram-card">Sanskrit</div>
+            <div class="hologram-card">Kriya Sharir</div>
+            <div class="hologram-card">Rachana Sharir</div>
+            <div class="hologram-card">Samhita Adhyayan</div>
+            <div class="hologram-card" style="border-color: #ff00ff; box-shadow: 0 0 15px rgba(255,0,255,0.2);">Shloka Library</div>
+            <div class="hologram-card" style="border-color: #ff0000; box-shadow: 0 0 15px rgba(255,0,0,0.2);">Exam Vault</div>
         </div>
-        
-        <div id="aiResponse" style="margin-top: 25px; color: #00ffcc; font-style: italic;"></div>
     </div>
 
     <script>
-        // --- VOICE RECOGNITION LOGIC ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
         
         recognition.continuous = true;
-        recognition.lang = 'en-IN'; // Set to Indian English for better accent detection
+        recognition.lang = 'en-IN'; // Set to capture your accent perfectly
 
-        recognition.onresult = function(event) {
-            const current = event.resultIndex;
-            const transcript = event.results[current][0].transcript.toLowerCase();
-            console.log("Heard: " + transcript);
+        let micState = '2_MINS'; // Options: 'ALWAYS_ON', '10_MINS', 'OFF', '2_MINS'
+        let micTimer;
 
-            // The Trigger Command
-            if (transcript.includes("command dashboard activate")) {
-                activateIronMan();
-            }
-        };
-
-        function activateIronMan() {
-            document.getElementById('ironManHub').classList.add('active-panel');
-            speak("Academy Hub activated. Ready for your commands, K.K.");
-        }
-
-        // --- TEXT TO SPEECH (System Voice) ---
+        // System Voice Setup
         function speak(text) {
             const synth = window.speechSynthesis;
             const utterance = new SpeechSynthesisUtterance(text);
+            utterance.pitch = 0.8; // Deep, Jarvis-like pitch
+            utterance.rate = 1.1;
             synth.speak(utterance);
         }
 
-        // --- 2 MINUTE MIC TIMER LOGIC ---
-        recognition.start();
-        console.log("Mic is listening for the trigger word...");
-        
-        setTimeout(() => {
-            recognition.stop();
-            console.log("Mic turned off after 2 minutes to save battery.");
-        }, 120000); // 120,000 ms = 2 minutes
+        const hud = document.getElementById('statusHUD');
 
-        // --- GEMINI API PLACEHOLDER ---
-        async function askGemini(prompt) {
-            // Function ready to connect your Gemini API Key
+        // --- VOICE COMMAND ENGINE ---
+        recognition.onresult = function(event) {
+            const current = event.resultIndex;
+            const transcript = event.results[current][0].transcript.toLowerCase();
+            console.log("Command Heard: " + transcript);
+
+            // 1. Activate Dashboard
+            if (transcript.includes("command dashboard activate") || transcript.includes("open iron man")) {
+                document.getElementById('academyHub').classList.add('ui-active');
+                speak("Iron Man protocol initiated. Academy Hub is online.");
+                hud.innerText = "SYSTEM: ACADEMY HUB ACTIVE";
+            }
+
+            // 2. Open Settings & Enable Mic Always On
+            if (transcript.includes("make mic always on") || transcript.includes("always on")) {
+                micState = 'ALWAYS_ON';
+                clearTimeout(micTimer);
+                speak("Microphone is now set to always on.");
+                hud.innerText = "MIC STATUS: ALWAYS ON";
+            }
+
+            // 3. Set Mic for 10 Minutes
+            if (transcript.includes("set mic for 10 minutes")) {
+                micState = '10_MINS';
+                clearTimeout(micTimer);
+                speak("Microphone set to 10 minutes.");
+                hud.innerText = "MIC STATUS: ACTIVE FOR 10 MINS";
+                micTimer = setTimeout(() => {
+                    recognition.stop();
+                    micState = 'OFF';
+                    hud.innerText = "MIC STATUS: OFFLINE (TIMER ENDED)";
+                    speak("10 minute timer ended. Microphone offline.");
+                }, 600000); // 600,000 ms = 10 mins
+            }
+
+            // 4. Turn Off Mic
+            if (transcript.includes("turn off mic") || transcript.includes("system sleep")) {
+                micState = 'OFF';
+                clearTimeout(micTimer);
+                speak("Shutting down microphone. Standing by.");
+                hud.innerText = "MIC STATUS: OFFLINE";
+                recognition.stop();
+            }
+        };
+
+        // Auto-Restart Logic for "Always On"
+        recognition.onend = function() {
+            if (micState === 'ALWAYS_ON') {
+                recognition.start(); // Force restart if it drops
+            }
+        };
+
+        // Default 2-Minute Startup Timer
+        function startSystem() {
+            recognition.start();
+            micState = '2_MINS';
+            hud.innerText = "MIC STATUS: ACTIVE FOR 2 MINS";
+            
+            micTimer = setTimeout(() => {
+                if(micState === '2_MINS') {
+                    recognition.stop();
+                    micState = 'OFF';
+                    hud.innerText = "MIC STATUS: OFFLINE (IDLE)";
+                    speak("System idle. Microphone sleeping to save power.");
+                }
+            }, 120000); // 120,000 ms = 2 mins
         }
+
+        // Boot Sequence
+        window.onload = () => {
+            startSystem();
+        };
     </script>
 </body>
 </html>
