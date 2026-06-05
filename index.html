@@ -3,244 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Cinematic Dashboard</title>
-    <!-- 3D Model Engine -->
+    <title>K.K. Jarvis OS - Cinematic Edition</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+    
     <style>
-        /* The Dark Cinematic Universe */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            margin: 0;
+            background-color: #000;
             overflow: hidden;
-            background: #020202 url('https://cdn.pixabay.com/photo/2020/03/18/20/01/space-4943503_1280.jpg') no-repeat center center/cover;
-            color: white;
-            font-family: 'Arial', sans-serif;
-            height: 100vh;
-        }
-
-        /* 3D Model Container */
-        model-viewer {
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            /* Adds a glowing drop-shadow behind the 3D model */
-            filter: drop-shadow(0px 0px 30px rgba(0, 195, 255, 0.4));
-        }
-
-        /* High-End Glassmorphism UI */
-        .ui-layer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            z-index: 10;
-            background: rgba(10, 10, 20, 0.4);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 25px;
-            padding: 40px;
-            width: 90%;
-            max-width: 900px;
-            box-shadow: 0 0 50px rgba(0, 150, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .ui-active {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-            pointer-events: auto;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 5px;
+            font-family: 'Courier New', Courier, monospace;
             color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
-            margin-bottom: 30px;
         }
 
-        /* Holographic Subject Grid */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .hologram-card {
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 0, 0, 0.5));
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hologram-card::before {
-            content: '';
+        /* 1. Cinematic Video Background */
+        #bg-video {
             position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(0,255,255,0.2) 10%, transparent 40%);
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%);
+            z-index: -2;
+            opacity: 0.6;
+            filter: contrast(1.2) brightness(0.5);
+            transition: filter 2s ease;
+        }
+
+        /* Ambient Glow Layer */
+        #glow-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 20%, #000000 90%);
+            z-index: -1;
+        }
+
+        /* 2. Hidden 3D Iron Man Model */
+        #ironman-model {
+            width: 100vw; height: 100vh;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 5;
+            opacity: 0; /* Hidden initially */
+            transform: scale(0.1) translateY(500px); /* Pushed back in space */
+            filter: drop-shadow(0 0 50px rgba(255, 50, 50, 0.8));
+        }
+
+        /* 3. Holographic Floating UI (Hidden initially) */
+        .hud-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .hologram-ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 800px; height: 800px;
+            border: 2px dashed rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.2) inset;
+            animation: rotateRing 20s linear infinite;
+        }
+
+        @keyframes rotateRing { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* Subjects & Settings Nodes */
+        .data-node {
+            position: absolute;
+            background: rgba(0, 20, 40, 0.6);
+            border: 1px solid #00ffff;
+            padding: 15px 30px;
+            border-radius: 5px;
+            backdrop-filter: blur(10px);
             opacity: 0;
-            transition: 0.3s;
+            pointer-events: auto;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .data-node:hover { background: rgba(0, 255, 255, 0.3); transform: scale(1.1); }
+
+        /* Positioning the Nodes Cinematically around center */
+        #node-samhita { top: 20%; left: 15%; }
+        #node-rachana { top: 40%; left: 10%; }
+        #node-kriya { top: 60%; left: 15%; }
+        #node-sanskrit { top: 20%; right: 15%; }
+        #node-padartha { top: 40%; right: 10%; }
+        #node-exam { top: 60%; right: 15%; border-color: red; color: red; box-shadow: 0 0 20px red; }
+        #node-shloka { top: 80%; left: 50%; transform: translateX(-50%); border-color: #e020ff; color: #e020ff; box-shadow: 0 0 20px #e020ff;}
+
+        /* Settings Panel */
+        #settings-panel {
+            position: absolute; top: 20px; right: 20px;
+            border: 1px solid #aaa; padding: 20px; background: rgba(0,0,0,0.8);
+            opacity: 0; pointer-events: none;
         }
 
-        .hologram-card:hover::before { opacity: 1; }
-        .hologram-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
-            border-color: #00ffff;
-        }
-
-        /* Status HUD */
-        #statusHUD {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            z-index: 20;
-            color: #00ffcc;
-            font-family: monospace;
-            font-size: 1.2rem;
-            text-shadow: 0 0 10px #00ffcc;
+        #status-text {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            font-size: 1.5rem; text-shadow: 0 0 10px #00ffff; z-index: 20;
         }
     </style>
 </head>
 <body>
 
-    <!-- 3D IRON MAN MODEL (Cinematic Background) -->
-    <!-- Note: I put a free Sketchfab Iron Man GLB file link here. You can change the 'src' to any high-end .glb file you want -->
+    <video id="bg-video" autoplay loop muted playsinline>
+        <source src="https://cdn.pixabay.com/video/2020/05/25/40131-424902148_large.mp4" type="video/mp4">
+    </video>
+    <div id="glow-overlay"></div>
+
     <model-viewer 
+        id="ironman-model"
         src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SciFiHelmet/glTF-Binary/SciFiHelmet.glb" 
-        camera-controls 
-        auto-rotate 
-        rotation-per-second="30deg"
-        camera-orbit="0deg 75deg 105%"
-        environment-image="neutral" 
-        shadow-intensity="1">
+        camera-controls auto-rotate rotation-per-second="10deg"
+        environment-image="neutral" shadow-intensity="2" exposure="1">
     </model-viewer>
 
-    <!-- System Status HUD -->
-    <div id="statusHUD">MIC STATUS: WAITING FOR COMMAND...</div>
-
-    <!-- The Glassmorphism UI Hub -->
-    <div id="academyHub" class="ui-layer">
-        <h1>Iron Man Protocol</h1>
-        <div class="grid-container">
-            <div class="hologram-card">Padartha Vigyana</div>
-            <div class="hologram-card">Sanskrit</div>
-            <div class="hologram-card">Kriya Sharir</div>
-            <div class="hologram-card">Rachana Sharir</div>
-            <div class="hologram-card">Samhita Adhyayan</div>
-            <div class="hologram-card" style="border-color: #ff00ff; box-shadow: 0 0 15px rgba(255,0,255,0.2);">Shloka Library</div>
-            <div class="hologram-card" style="border-color: #ff0000; box-shadow: 0 0 15px rgba(255,0,0,0.2);">Exam Vault</div>
-        </div>
+    <div class="hud-container">
+        <div class="hologram-ring" id="ring1"></div>
+        <div class="data-node" id="node-samhita">Samhita</div>
+        <div class="data-node" id="node-rachana">Rachana Sharir</div>
+        <div class="data-node" id="node-kriya">Kriya Sharir</div>
+        <div class="data-node" id="node-sanskrit">Sanskrit</div>
+        <div class="data-node" id="node-padartha">Padartha Vigyana</div>
+        <div class="data-node" id="node-exam">Exam Vault</div>
+        <div class="data-node" id="node-shloka" style="transform: translateX(-50%);">Shloka Library</div>
     </div>
 
+    <div id="settings-panel">
+        <h3 style="color:white; margin-bottom: 10px;">MIC SETTINGS</h3>
+        <p>Current: <span id="mic-status" style="color:#00ff00;">STANDBY</span></p>
+    </div>
+
+    <div id="status-text">SYSTEM STANDBY. WAITING FOR VOICE COMMAND.</div>
+
     <script>
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        
-        recognition.continuous = true;
-        recognition.lang = 'en-IN'; // Set to capture your accent perfectly
+        // --- 1. DUAL CONVERSATION ENGINE (TTS & STT) ---
+        const synth = window.speechSynthesis;
+        let isSystemActive = false;
 
-        let micState = '2_MINS'; // Options: 'ALWAYS_ON', '10_MINS', 'OFF', '2_MINS'
-        let micTimer;
-
-        // System Voice Setup
-        function speak(text) {
-            const synth = window.speechSynthesis;
+        function jarvisSpeak(text, callback) {
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.pitch = 0.8; // Deep, Jarvis-like pitch
-            utterance.rate = 1.1;
+            utterance.pitch = 0.8; // Deep voice
+            utterance.rate = 1.0;  // Normal speed
+            // When Jarvis finishes speaking, execute callback (e.g., to restart listening)
+            utterance.onend = function() {
+                if(callback) callback();
+            };
             synth.speak(utterance);
         }
 
-        const hud = document.getElementById('statusHUD');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.lang = 'en-IN';
+        
+        let micTimer;
+        let micMode = "2_MINS"; // Default
 
-        // --- VOICE COMMAND ENGINE ---
+        // --- 2. CINEMATIC BOOT SEQUENCE (Triggered by Voice) ---
+        function activateCinematicIronMan() {
+            if(isSystemActive) return;
+            isSystemActive = true;
+
+            document.getElementById('status-text').innerText = "SYSTEM ACTIVE: ACADEMY HUB ONLINE";
+            document.getElementById('bg-video').style.filter = "contrast(1.5) brightness(1) hue-rotate(180deg)";
+
+            // Jarvis responds first
+            jarvisSpeak("Command accepted, K.K. Activating Iron Man protocol and syncing your academy files. Welcome back, sir.", function() {
+                // Animation happens AS/AFTER he speaks
+                // 1. Bring in the 3D Model from deep space
+                gsap.to("#ironman-model", { 
+                    opacity: 1, scale: 1, y: 0, 
+                    duration: 3, ease: "power4.out" 
+                });
+                
+                // 2. Expand Hologram Ring
+                gsap.to("#ring1", { scale: 1, duration: 2, ease: "back.out(1.7)" });
+
+                // 3. Pop in the Subject Nodes one by one (Stagger effect)
+                gsap.to(".data-node", { 
+                    opacity: 1, scale: 1, 
+                    duration: 0.8, stagger: 0.2, ease: "power3.out", delay: 1 
+                });
+            });
+        }
+
+        // --- 3. VOICE LOGIC & SETTINGS PROCESSING ---
         recognition.onresult = function(event) {
             const current = event.resultIndex;
             const transcript = event.results[current][0].transcript.toLowerCase();
-            console.log("Command Heard: " + transcript);
+            console.log("Heard: " + transcript);
 
-            // 1. Activate Dashboard
+            // A. Trigger the Cinematic Boot
             if (transcript.includes("command dashboard activate") || transcript.includes("open iron man")) {
-                document.getElementById('academyHub').classList.add('ui-active');
-                speak("Iron Man protocol initiated. Academy Hub is online.");
-                hud.innerText = "SYSTEM: ACADEMY HUB ACTIVE";
+                activateCinematicIronMan();
             }
 
-            // 2. Open Settings & Enable Mic Always On
-            if (transcript.includes("make mic always on") || transcript.includes("always on")) {
-                micState = 'ALWAYS_ON';
-                clearTimeout(micTimer);
-                speak("Microphone is now set to always on.");
-                hud.innerText = "MIC STATUS: ALWAYS ON";
+            // B. Dual Conversation Example (You talk, it answers)
+            else if (transcript.includes("how are the systems") || transcript.includes("status report")) {
+                recognition.stop(); // Stop listening while Jarvis talks
+                jarvisSpeak("All systems are running at maximum efficiency. Exams vault is secure, and Shloka library is fully indexed. What would you like to study today?", function() {
+                    if(micMode !== "OFF") recognition.start(); // Resume listening
+                });
             }
 
-            // 3. Set Mic for 10 Minutes
-            if (transcript.includes("set mic for 10 minutes")) {
-                micState = '10_MINS';
+            // C. Voice Settings Control & Visual Feedback
+            else if (transcript.includes("open settings")) {
+                gsap.to("#settings-panel", {opacity: 1, duration: 0.5, pointerEvents: "auto"});
+                jarvisSpeak("Settings panel is now visible on your screen.");
+            }
+            else if (transcript.includes("close settings")) {
+                gsap.to("#settings-panel", {opacity: 0, duration: 0.5, pointerEvents: "none"});
+            }
+            else if (transcript.includes("make mic always on")) {
+                micMode = "ALWAYS_ON";
                 clearTimeout(micTimer);
-                speak("Microphone set to 10 minutes.");
-                hud.innerText = "MIC STATUS: ACTIVE FOR 10 MINS";
+                document.getElementById('mic-status').innerText = "ALWAYS ON";
+                jarvisSpeak("Microphone restrictions lifted. I will be listening continuously.");
+            }
+            else if (transcript.includes("set mic for 10 minutes")) {
+                micMode = "10_MINS";
+                clearTimeout(micTimer);
+                document.getElementById('mic-status').innerText = "10 MINS";
+                jarvisSpeak("Microphone timer set to 10 minutes.");
                 micTimer = setTimeout(() => {
+                    micMode = "OFF";
                     recognition.stop();
-                    micState = 'OFF';
-                    hud.innerText = "MIC STATUS: OFFLINE (TIMER ENDED)";
-                    speak("10 minute timer ended. Microphone offline.");
-                }, 600000); // 600,000 ms = 10 mins
-            }
-
-            // 4. Turn Off Mic
-            if (transcript.includes("turn off mic") || transcript.includes("system sleep")) {
-                micState = 'OFF';
-                clearTimeout(micTimer);
-                speak("Shutting down microphone. Standing by.");
-                hud.innerText = "MIC STATUS: OFFLINE";
-                recognition.stop();
+                    jarvisSpeak("10 minutes elapsed. Microphone is going offline.");
+                    document.getElementById('mic-status').innerText = "OFFLINE";
+                }, 600000);
             }
         };
 
-        // Auto-Restart Logic for "Always On"
+        // Keeps Mic active if it crashes, UNLESS it's explicitly turned OFF
         recognition.onend = function() {
-            if (micState === 'ALWAYS_ON') {
-                recognition.start(); // Force restart if it drops
+            if (micMode !== "OFF" && isSystemActive) {
+                try { recognition.start(); } catch(e) {}
             }
         };
 
-        // Default 2-Minute Startup Timer
-        function startSystem() {
-            recognition.start();
-            micState = '2_MINS';
-            hud.innerText = "MIC STATUS: ACTIVE FOR 2 MINS";
-            
-            micTimer = setTimeout(() => {
-                if(micState === '2_MINS') {
-                    recognition.stop();
-                    micState = 'OFF';
-                    hud.innerText = "MIC STATUS: OFFLINE (IDLE)";
-                    speak("System idle. Microphone sleeping to save power.");
-                }
-            }, 120000); // 120,000 ms = 2 mins
-        }
+        // Start listening initially
+        recognition.start();
 
-        // Boot Sequence
-        window.onload = () => {
-            startSystem();
-        };
     </script>
 </body>
 </html>
