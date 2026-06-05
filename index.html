@@ -10,7 +10,7 @@
             --bg-color: #020205;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.06);
-            --transition-hq: 0.4s cubic-bezier(0.25, 1, 0.2 mil, 1);
+            --transition-hq: 0.4s cubic-bezier(0.25, 1, 0.2, 1);
         }
 
         body {
@@ -19,7 +19,6 @@
             user-select: none; transition: background-color 0.5s ease;
         }
 
-        /* 1. ULTRA CINEMATIC LIVE GRID & BLOB MESH */
         .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; overflow: hidden; background: #000; }
         .blob { position: absolute; filter: blur(130px); opacity: 0.45; animation: floatBlob 10s infinite alternate ease-in-out; border-radius: 50%; }
         .blob-1 { width: 55vw; height: 55vw; background: #1a00ff; top: -15%; left: -10%; }
@@ -33,10 +32,7 @@
 
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none; }
         
-        /* 2. GLITCH FLASH CINEMATIC NAV EFFECT */
-        .stage-transition {
-            animation: cinematicPulse 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        .stage-transition { animation: cinematicPulse 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes cinematicPulse {
             0% { transform: scale(1.08); filter: brightness(2) blur(8px); opacity: 0.5; }
             100% { transform: scale(1); filter: brightness(1) blur(0px); opacity: 1; }
@@ -57,7 +53,6 @@
         .carousel-container { display: flex; gap: 25px; padding: 30px 50px; max-width: 100vw; overflow-x: auto; scrollbar-width: none; align-items: center; }
         .carousel-container::-webkit-scrollbar { display: none; }
 
-        /* ALL AVENGERS CARDS RETRIEVED */
         .avenger-card {
             min-width: 250px; height: 380px; background: rgba(10, 10, 15, 0.35); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;
@@ -69,7 +64,6 @@
         .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); transition: 0.3s; }
         .avenger-card:hover .card-icon { transform: scale(1.1) rotate(-5deg); }
 
-        /* REEL STYLE GLASS NAVBAR (Floating Pill Bottom) */
         .sidebar { 
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
             width: max-content; padding: 10px 20px; gap: 12px; z-index: 1000; 
@@ -105,11 +99,9 @@
         
         .action-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); transform: scale(1.05); }
-        .add-btn { position: absolute; top: 15px; right: 15px; background: var(--theme-color); color: #000; border: none; border-radius: 50%; width: 26px; height: 26px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.1rem; transition: 0.3s; z-index: 10;}
         
         input, select, textarea { background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; outline: none; }
         
-        /* OVERLAYS & PORTALS */
         .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; backdrop-filter: blur(25px); opacity: 0; transition: 0.4s; }
         .modal-box { background: rgba(10, 10, 15, 0.65); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 650px; max-width: 92%; position: relative; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); transition: 0.3s; }
@@ -121,20 +113,19 @@
         .app-icon .icon-img { font-size: 2.2rem; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 16px; border: 1px solid var(--glass-border); }
         .app-icon span { font-size: 0.75rem; color: #ddd; word-break: break-all; }
 
-        /* JARVIS HUD VIZUALIZER ELEMENT */
         #mic-status { 
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; 
             background: rgba(5, 5, 8, 0.6); border: 1px solid var(--theme-color); border-radius: 30px; 
             z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); 
             box-shadow: 0 0 25px rgba(0, 255, 170, 0.15); font-size: 0.85rem; letter-spacing: 1px; transition: all 0.4s ease;
         }
-        .pulse-active { animation: jarvisBreathe 1.4s infinite alternate ease-in-out; }
-        @keyframes jarvisBreathe { 
+        .pulse-active { animation: voiceBreathe 1.4s infinite alternate ease-in-out; }
+        @keyframes voiceBreathe { 
             0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); border-color: rgba(0, 255, 170, 0.3); } 
             100% { box-shadow: 0 0 30px var(--theme-color); border-color: var(--theme-color); transform: translateX(-50%) scale(1.02); } 
         }
 
-        #jarvis-hud-text { font-family: monospace; font-size: 1.1rem; color: #fff; line-height: 1.6; white-space: pre-wrap; }
+        #voice-hud-text { font-family: monospace; font-size: 1.1rem; color: #fff; line-height: 1.6; white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -148,14 +139,14 @@
     <canvas id="bg-canvas"></canvas>
     <div class="vignette"></div>
     
-    <div id="mic-status">🔴 MATRIX SECURED | SAY "JARVIS ACTIVATE"</div>
+    <div id="mic-status">🔴 MATRIX SECURED | SAY "K.K. VOICE ACTIVATE"</div>
 
-    <div class="overlay-modal" id="jarvis-terminal-overlay">
+    <div class="overlay-modal" id="voice-terminal-overlay">
         <div class="modal-box" style="width: 750px;">
-            <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
-            <h2 style="color: var(--theme-color); text-shadow:0 0 15px var(--theme-color);">⚡ JARVIS INTEGRATED INTERFACE</h2>
+            <span class="close-btn" onclick="closeModal('voice-terminal-overlay')">✕</span>
+            <h2 style="color: var(--theme-color); text-shadow:0 0 15px var(--theme-color);">⚡ K.K. VOICE INTERFACE</h2>
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
-            <div id="jarvis-hud-text"></div>
+            <div id="voice-hud-text"></div>
         </div>
     </div>
 
@@ -174,7 +165,7 @@
             <h2 id="vault-title">Vault</h2>
             <div style="margin-top: 15px; display: flex; gap: 10px;">
                 <input type="text" id="vault-file-name" placeholder="File Name" style="width: 40%;">
-                <input type="text" id="vault-file-link" placeholder="Secure Cloud Link / Data" style="flex: 1;">
+                <input type="text" id="vault-file-link" placeholder="Secure Cloud Link" style="flex: 1;">
                 <button class="action-btn" onclick="saveToVault()">ADD RESOURCE</button>
             </div>
             <div class="app-grid" id="vault-grid"></div>
@@ -225,7 +216,6 @@
         let currentModule = '';
         let isFocusTimerRunning = false; let timerInterval;
 
-        // CORES DESIGN MAPPING (ALL MODULES RENDERED SMOOTHLY)
         const modules = {
             ironman: {
                 color: '#ff2a2a', title: 'Academic Matrix Core',
@@ -246,15 +236,12 @@
                             <button class="action-btn" id="focus-btn" onclick="toggleTimer()">START CORE</button>
                         </div>
                     </div>
-                    <h3>BAMS Vaults <span style="font-size:0.8rem; color:#888;">(All RESTORED)</span></h3>
+                    <h3>BAMS Vaults</h3>
                     <div class="grid-layout" style="margin-top:15px;">
                         <div class="tool-card" onclick="openVault('Samhita')"><span style="font-size:1.3rem;">📜</span> <h3 style="display:inline; margin-left:8px;">Samhita</h3></div>
-                        <div class="tool-card" onclick="openVault('Anatomy')"><span style="font-size:1.3rem;">🦴</span> <h3 style="display:inline; margin-left:8px;">Anatomy</h3><p style="font-size:0.75rem; color:#777; margin-top:4px;">Rachana Sharir</p></div>
-                        <div class="tool-card" onclick="openVault('Physiology')"><span style="font-size:1.3rem;">🧪</span> <h3 style="display:inline; margin-left:8px;">Physiology</h3><p style="font-size:0.75rem; color:#777; margin-top:4px;">Kriya Sharir</p></div>
+                        <div class="tool-card" onclick="openVault('Anatomy')"><span style="font-size:1.3rem;">🦴</span> <h3 style="display:inline; margin-left:8px;">Anatomy</h3></div>
+                        <div class="tool-card" onclick="openVault('Physiology')"><span style="font-size:1.3rem;">🧪</span> <h3 style="display:inline; margin-left:8px;">Physiology</h3></div>
                         <div class="tool-card" onclick="openVault('Padarth Vigyan')"><span style="font-size:1.3rem;">⚛️</span> <h3 style="display:inline; margin-left:8px;">Padarth Vigyan</h3></div>
-                        <div class="tool-card" onclick="openVault('Sanskrit')"><span style="font-size:1.3rem;">🕉️</span> <h3 style="display:inline; margin-left:8px;">Sanskrit</h3></div>
-                        <div class="tool-card" onclick="openVault('Exam Vault')"><span style="font-size:1.3rem;">🎓</span> <h3 style="display:inline; margin-left:8px;">Exam Vault</h3></div>
-                        <div class="tool-card" onclick="openVault('Sloka Library')"><span style="font-size:1.3rem;">✨</span> <h3 style="display:inline; margin-left:8px;">Sloka Library</h3></div>
                     </div>
                 `
             },
@@ -316,7 +303,6 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
 
-        // Core Timetable
         let kkTimetable = {"Monday": [{time: "09:00 AM", sub: "Rachana Sharir Atlas Mapping"}]};
         function renderTimetable() {
             let day = document.getElementById('day-selector').value;
@@ -339,13 +325,7 @@
             }
         }
 
-        // Vault Recovered Systems
-        let vaultData = {
-            "Physiology": [{name: "x file", link: "https://drive.google.com"}, {name: "Kriya Sharir Core Notes", link: "https://drive.google.com"}],
-            "Samhita": [{name: "Charaka Samhita Reference", link: "https://archive.org"}],
-            "Anatomy": [{name: "Rachana Sharir Bone Guide", link: "https://drive.google.com"}],
-            "Padarth Vigyan": [], "Sanskrit": [], "Exam Vault": [], "Sloka Library": []
-        };
+        let vaultData = { "Physiology": [], "Samhita": [], "Anatomy": [], "Padarth Vigyan": [] };
         function openVault(cat) {
             currentVaultCat = cat;
             document.getElementById('vault-title').innerText = cat + " System Hub";
@@ -373,78 +353,47 @@
         }
 
         // =========================================================================
-        // GEMINI FREQUENCY CONVERSATIONAL JARVIS CORE (TRUE AI PERSONALIZATION)
+        // K.K. VOICE - CONVERSATIONAL CORE
         // =========================================================================
         let voiceSynth = window.speechSynthesis;
-        let jarvisActive = false;
+        let kkVoiceActive = false;
 
-        // JARVIS Voice Profile Calibration
-        function jarvisSpeak(phrase) {
+        function aiSpeak(phrase) {
             if (voiceSynth) {
-                voiceSynth.cancel(); // Stop any pending robotic overlaps
+                voiceSynth.cancel(); 
                 let utterance = new SpeechSynthesisUtterance(phrase);
-                
-                // India-English base engine with calibrated tone
                 utterance.lang = 'en-IN'; 
-                utterance.rate = 1.02;  // Natural conversational speed
-                utterance.pitch = 0.90; // Grounded, deep tech presence
-
+                utterance.rate = 1.05;  // More energetic, conversational speed
+                utterance.pitch = 0.95; 
                 voiceSynth.speak(utterance);
             }
         }
 
-        // Custom AI Dialogues for Interface Actions
         const aiDialogueMatrix = {
-            ironman: [
-                "Academic Core activated. Sharir and Samhita databases are online, Sir. Let's crush this session.",
-                "Iron Man protocol engaged. BAMS vaults initialized. Ready when you are, Sir."
-            ],
-            captain: [
-                "Tactical Terminal deployed, Sir. Angel One and Dhan systems ready to track market flows.",
-                "Captain protocol online. Chart parameters loaded. Deploy capital with absolute precision, Sir."
-            ],
-            thor: [
-                "Creative Forge open. Ready to lock in your next script or log your thoughts, Sir.",
-                "Thor core initialized. The script matrix is listening. Let's create something cinematic."
-            ],
-            spidey: [
-                "Agency Web Control deployed. Workspaces and sheets are live. Time to scale the venture, Sir.",
-                "Spidey protocol active. Web ledger and documents are synced. Ready for operations."
-            ],
-            strange: [
-                "AI Nexus Portal fully calibrated. The mainframes are at your absolute command, Sir.",
-                "Doctor Strange protocol initialized. The neural gates are responsive."
-            ],
-            starlord: [
-                "Lounge mode active, Sir. Cosmic frequencies and low-fi engines are live. Time to unwind.",
-                "Star-Lord protocol engaged. Relaxing system parameters. Enjoy the vibe, Sir."
-            ]
+            ironman: ["Academic Core activated. Sharir aur Samhita databases online hain. Let's study.", "Iron Man protocol engaged. BAMS vaults initialized."],
+            captain: ["Tactical Terminal deployed. Market track karne ke liye system ready hai.", "Captain protocol online. Chart parameters loaded."],
+            thor: ["Creative Forge open. Scripts aur naye ideas lock karne ka time aa gaya hai.", "Thor core initialized. The matrix is listening."],
+            spidey: ["Agency Web Control deployed. Workspaces aur sheets live hain. Let's scale DDK Freelancers.", "Spidey protocol active. Web ledger synced."],
+            strange: ["AI Nexus Portal calibrated. Mainframes ready hain.", "Doctor Strange protocol initialized."],
+            starlord: ["Lounge mode active. Chill vibes aur lofi streams live hain. Take a break.", "Star-Lord protocol engaged."]
         };
 
-        // Quick helper to pick a dynamic, conversational response
         function getAiResponse(coreId) {
             const responses = aiDialogueMatrix[coreId];
             return responses[Math.floor(Math.random() * responses.length)];
         }
 
         async function triggerGeminiAI(question, contextMode = "general") {
-            let optimizedPrompt = question;
-            if (contextMode === "trading") optimizedPrompt = "Act as my elite technical analysis trading teacher. Answer sharply: " + question;
-            if (contextMode === "bams") optimizedPrompt = "Act as an expert BAMS Ayurveda professor. Explain this clearly: " + question;
-
             try {
                 const res = await fetch('/api/agent', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: optimizedPrompt, agentType: contextMode })
+                    body: JSON.stringify({ prompt: question, agentType: contextMode })
                 });
                 const parsed = await res.json();
-                return parsed.success ? parsed.message : "Data stream interpreted, sir. API configurations are pending layout.";
+                return parsed.success ? parsed.message : "Network error, K.K. Voice offline hai abhi.";
             } catch (err) {
-                if (optimizedPrompt.includes("trade") || optimizedPrompt.includes("mentor") || optimizedPrompt.includes("nifty")) {
-                    return "As your trading teacher, I suggest evaluating the volume profiles. Wait for confirmation before deploying asset capital, sir.";
-                }
-                return "The matrix is perfectly configured. I am ready to route your direct prompt sequences straight through Gemini as soon as the live endpoint goes live!";
+                return "Backend connect nahi ho raha. Check your server.";
             }
         }
 
@@ -453,121 +402,60 @@
             let engineInstance = new SpeechEngine();
             engineInstance.continuous = true; 
             engineInstance.interimResults = false; 
-            engineInstance.lang = 'en-US';
+            engineInstance.lang = 'en-IN'; // Set to recognize Hinglish accents better
 
             engineInstance.onresult = async function(event) {
                 let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
                 console.log("HUD Vector Captured: ", speechToken);
 
-                // 1. CHILL SYSTEM WAKE-UP
-                if (speechToken.includes("jarvis activate") || speechToken.includes("activate")) {
-                    jarvisActive = true;
-                    document.getElementById('mic-status').innerText = "🟢 JARVIS ONLINE | HUD RESPONSIVE";
+                // WAKE UP
+                if (speechToken.includes("kk voice activate") || speechToken.includes("k k voice activate") || speechToken.includes("k.k. voice activate")) {
+                    kkVoiceActive = true;
+                    document.getElementById('mic-status').innerText = "🟢 K.K. VOICE ONLINE | LISTENING";
                     document.getElementById('mic-status').classList.add('pulse-active');
-                    jarvisSpeak("All systems functional and calibrated, Sir. Jarvis online. What's the play today?");
+                    aiSpeak("System live hai. K.K. Voice activated. Boliye, kya plan hai aaj ka?");
                     return;
                 }
 
-                if (!jarvisActive) return;
+                if (!kkVoiceActive) return;
 
-                // 2. PROTOCOL SWITCHING LOGIC WITH EMOTIVE DIALOGUES
-                if (speechToken.includes("open iron man") || speechToken.includes("academic matrix") || speechToken.includes("iron man core")) {
-                    initProtocol('ironman', '#ff2a2a');
-                    jarvisSpeak(getAiResponse('ironman'));
+                // MODULES
+                if (speechToken.includes("open iron man") || speechToken.includes("academic matrix")) {
+                    initProtocol('ironman', '#ff2a2a'); aiSpeak(getAiResponse('ironman'));
                 }
-                else if (speechToken.includes("open captain") || speechToken.includes("trading terminal") || speechToken.includes("captain core")) {
-                    initProtocol('cap', '#0077ff');
-                    jarvisSpeak(getAiResponse('cap'));
+                else if (speechToken.includes("open captain") || speechToken.includes("trading terminal")) {
+                    initProtocol('cap', '#0077ff'); aiSpeak(getAiResponse('cap'));
                 }
-                else if (speechToken.includes("open thor") || speechToken.includes("creative forge") || speechToken.includes("thor core")) {
-                    initProtocol('thor', '#ffaa00');
-                    jarvisSpeak(getAiResponse('thor'));
+                else if (speechToken.includes("open thor") || speechToken.includes("creative forge")) {
+                    initProtocol('thor', '#ffaa00'); aiSpeak(getAiResponse('thor'));
                 }
-                else if (speechToken.includes("open spider man") || speechToken.includes("agency web") || speechToken.includes("spidey core")) {
-                    initProtocol('spidey', '#ff0055');
-                    jarvisSpeak(getAiResponse('spidey'));
+                else if (speechToken.includes("open spider man") || speechToken.includes("agency web")) {
+                    initProtocol('spidey', '#ff0055'); aiSpeak(getAiResponse('spidey'));
                 }
-                else if (speechToken.includes("open doctor strange") || speechToken.includes("ai nexus") || speechToken.includes("strange core")) {
-                    initProtocol('strange', '#00ffaa');
-                    jarvisSpeak(getAiResponse('strange'));
+                else if (speechToken.includes("open doctor strange") || speechToken.includes("ai nexus")) {
+                    initProtocol('strange', '#00ffaa'); aiSpeak(getAiResponse('strange'));
                 }
-                else if (speechToken.includes("open star lord") || speechToken.includes("galaxy lounge") || speechToken.includes("star lord core")) {
-                    initProtocol('starlord', '#aa00ff');
-                    jarvisSpeak(getAiResponse('starlord'));
+                else if (speechToken.includes("open star lord") || speechToken.includes("galaxy lounge")) {
+                    initProtocol('starlord', '#aa00ff'); aiSpeak(getAiResponse('starlord'));
+                }
+                else if (speechToken.includes("return to home") || speechToken.includes("go back")) {
+                    returnToHome(); aiSpeak("Mainframe cleared. System overview par waapas aa gaye.");
                 }
 
-                // 3. SEAMLESS INTERFACE CONTROLS
-                else if (speechToken.includes("return to home") || speechToken.includes("go back") || speechToken.includes("close protocol")) {
-                    returnToHome();
-                    jarvisSpeak("Mainframe cleared. Returning to system overview. Standing by, Sir.");
-                }
-                else if (speechToken.includes("open configuration") || speechToken.includes("open settings")) {
-                    openModal('settings-overlay');
-                    jarvisSpeak("Pulling up the system manifest console right away.");
-                }
-                else if (speechToken.includes("dismiss config") || speechToken.includes("close console")) {
-                    closeModal('settings-overlay');
-                    jarvisSpeak("Console manifest secured and minimized.");
-                }
-
-                // 4. FOCUS MATRIX TIMER (With real-time conversation)
-                else if (speechToken.includes("focus time set karo") || speechToken.includes("set focus to") || speechToken.includes("timer minutes")) {
-                    let numMatch = speechToken.match(/\d+/);
-                    if (numMatch) {
-                        if (currentModule !== 'ironman') initProtocol('ironman', '#ff2a2a');
-                        setTimeout(() => {
-                            document.getElementById('focus-mins').value = numMatch[0];
-                            document.getElementById('hud-timer').innerText = `${numMatch[0]<10?'0'+numMatch[0]:numMatch[0]}:00`;
-                            jarvisSpeak(`Matrix locked for ${numMatch[0]} minutes. Let's maintain complete focus, Sir. Initializing countdown.`);
-                            if(!isFocusTimerRunning) toggleTimer();
-                        }, 200);
-                    } else { 
-                        jarvisSpeak("Give me a specific number of minutes, Sir, and I'll spin up the matrix."); 
-                    }
-                }
-                else if (speechToken.includes("stop timer") || speechToken.includes("halt timer")) {
-                    if (isFocusTimerRunning) {
-                        toggleTimer();
-                        jarvisSpeak("Focus core has been halted. Take a breath, Sir.");
-                    } else {
-                        jarvisSpeak("There is no active countdown running at the moment.");
-                    }
-                }
-
-                // 5. DEEP SYSTEM VAULTS
-                else if (speechToken.includes("open vault") || speechToken.includes("vault kholo")) {
-                    if (currentModule !== 'ironman') initProtocol('ironman', '#ff2a2a');
-                    
-                    if (speechToken.includes("physiology") || speechToken.includes("kriya sharir")) {
-                        openVault('Physiology'); jarvisSpeak("Decoupling Kriya Sharir parameters. Physiology vault is open, Sir.");
-                    } else if (speechToken.includes("anatomy") || speechToken.includes("rachana sharir")) {
-                        openVault('Anatomy'); jarvisSpeak("Rachana Sharir architectural blueprints extracted. Anatomy vault loaded.");
-                    } else if (speechToken.includes("samhita") || speechToken.includes("charaka")) {
-                        openVault('Samhita'); jarvisSpeak("Decrypting Charaka Samhita archives. The texts are illuminated, Sir.");
-                    } else {
-                        jarvisSpeak("I've got multiple vaults locked. Specify whether you need Samhita, Anatomy, or Physiology, Sir.");
-                    }
-                }
-                else if (speechToken.includes("close vault")) {
-                    closeModal('vault-overlay');
-                    jarvisSpeak("Vault secured. Enclosing data blocks back into storage.");
-                }
-
-                // 6. TRUE CORE: DIRECT CONVERSATION THROUGH THE MAINFRAME
+                // AI CONVERSATION
                 else {
-                    document.getElementById('mic-status').innerText = "🧠 SYNTHESIZING GEMINI DATA...";
+                    document.getElementById('mic-status').innerText = "🧠 K.K. VOICE THINKING...";
                     let currentCtx = "general";
-                    if (speechToken.includes("chapter") || speechToken.includes("topic") || speechToken.includes("bams") || speechToken.includes("sharir")) currentCtx = "bams";
-                    if (speechToken.includes("trade") || speechToken.includes("nifty") || speechToken.includes("market")) currentCtx = "trading";
+                    if (speechToken.includes("bams") || speechToken.includes("sharir") || speechToken.includes("samhita")) currentCtx = "bams";
+                    if (speechToken.includes("trade") || speechToken.includes("nifty") || speechToken.includes("market") || speechToken.includes("sensex")) currentCtx = "trading";
 
-                    openModal('jarvis-terminal-overlay');
-                    document.getElementById('jarvis-hud-text').innerText = "Routing stream through Gemini Mainframe...";
+                    openModal('voice-terminal-overlay');
+                    document.getElementById('voice-hud-text').innerText = "Processing through K.K. Voice...";
 
-                    // Direct fallback to Gemini's actual conversational response
                     let aiReply = await triggerGeminiAI(speechToken, currentCtx);
-                    document.getElementById('jarvis-hud-text').innerText = aiReply;
-                    jarvisSpeak(aiReply);
-                    document.getElementById('mic-status').innerText = "🟢 JARVIS ONLINE | HUD RESPONSIVE";
+                    document.getElementById('voice-hud-text').innerText = aiReply;
+                    aiSpeak(aiReply);
+                    document.getElementById('mic-status').innerText = "🟢 K.K. VOICE ONLINE | LISTENING";
                 }
             };
 
@@ -575,9 +463,7 @@
             engineInstance.start();
         }
 
-        // =========================================================================
-        // 3. FULL HIGH-DENSITY HIGH-TECH CINEMATIC DIGITAL MATRIX ENGINE
-        // =========================================================================
+        // BACKGROUND ANIMATION
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         let lines = [];
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -585,39 +471,23 @@
 
         class DigitalNode {
             constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vy = (Math.random() * 1.2) + 0.4;
-                this.size = Math.random() * 2 + 1;
-                this.alpha = Math.random() * 0.5 + 0.1;
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.vy = (Math.random() * 1.2) + 0.4; this.size = Math.random() * 2 + 1; this.alpha = Math.random() * 0.5 + 0.1;
             }
-            update() {
-                this.y += this.vy;
-                if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; }
-            }
-            draw() {
-                ctx.fillStyle = modules[currentModule]?.color || '#00ffaa';
-                ctx.globalAlpha = this.alpha;
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
-            }
+            update() { this.y += this.vy; if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; } }
+            draw() { ctx.fillStyle = modules[currentModule]?.color || '#00ffaa'; ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
 
         for(let i=0; i<150; i++) lines.push(new DigitalNode());
         
         function animate() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            
-            // Connective Grid Lines Fx
-            ctx.strokeStyle = modules[currentModule]?.color || '#00ffaa';
-            ctx.lineWidth = 0.15;
+            ctx.strokeStyle = modules[currentModule]?.color || '#00ffaa'; ctx.lineWidth = 0.15;
             for(let a=0; a<lines.length; a++) {
                 lines[a].update(); lines[a].draw();
                 for(let b=a+1; b<lines.length; b++) {
                     let dist = Math.hypot(lines[a].x - lines[b].x, lines[a].y - lines[b].y);
-                    if(dist < 90) {
-                        ctx.globalAlpha = (90 - dist) / 600;
-                        ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke();
-                    }
+                    if(dist < 90) { ctx.globalAlpha = (90 - dist) / 600; ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke(); }
                 }
             }
             requestAnimationFrame(animate);
