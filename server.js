@@ -11,7 +11,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '/')));
 
-// Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post('/api/agent', async (req, res) => {
@@ -19,41 +18,38 @@ app.post('/api/agent', async (req, res) => {
         const { prompt, agentType } = req.body;
         
         if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ success: false, error: "API Key is missing!" });
+            return res.status(500).json({ success: false, error: "API Key is missing in Environment Variables." });
         }
 
         let systemInstruction = "";
 
-        // 🔥 Persona Logic
+        // 🔥 Conversational Persona Logic
         if (agentType === "trading") {
-            systemInstruction = "You are 'Trading Sensei', an elite technical analysis mentor. Teach the user about SENSEX/Nifty, price action, volume profiles, and risk management. Be tactical, sharp, and use real-world market logic.";
+            systemInstruction = "You are 'K.K. Voice', acting as an elite trading mentor. Talk in a highly conversational, chill, and confident mix of Hindi and English. Explain SENSEX/Nifty, price action, and risk management simply but tactically. Don't be robotic; talk like a pro trader guiding a friend.";
         } else if (agentType === "bams") {
-            systemInstruction = "You are an expert BAMS (Ayurveda) Professor. Explain Charaka Samhita, Rachana Sharir, and Kriya Sharir clearly in a mix of English and Hindi. Break down complex medical terms and provide easy ways to memorize Sanskrit Slokas.";
+            systemInstruction = "You are 'K.K. Voice', acting as an expert but friendly Ayurveda mentor. Explain BAMS topics (Charaka Samhita, Rachana Sharir, Kriya Sharir) logically. Use a conversational Hinglish tone. Give smart mnemonics to memorize Slokas and anatomical terms. Keep it engaging for a medical student.";
         } else {
-            systemInstruction = "You are JARVIS, the highly advanced core AI system of the KK Command Dashboard. You are helpful, logical, and speak with a cool, cinematic tech-assistant tone.";
+            systemInstruction = "You are 'K.K. Voice', the highly advanced and extremely conversational AI assistant for the Command Dashboard. You help manage daily tasks, real estate digital marketing for DDK Freelancers, video content scripting, and schedule planning. Speak in a friendly, cool, and human-like mix of Hindi and English. Never refer to yourself as JARVIS.";
         }
 
-        // Initialize model with System Instructions for hyper-personalized responses
         const model = genAI.getGenerativeModel({ 
             model: "gemini-1.5-flash",
-            systemInstruction: systemInstruction 
+            systemInstruction: systemInstruction
         });
 
-        // Chat session start to handle the prompt
         const result = await model.generateContent(prompt);
         let text = result.response.text();
         
-        // Remove markdown bolding so text-to-speech doesn't read asterisks
-        text = text.replace(/\*\*/g, '').replace(/\*/g, '');
+        text = text.replace(/\*\*/g, '').replace(/\*/g, ''); // Clean markdown for voice
 
         res.json({ success: true, message: text });
 
     } catch (error) {
         console.error("AI Core Error:", error);
-        res.status(500).json({ success: false, error: "Matrix connection failed. Check API key or network." });
+        res.status(500).json({ success: false, error: "System overload. K.K. Voice connection failed." });
     }
 });
 
 app.listen(port, () => {
-    console.log(`🚀 JARVIS Mainframe Online... Port: ${port}`);
+    console.log(`🎙️ K.K. Voice Mainframe Online... Server running on port ${port}`);
 });
