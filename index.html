@@ -12,35 +12,54 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --transition-hq: 0.4s cubic-bezier(0.25, 1, 0.2, 1);
             --card-text: #fff;
-            --bg-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1920');
+            --scanline-opacity: 0.08;
+            --bg-image: url('https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600');
         }
 
         body.light-theme {
             --bg-color: #e8ecf1; --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(0, 136, 255, 0.3);
-            --card-text: #111; --theme-color: #0088ff;
+            --card-text: #111; --theme-color: #0088ff; --scanline-opacity: 0.03;
         }
-        body.light-theme .avenger-card { color: #111; box-shadow: 0 15px 35px rgba(0, 136, 255, 0.15); }
-        body.light-theme .tool-card { color: #111; background: rgba(255,255,255,0.8); border-color: rgba(0, 136, 255, 0.2); }
-        
-        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--card-text); font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; user-select: none; transition: all 0.5s ease; background-image: var(--bg-image); background-size: cover; background-position: center; }
-        
-        body::before { content: " "; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 99999; background-size: 100% 4px, 6px 100%; pointer-events: none; opacity: 0.08; }
-        .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; background: rgba(0,0,0,0.7); }
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none; }
+        body.timer-alert { --theme-color: #ff003c !important; animation: redPulse 2s infinite; }
+        @keyframes redPulse { 0% { box-shadow: inset 0 0 0px rgba(255,0,60,0); } 50% { box-shadow: inset 0 0 100px rgba(255,0,60,0.5); } 100% { box-shadow: inset 0 0 0px rgba(255,0,60,0); } }
 
+        body {
+            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--card-text);
+            font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden;
+            user-select: none; transition: all 0.5s ease;
+            background-image: var(--bg-image); background-size: cover; background-position: center;
+        }
+
+        body::before {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99999; background-size: 100% 4px, 6px 100%; pointer-events: none; opacity: var(--scanline-opacity);
+        }
+
+        .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; overflow: hidden; background: rgba(0,0,0,0.75); }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none; }
+        
         .carousel-container { display: flex; gap: 40px; padding: 50px; max-width: 100vw; overflow-x: auto; scrollbar-width: none; align-items: center; perspective: 1200px; }
         .carousel-container::-webkit-scrollbar { display: none; }
-        .avenger-card { min-width: 280px; height: 400px; background-size: cover; background-position: center; border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; cursor: pointer; position: relative; overflow: hidden; transform-style: preserve-3d; transition: transform 0.6s, box-shadow 0.6s; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+
+        .avenger-card {
+            min-width: 280px; height: 400px; background-size: cover; background-position: center;
+            border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px;
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+            cursor: pointer; position: relative; overflow: hidden; transform-style: preserve-3d; 
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s, border-color 0.6s;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
         .avenger-card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.85) 100%); z-index: 1; }
         .avenger-card:hover { transform: translateY(-12px) rotateY(12deg) scale(1.05); box-shadow: 0 35px 60px rgba(0,0,0,0.8), 0 0 30px currentColor; border-color: currentColor; }
-        .card-content, .card-icon { z-index: 2; text-align: center; transform: translateZ(30px); }
-        .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); }
+        .card-content { z-index: 2; text-align: center; transform: translateZ(30px); }
+        .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); z-index: 2; transform: translateZ(40px); }
 
-        .sidebar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); padding: 10px 20px; gap: 12px; z-index: 1000; background: var(--glass-bg); backdrop-filter: blur(35px); border: 1px solid var(--glass-border); border-radius: 50px; display: flex; align-items: center; }
+        .sidebar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); padding: 10px 20px; gap: 12px; z-index: 1000; background: var(--glass-bg); backdrop-filter: blur(35px); border: 1px solid var(--glass-border); border-radius: 50px; display: flex; }
         .nav-btn { font-size: 1.4rem; cursor: pointer; opacity: 0.5; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: var(--transition-hq); color: inherit; }
         .nav-btn.active { opacity: 1; transform: translateY(-6px); background: rgba(255, 255, 255, 0.12); box-shadow: 0 0 20px var(--theme-color); color: var(--theme-color); border: 1px solid var(--theme-color); }
         
-        .content-area { flex: 1; padding: 40px 40px 130px 40px; overflow-y: auto; position: relative; z-index: 10; transition: opacity 0.4s ease; }
+        .content-area { flex: 1; padding: 40px 40px 130px 40px; overflow-y: auto; height: 100vh; box-sizing: border-box;}
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
         .tool-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 22px; cursor: pointer; transition: var(--transition-hq); backdrop-filter: blur(20px); }
         .tool-card:hover { border-color: var(--theme-color); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
@@ -49,19 +68,31 @@
         .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); transform: scale(1.05); }
         
         .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; backdrop-filter: blur(25px); opacity: 0; transition: 0.4s; }
-        .modal-box { background: var(--glass-bg); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 750px; max-width: 95%; box-shadow: 0 25px 50px rgba(0,0,0,0.9); position: relative; max-height: 85vh; overflow-y: auto;}
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); }
+        .modal-box { background: var(--glass-bg); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 700px; max-width: 92%; box-shadow: 0 25px 50px rgba(0,0,0,0.9); position: relative; max-height: 85vh; overflow-y: auto;}
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); z-index: 10;}
         
-        .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color); outline: none; border-radius: 8px; margin-top: 5px; margin-bottom: 10px;}
-        .chat-log { display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
-        .chat-msg { padding: 10px; border-radius: 8px; font-size: 0.95rem; }
-        .msg-user { background: rgba(0, 255, 170, 0.1); border-left: 3px solid var(--theme-color); color: white; align-self: flex-start; }
-        .msg-ai { background: rgba(0, 119, 255, 0.1); border-right: 3px solid #0077ff; color: #aaa; align-self: flex-end; text-align: right; }
+        .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color); outline: none; border-radius: 8px; margin-top: 5px;}
 
-        #mic-status { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; background: rgba(5, 5, 8, 0.85); border: 1px solid var(--theme-color); border-radius: 30px; z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); font-size: 0.85rem; display: flex; align-items: center; gap: 15px; }
-        .pulse-active { animation: breathe 1.4s infinite alternate ease-in-out; }
-        @keyframes breathe { 0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); } 100% { box-shadow: 0 0 30px var(--theme-color); transform: translateX(-50%) scale(1.02); } }
-        .manual-mic-toggle { background: var(--theme-color); color: #000; border: none; padding: 4px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        /* Background Global Timer Widget */
+        #global-timer-widget { position: fixed; top: 20px; right: 20px; background: var(--glass-bg); border: 1px solid var(--theme-color); padding: 10px 20px; border-radius: 15px; z-index: 10000; color: var(--theme-color); font-family: monospace; font-size: 1.5rem; display: none; backdrop-filter: blur(10px); box-shadow: 0 0 15px var(--theme-color);}
+
+        /* Silent Notifications / Toast */
+        #toast-container { position: fixed; bottom: 100px; right: 20px; z-index: 25000; display: flex; flex-direction: column; gap: 10px; }
+        .hud-toast { background: rgba(0, 0, 0, 0.85); border-left: 4px solid var(--theme-color); color: white; padding: 15px 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: slideInRight 0.4s ease-out; font-size: 0.9rem;}
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0;} to { transform: translateX(0); opacity: 1;} }
+
+        /* Document Viewer */
+        .pdf-viewer { width: 100%; height: 50vh; border: 1px solid var(--theme-color); border-radius: 10px; margin-top: 15px; background: #fff;}
+        .chat-log { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); display:flex; flex-direction: column; gap: 10px; margin-bottom:10px;}
+        .msg { padding: 10px 15px; border-radius: 10px; max-width: 80%; font-size: 0.95rem; }
+        .msg.user { background: rgba(255,255,255,0.1); align-self: flex-end; border-bottom-right-radius: 0; }
+        .msg.ai { background: rgba(0, 255, 170, 0.1); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--theme-color); color: var(--theme-color);}
+
+        #mic-status { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; background: rgba(5, 5, 8, 0.85); border: 1px solid var(--theme-color); border-radius: 30px; z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); font-size: 0.85rem; transition: 0.4s; display: flex; align-items: center; gap: 15px; }
+        .pulse-active { animation: jarvisBreathe 1.4s infinite alternate ease-in-out; }
+        @keyframes jarvisBreathe { 0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); } 100% { box-shadow: 0 0 30px var(--theme-color); transform: translateX(-50%) scale(1.02); } }
+        
+        .manual-mic-toggle { background: var(--theme-color); color: #000; border: none; padding: 4px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
         .manual-mic-toggle.off { background: #ff2a2a; color: #fff; }
 
         #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.5s ease; }
@@ -71,7 +102,7 @@
 </head>
 <body>
 
-    <div class="bg-mesh"><div class="blob blob-1"></div></div>
+    <div class="bg-mesh"></div>
     <canvas id="bg-canvas"></canvas>
 
     <div id="mic-status">
@@ -79,38 +110,39 @@
         <button id="mic-toggle-btn" class="manual-mic-toggle off" onclick="handleMicManualSwitch()">ACTIVATE MIC</button>
     </div>
 
-    <div class="overlay-modal" id="jarvis-terminal-overlay">
+    <div id="global-timer-widget">25:00</div>
+    <div id="toast-container"></div> <div class="overlay-modal" id="jarvis-terminal-overlay">
         <div class="modal-box">
             <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚡ SYSTEM TRANSMISSION MATRIX</h2>
-            <div id="chat-container" class="chat-log">
-                <div class="chat-msg msg-ai">System Online. How can I assist you today, Sir?</div>
+            <h2 style="color: var(--theme-color);">⚡ DUAL-CONVERSATION MATRIX</h2>
+            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
+            <div class="chat-log" id="chat-log-box">
+                <div class="msg ai">Hello Sir, how can I assist you with your BAMS studies or trading setup today?</div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <input type="text" id="manual-chat-input" class="custom-input" style="margin:0;" placeholder="Type command manually...">
-                <button class="action-btn" onclick="sendManualMessage()">SEND</button>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="chat-input" class="custom-input" placeholder="Type or use voice commands..." onkeypress="if(event.key==='Enter') sendChatMsg()">
+                <button class="action-btn" onclick="sendChatMsg()">SEND</button>
             </div>
         </div>
     </div>
 
     <div class="overlay-modal" id="vault-modal">
-        <div class="modal-box">
+        <div class="modal-box" style="width: 800px;">
             <span class="close-btn" onclick="closeModal('vault-modal')">✕</span>
             <h2 id="vault-title" style="color: var(--theme-color);">VAULT</h2>
-            <div id="vault-content" style="color:#ddd;"></div>
-        </div>
-    </div>
-
-    <div class="overlay-modal" id="timetable-modal">
-        <div class="modal-box">
-            <span class="close-btn" onclick="closeModal('timetable-modal')">✕</span>
-            <h2 style="color: var(--theme-color);">📅 CUSTOM TIMETABLE MAKER</h2>
-            <div style="display: flex; gap: 10px;">
-                <input type="time" id="tt-time" class="custom-input" style="width: 30%;">
-                <input type="text" id="tt-task" class="custom-input" style="width: 70%;" placeholder="Enter Task Name...">
+            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <label style="color:#aaa; font-size:0.85rem;">📁 Insert eBook / PDF / Reference Doc here:</label><br>
+                <input type="file" id="file-uploader" class="custom-input" accept=".pdf,.ppt,.pptx" onchange="handleFileUpload(event)" style="border:1px dashed var(--theme-color);">
             </div>
-            <button class="action-btn" style="width: 100%; margin-bottom: 15px;" onclick="addTimetableTask()">ADD TASK</button>
-            <div id="timetable-list" class="chat-log" style="max-height: 200px;"></div>
+            
+            <div id="file-display-area" style="display:none;">
+                <iframe id="doc-iframe" class="pdf-viewer" src=""></iframe>
+            </div>
+
+            <textarea id="vault-notes" class="custom-input" rows="4" placeholder="Or keep text notes here..." style="margin-top:15px;"></textarea>
+            <br><button class="action-btn" style="margin-top:15px;" onclick="closeModal('vault-modal')">Save & Close</button>
         </div>
     </div>
 
@@ -118,33 +150,34 @@
         <div class="modal-box" style="width: 500px;">
             <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
             <h2 style="color: var(--theme-color);">⚙️ COGNITIVE HUB MANAGER</h2>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px;">
-                <label>Theme Strategy</label>
-                <select id="theme-selector" onchange="adjustSystemTheme()" class="custom-input">
-                    <option value="dark">Cyberpunk Dark Horizon</option>
-                    <option value="light">Stark Lab Light Mode</option>
-                </select>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px;">
                 
-                <label>Background Cinematic</label>
+                <label>Main Background Cinematic</label>
                 <select id="bg-selector" class="custom-input">
-                    <option value="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1920">Matrix Code Green</option>
-                    <option value="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920">Abstract Core Red</option>
-                    <option value="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920">Global Earth View</option>
+                    <option value="https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600">Cyber City Lights</option>
+                    <option value="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600">Earth Orbital View</option>
+                    <option value="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1600">Digital Matrix Code</option>
                 </select>
 
-                <label>Ironman Module Visual</label>
-                <select id="ironman-img-select" class="custom-input">
-                    <option value="https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?q=80&w=600">Arc Reactor</option>
-                    <option value="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600">Robot Tech</option>
+                <label>Ironman Card Graphic</label>
+                <select id="ironman-selector" class="custom-input">
+                    <option value="https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?q=80&w=600">Red Reactor</option>
+                    <option value="https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=600">Tech Red Blur</option>
+                </select>
+
+                <label>Thor Card Graphic</label>
+                <select id="thor-selector" class="custom-input">
+                    <option value="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600">Golden Sparks</option>
+                    <option value="https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600">Thunder Lightning</option>
                 </select>
             </div>
-            <button class="action-btn" style="margin-top: 20px; width:100%; padding:12px;" onclick="saveSettings()">APPLY CONFIG</button>
+            <button class="action-btn" style="margin-top: 25px; width:100%; padding:12px;" onclick="saveSettings()">APPLY HUD CONFIG</button>
         </div>
     </div>
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER ENVIRONMENT v10.0</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v10.0</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
@@ -175,227 +208,273 @@
             <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">🛡️</div>
             <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">⚡</div>
             <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
+            <div class="nav-btn" style="color: #fff;" onclick="openModal('jarvis-terminal-overlay')">💬</div>
         </div>
         <div class="content-area" id="main-content"></div>
     </div>
 
     <script>
         let currentModule = ''; let engineInstance; let jarvisActive = false;
-        let timerInterval; let secondsLeft = 1500; let isTimerRunning = false;
-        let myTimetable = [];
+        let globalTimerInterval; let secondsLeft = 0; let customTimetable = []; let notifiedTasks = new Set();
 
-        // App Modules
         const modules = {
             ironman: {
                 color: '#ff2a2a', title: 'Academic Matrix Blueprint Core',
                 html: `
                     <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                        <button class="action-btn" onclick="openTimer()">⏱️ FOCUS TIMER <span id="bg-timer-display" style="font-size:0.8rem; color:#aaa;"></span></button>
-                        <button class="action-btn" onclick="openModal('timetable-modal')">📅 EDIT TIMETABLE</button>
+                        <button class="action-btn" onclick="startTimerPrompt()">⏱️ SET FOCUS TIMER</button>
+                        <button class="action-btn" onclick="openTimetableMaker()">📅 TIMETABLE MAKER</button>
                     </div>
-                    <div class="grid-layout">
-                        <div class="tool-card" onclick="openPdfVault('Anatomy')">🦴 <h3>Anatomy Vault</h3><p style="font-size:0.75rem; color:#aaa;">Upload & Read PDF/PPT</p></div>
-                        <div class="tool-card" onclick="openPdfVault('Physiology')">🧪 <h3>Physiology Vault</h3><p style="font-size:0.75rem; color:#aaa;">Upload & Read PDF/PPT</p></div>
-                        <div class="tool-card" onclick="openPdfVault('Samhita')">📜 <h3>Samhita Core</h3><p style="font-size:0.75rem; color:#aaa;">Upload & Read PDF/PPT</p></div>
+                    <h3>BAMS Complete Document Vaults</h3>
+                    <div class="grid-layout" style="margin-top:15px;">
+                        <div class="tool-card" onclick="openVault('Rachana Sharir (Anatomy)')">🦴 <h3>Anatomy</h3></div>
+                        <div class="tool-card" onclick="openVault('Kriya Sharir (Physiology)')">🧪 <h3>Physiology</h3></div>
+                        <div class="tool-card" onclick="openVault('Samhita')">📜 <h3>Samhita</h3></div>
+                        <div class="tool-card" onclick="openVault('Padarth Vigyan')">⚛️ <h3>Padarth Vigyan</h3></div>
+                        <div class="tool-card" onclick="openVault('Sanskrit')">🕉️ <h3>Sanskrit</h3></div>
+                        <div class="tool-card" onclick="openVault('Sloka Library')">✨ <h3>Sloka Library</h3></div>
+                        <div class="tool-card" onclick="openVault('Exam Vault')">🎓 <h3>Exam Vault</h3></div>
                     </div>`
             },
             cap: { 
                 color: '#0077ff', title: 'Tactical Trading Core Terminal', 
-                html: `<div id="tradingview_cap" style="height:52vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div>
-                       <div class="grid-layout"><div class="tool-card" onclick="window.open('https://trade.angelone.in/')">📈 Angel One</div><div class="tool-card" onclick="window.open('https://web.dhan.co/')">⚡ Dhan Terminal</div></div>` 
+                html: `
+                    <div id="tradingview_cap" style="height:50vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div>
+                    <div class="grid-layout">
+                        <div class="tool-card" onclick="window.open('https://trade.angelone.in/')">📈 <h3>Angel One Gateway</h3></div>
+                        <div class="tool-card" onclick="window.open('https://web.dhan.co/')">⚡ <h3>Dhan Control Mainframe</h3></div>
+                    </div>` 
             },
-            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<textarea style="width:95%; height:200px;" class="custom-input" placeholder="Type script or notes..."></textarea>` },
-            spidey: { color: '#ff0055', title: 'Agency Ledger', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')">Google Docs</div></div>` }
+            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<textarea style="width:95%; height:120px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--theme-color); border-radius:8px; padding:10px;" placeholder="Scripting interface active..."></textarea>` },
+            spidey: { color: '#ff0055', title: 'Agency Web Ledger Control', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Google Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Google Sheets</h3></div></div>` }
         };
 
         window.onload = function() {
-            Notification.requestPermission(); // Ask for silent notification permission
             if(localStorage.getItem('bg-url')) document.documentElement.style.setProperty('--bg-image', "url('" + localStorage.getItem('bg-url') + "')");
             if(localStorage.getItem('ironman-url')) document.getElementById('card-ironman').style.backgroundImage = "url('" + localStorage.getItem('ironman-url') + "')";
-            
-            let savedTT = localStorage.getItem('myTimetable');
-            if(savedTT) { myTimetable = JSON.parse(savedTT); renderTimetableList(); }
-            
-            // Background Timetable Checker (runs every 30 seconds)
-            setInterval(() => {
-                let now = new Date();
-                let currentStr = (now.getHours() < 10 ? '0' : '') + now.getHours() + ":" + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
-                myTimetable.forEach(t => { if(t.time === currentStr && !t.notified) { 
-                    new Notification("K.K. HUD Alert", { body: "Time for task: " + t.task }); 
-                    jarvisSpeak("Sir, it is time for " + t.task);
-                    t.notified = true; 
-                }});
-            }, 30000);
+            if(localStorage.getItem('thor-url')) document.getElementById('card-thor').style.backgroundImage = "url('" + localStorage.getItem('thor-url') + "')";
+            if(localStorage.getItem('myTimetable')) customTimetable = JSON.parse(localStorage.getItem('myTimetable'));
+            startTimeChecker(); // Start background timetable checker
         }
 
-        // --- CORE NAVIGATION ---
         function saveSettings() {
-            let bg = document.getElementById('bg-selector').value;
-            let iron = document.getElementById('ironman-img-select').value;
-            localStorage.setItem('bg-url', bg); localStorage.setItem('ironman-url', iron);
-            document.documentElement.style.setProperty('--bg-image', "url('" + bg + "')");
-            document.getElementById('card-ironman').style.backgroundImage = "url('" + iron + "')";
-            closeModal('settings-overlay'); jarvisSpeak("Configurations saved.");
+            const bgUrl = document.getElementById('bg-selector').value;
+            const ironUrl = document.getElementById('ironman-selector').value;
+            const thorUrl = document.getElementById('thor-selector').value;
+
+            localStorage.setItem('bg-url', bgUrl); document.documentElement.style.setProperty('--bg-image', "url('" + bgUrl + "')");
+            localStorage.setItem('ironman-url', ironUrl); document.getElementById('card-ironman').style.backgroundImage = "url('" + ironUrl + "')";
+            localStorage.setItem('thor-url', thorUrl); document.getElementById('card-thor').style.backgroundImage = "url('" + thorUrl + "')";
+            closeModal('settings-overlay'); jarvisSpeak("System visuals updated.");
         }
+
         function initProtocol(id, color) {
             currentModule = id; document.documentElement.style.setProperty('--theme-color', color);
-            document.getElementById('landing-stage').style.display = 'none'; document.getElementById('dashboard-stage').style.display = 'flex';
+            document.getElementById('landing-stage').style.display = 'none';
+            document.getElementById('dashboard-stage').style.display = 'flex';
             setTimeout(() => { document.getElementById('dashboard-stage').style.opacity = '1'; renderModule(id); }, 50);
         }
-        function returnToHome() { document.getElementById('dashboard-stage').style.opacity = '0'; setTimeout(() => { document.getElementById('dashboard-stage').style.display = 'none'; document.getElementById('landing-stage').style.display = 'flex'; document.documentElement.style.setProperty('--theme-color', '#00ffaa'); }, 400); }
-        function renderModule(id) { currentModule = id; document.getElementById('main-content').innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${modules[id].title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ CONFIG</button></div><div>${modules[id].html}</div>`; document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); document.getElementById('nav-'+id).classList.add('active'); if(id === 'cap') loadTV(); }
+        function returnToHome() {
+            document.getElementById('dashboard-stage').style.opacity = '0';
+            setTimeout(() => { document.getElementById('dashboard-stage').style.display = 'none'; document.getElementById('landing-stage').style.display = 'flex'; document.documentElement.style.setProperty('--theme-color', '#00ffaa'); }, 400);
+        }
+
+        function renderModule(id) {
+            currentModule = id; const mod = modules[id]; const contentArea = document.getElementById('main-content');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
+            contentArea.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${mod.title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM CONFIG</button></div><div>${mod.html}</div>`;
+            if(id === 'cap') loadTV();
+        }
         function switchModule(id) { renderModule(id); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
-        function adjustSystemTheme() { document.body.className = ''; if(document.getElementById('theme-selector').value === 'light') document.body.classList.add('light-theme'); }
 
-        // --- NEW TIMETABLE MAKER ---
-        function addTimetableTask() {
-            let t = document.getElementById('tt-time').value; let n = document.getElementById('tt-task').value;
-            if(!t || !n) return jarvisSpeak("Please enter both time and task.");
-            myTimetable.push({ time: t, task: n, notified: false });
-            myTimetable.sort((a,b) => a.time.localeCompare(b.time)); // sort by time
-            localStorage.setItem('myTimetable', JSON.stringify(myTimetable));
-            renderTimetableList(); document.getElementById('tt-task').value = ""; jarvisSpeak("Task added to timetable.");
-        }
-        function renderTimetableList() {
-            let html = "";
-            myTimetable.forEach((x, i) => { html += `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #333;"><span><b>${x.time}</b> - ${x.task}</span><button style="background:red; border:none; color:white; border-radius:5px; cursor:pointer;" onclick="deleteTask(${i})">X</button></div>`; });
-            document.getElementById('timetable-list').innerHTML = html;
-        }
-        function deleteTask(index) { myTimetable.splice(index, 1); localStorage.setItem('myTimetable', JSON.stringify(myTimetable)); renderTimetableList(); }
-
-        // --- VAULT: PDF / EBOOK INJECTOR ---
-        function openPdfVault(title) {
-            document.getElementById('vault-title').innerText = title + " E-BOOK VAULT";
-            document.getElementById('vault-content').innerHTML = `
-                <p>Select a PDF from your local storage to read inside the HUD.</p>
-                <input type="file" id="local-doc-upload" accept="application/pdf" class="custom-input" onchange="renderPdfInIframe(event)">
-                <iframe id="pdf-viewer" style="width:100%; height:50vh; border: 1px solid var(--theme-color); border-radius: 10px; display:none; background:#fff;"></iframe>
-            `;
-            openModal('vault-modal'); jarvisSpeak("Opening " + title + " vault. Upload your file, Sir.");
-        }
-        function renderPdfInIframe(event) {
-            const file = event.target.files[0];
-            if(file && file.type === "application/pdf") {
-                const url = URL.createObjectURL(file);
-                document.getElementById('pdf-viewer').style.display = 'block';
-                document.getElementById('pdf-viewer').src = url;
-                jarvisSpeak("Document loaded.");
-            } else { jarvisSpeak("Unsupported format. Please upload PDF files."); }
-        }
-
-        // --- BACKGROUND FOCUS TIMER ---
-        function openTimer() {
-            document.getElementById('vault-title').innerText = "SYSTEM FOCUS TIMER";
-            document.getElementById('vault-content').innerHTML = `<div style="font-size: 4rem; text-align: center; color: var(--theme-color);" id="modal-timer-text">${formatTime(secondsLeft)}</div>
-                <div style="display:flex; justify-content:center; gap: 10px;">
-                    <button class="action-btn" onclick="startTimer()">START</button>
-                    <button class="action-btn" onclick="pauseTimer()">PAUSE</button>
-                </div>`;
+        /* --- PDF / DOC VAULT LOGIC --- */
+        function openVault(title) {
+            document.getElementById('vault-title').innerText = title + " VAULT";
+            document.getElementById('file-uploader').value = '';
+            document.getElementById('file-display-area').style.display = 'none';
+            document.getElementById('doc-iframe').src = '';
+            document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
+            
+            // Override save button behavior to save specific subject notes
+            document.querySelector('#vault-modal .action-btn').onclick = function() {
+                localStorage.setItem('note_'+title, document.getElementById('vault-notes').value);
+                closeModal('vault-modal');
+            };
             openModal('vault-modal');
+            jarvisSpeak(title + " vault ready for document insertion.");
         }
-        function formatTime(s) { let m = Math.floor(s/60); let sec = s%60; return (m<10?'0'+m:m) + ":" + (sec<10?'0'+sec:sec); }
-        function startTimer() {
-            if(isTimerRunning) return; isTimerRunning = true; jarvisSpeak("Focus protocol engaged.");
-            document.documentElement.style.setProperty('--theme-color', '#00ffaa'); // Default Green
-            timerInterval = setInterval(() => {
-                secondsLeft--;
-                if(document.getElementById('modal-timer-text')) document.getElementById('modal-timer-text').innerText = formatTime(secondsLeft);
-                if(document.getElementById('bg-timer-display')) document.getElementById('bg-timer-display').innerText = "[" + formatTime(secondsLeft) + "]";
-                
-                if(secondsLeft <= 0) { 
-                    clearInterval(timerInterval); isTimerRunning = false; secondsLeft = 1500; // reset
-                    document.documentElement.style.setProperty('--theme-color', '#ff2a2a'); // ALERT RED
-                    jarvisSpeak("Focus session complete. Great work, Sir. Take a break.");
-                    new Notification("K.K. HUD", { body: "Focus Session Completed!" });
-                }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const fileURL = URL.createObjectURL(file);
+                document.getElementById('file-display-area').style.display = 'block';
+                document.getElementById('doc-iframe').src = fileURL;
+                jarvisSpeak("Document loaded successfully.");
+            }
+        }
+
+        /* --- BACKGROUND GLOBAL TIMER --- */
+        function startTimerPrompt(mins) {
+            let m = mins || prompt("Enter focus time in minutes:", "25");
+            if(m && !isNaN(m)) {
+                secondsLeft = parseInt(m) * 60;
+                document.getElementById('global-timer-widget').style.display = 'block';
+                document.body.classList.remove('timer-alert');
+                clearInterval(globalTimerInterval);
+                globalTimerInterval = setInterval(updateTimer, 1000);
+                jarvisSpeak(`Focus timer set for ${m} minutes. Background protocol active.`);
+            }
+        }
+        function updateTimer() {
+            secondsLeft--;
+            if(secondsLeft <= 0) {
+                clearInterval(globalTimerInterval);
+                document.getElementById('global-timer-widget').innerText = "00:00";
+                document.body.classList.add('timer-alert'); // Color changes to RED!
+                jarvisSpeak("Sir, your focus session has concluded.");
+                setTimeout(()=> { document.getElementById('global-timer-widget').style.display = 'none'; document.body.classList.remove('timer-alert');}, 15000); // clear after 15s
+            } else {
+                let m = Math.floor(secondsLeft / 60); let s = secondsLeft % 60;
+                document.getElementById('global-timer-widget').innerText = (m<10?'0'+m:m) + ":" + (s<10?'0'+s:s);
+            }
+        }
+
+        /* --- CUSTOM TIMETABLE MAKER & SILENT NOTIFICATIONS --- */
+        function openTimetableMaker() {
+            let html = `
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <input type="time" id="tt-time" class="custom-input" style="width:150px;">
+                    <input type="text" id="tt-task" class="custom-input" placeholder="Task name...">
+                    <button class="action-btn" onclick="addTimetableTask()">ADD</button>
+                </div>
+                <div id="tt-list" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:10px; max-height: 250px; overflow-y:auto;"></div>
+            `;
+            document.getElementById('vault-title').innerText = "CUSTOM TIMETABLE MAKER";
+            document.getElementById('vault-content') ? document.getElementById('vault-content').innerHTML = html : null;
+            // Hack to inject into generic modal if vault-content is missing due to PDF overwrite
+            if(!document.getElementById('vault-content')) {
+                document.getElementById('vault-title').innerText = "CUSTOM TIMETABLE MAKER";
+                document.getElementById('file-uploader').parentElement.style.display = 'none';
+                document.getElementById('file-display-area').style.display = 'none';
+                document.getElementById('vault-notes').style.display = 'none';
+                let div = document.createElement('div'); div.id = 'temp-tt'; div.innerHTML = html;
+                document.getElementById('vault-title').after(div);
+                document.querySelector('#vault-modal .action-btn').onclick = function() { document.getElementById('temp-tt').remove(); closeModal('vault-modal'); };
+            }
+            renderTTList(); openModal('vault-modal');
+        }
+
+        function addTimetableTask() {
+            const time = document.getElementById('tt-time').value; const task = document.getElementById('tt-task').value;
+            if(time && task) { customTimetable.push({time, task}); localStorage.setItem('myTimetable', JSON.stringify(customTimetable)); renderTTList(); }
+        }
+        function renderTTList() {
+            let html = customTimetable.map((t, i) => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.1);"><span><b>${t.time}</b> - ${t.task}</span><span style="color:red;cursor:pointer;" onclick="customTimetable.splice(${i},1); localStorage.setItem('myTimetable', JSON.stringify(customTimetable)); renderTTList();">✕</span></div>`).join('');
+            document.getElementById('tt-list').innerHTML = html;
+        }
+
+        function startTimeChecker() {
+            setInterval(() => {
+                let now = new Date(); let currTime = (now.getHours()<10?'0':'') + now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
+                customTimetable.forEach(t => {
+                    if(t.time === currTime && !notifiedTasks.has(t.task)) {
+                        showSilentNotification(`Time for: ${t.task}`);
+                        notifiedTasks.add(t.task); // Prevent spamming
+                    }
+                });
+                // clear notified tasks at midnight (simplified logic)
+                if(currTime === "00:00") notifiedTasks.clear();
+            }, 30000); // check every 30 secs
+        }
+
+        function showSilentNotification(msg) {
+            let toast = document.createElement('div'); toast.className = 'hud-toast'; toast.innerText = "🔔 " + msg;
+            document.getElementById('toast-container').appendChild(toast);
+            setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 8000);
+        }
+
+        /* --- CONVERSATIONAL AI & VOICE COMMANDS --- */
+        function sendChatMsg(txt) {
+            let val = txt || document.getElementById('chat-input').value;
+            if(!val) return;
+            document.getElementById('chat-log-box').innerHTML += `<div class="msg user">${val}</div>`;
+            document.getElementById('chat-input').value = '';
+            document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
+            
+            setTimeout(() => {
+                let aiReply = "System parsed your request: " + val + ". Execution in progress.";
+                document.getElementById('chat-log-box').innerHTML += `<div class="msg ai">${aiReply}</div>`;
+                document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
+                jarvisSpeak(aiReply);
             }, 1000);
         }
-        function pauseTimer() { clearInterval(timerInterval); isTimerRunning = false; jarvisSpeak("Timer paused."); }
 
-        // --- ADVANCED VOICE & CONVERSATION AI ---
         function handleMicManualSwitch() { jarvisActive ? shutdownMic() : startMic(); }
         let voiceSynth = window.speechSynthesis;
-        function jarvisSpeak(phrase) { if(voiceSynth){ voiceSynth.cancel(); let u = new SpeechSynthesisUtterance(phrase); u.lang='hi-IN'; u.pitch=0.9; voiceSynth.speak(u); } }
-        
-        function startMic() { jarvisActive=true; document.getElementById('mic-text').innerText="🟢 MIC ACTIVE"; document.getElementById('mic-status').classList.add('pulse-active'); document.getElementById('mic-toggle-btn').className="manual-mic-toggle"; document.getElementById('mic-toggle-btn').innerText="OFF"; jarvisSpeak("Online and listening."); if(engineInstance) engineInstance.start(); }
-        function shutdownMic() { jarvisActive=false; document.getElementById('mic-text').innerText="🔴 STANDBY"; document.getElementById('mic-status').classList.remove('pulse-active'); document.getElementById('mic-toggle-btn').className="manual-mic-toggle off"; document.getElementById('mic-toggle-btn').innerText="MIC"; jarvisSpeak("Muted."); if(engineInstance) engineInstance.stop(); }
+        function jarvisSpeak(phrase) { if (voiceSynth) { voiceSynth.cancel(); let u = new SpeechSynthesisUtterance(phrase); u.lang = 'hi-IN'; u.rate = 1.0; u.pitch = 0.90; voiceSynth.speak(u); } }
 
-        function appendChat(role, text) {
-            let box = document.getElementById('chat-container');
-            box.innerHTML += `<div class="chat-msg ${role === 'user' ? 'msg-user' : 'msg-ai'}">${text}</div>`;
-            box.scrollTop = box.scrollHeight;
+        function startMic() {
+            jarvisActive = true; document.getElementById('mic-text').innerText = "🟢 AI MIC ENGINE ACTIVE"; document.getElementById('mic-status').classList.add('pulse-active');
+            document.getElementById('mic-toggle-btn').innerText = "SWITCH OFF"; document.getElementById('mic-toggle-btn').className = "manual-mic-toggle";
+            jarvisSpeak("Listening to all verbal commands, Sir.");
+            if(engineInstance) { try { engineInstance.start(); } catch(e){} }
         }
-
-        function sendManualMessage() {
-            let v = document.getElementById('manual-chat-input').value;
-            if(!v) return; document.getElementById('manual-chat-input').value = "";
-            processVoiceCommand(v.toLowerCase());
-        }
-
-        async function triggerGeminiAI(question) {
-            // Mocking Conversational AI. In a real app, send "question" to your node server.
-            return "Based on my logical parameters, I suggest focusing on your next task. (Connect backend for real LLM response).";
-        }
-
-        async function processVoiceCommand(cmd) {
-            appendChat('user', cmd);
-            
-            // SMART COMMAND ROUTING
-            if(cmd.includes("open iron man") || cmd.includes("iron man kholo")) { initProtocol('ironman', '#ff2a2a'); jarvisSpeak("Opening Academic Matrix."); }
-            else if(cmd.includes("open captain") || cmd.includes("trading") || cmd.includes("start trading")) { initProtocol('cap', '#0077ff'); jarvisSpeak("Trading Terminal Active."); }
-            else if(cmd.includes("open thor")) { initProtocol('thor', '#ffaa00'); jarvisSpeak("Opening Creative Forge."); }
-            else if(cmd.includes("home") || cmd.includes("wapas jao")) { returnToHome(); jarvisSpeak("Returning home."); }
-            else if(cmd.includes("time table dikhao") || cmd.includes("timetable open")) { openModal('timetable-modal'); jarvisSpeak("Opening your schedule."); }
-            else if(cmd.includes("open anatomy")) { initProtocol('ironman', '#ff2a2a'); setTimeout(()=>openPdfVault('Anatomy'), 500); }
-            else if(cmd.includes("set focus time") || cmd.includes("set timer")) {
-                let match = cmd.match(/\d+/); // extracts number
-                if(match) { secondsLeft = parseInt(match[0]) * 60; startTimer(); jarvisSpeak(`Timer set for ${match[0]} minutes and started.`); }
-                else { openTimer(); jarvisSpeak("Please set the timer manually on screen."); }
-            }
-            else {
-                // If not a system command, send to Chat AI
-                document.getElementById('mic-text').innerText = "🧠 PROCESSING...";
-                openModal('jarvis-terminal-overlay');
-                let aiReply = await triggerGeminiAI(cmd);
-                appendChat('ai', aiReply);
-                jarvisSpeak(aiReply);
-                document.getElementById('mic-text').innerText = "🟢 MIC ACTIVE";
-            }
+        function shutdownMic() {
+            jarvisActive = false; document.getElementById('mic-text').innerText = "🔴 AI ENGINE STANDBY"; document.getElementById('mic-status').classList.remove('pulse-active');
+            document.getElementById('mic-toggle-btn').innerText = "ACTIVATE MIC"; document.getElementById('mic-toggle-btn').className = "manual-mic-toggle off";
+            if(engineInstance) { try { engineInstance.stop(); } catch(e){} }
         }
 
         const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechEngine) {
-            engineInstance = new SpeechEngine(); engineInstance.continuous = true; engineInstance.lang = 'hi-IN';
-            engineInstance.onresult = async function(event) {
-                if(!jarvisActive) return;
+            engineInstance = new SpeechEngine(); engineInstance.continuous = true; engineInstance.lang = 'en-IN'; engineInstance.interimResults = false;
+            engineInstance.onresult = function(event) {
                 let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-                console.log("Captured:", speechToken);
-                processVoiceCommand(speechToken);
+                console.log("Voice Command Captured:", speechToken);
+                if (!jarvisActive) return;
+
+                // SMART ROUTING LOGIC
+                if (speechToken.includes("open iron") || speechToken.includes("iron man kholo")) { initProtocol('ironman', '#ff2a2a'); jarvisSpeak("Opening Academic Matrix.");}
+                else if (speechToken.includes("open captain") || speechToken.includes("trading enable karo")) { initProtocol('cap', '#0077ff'); jarvisSpeak("Trading mainframe active.");}
+                else if (speechToken.includes("open thor")) { initProtocol('thor', '#ffaa00'); jarvisSpeak("Opening Creative Forge.");}
+                else if (speechToken.includes("return to home") || speechToken.includes("go back") || speechToken.includes("wapas jao")) { returnToHome(); jarvisSpeak("Returning to main interface.");}
+                
+                // Smart Variable Commands
+                else if (speechToken.match(/set timer for (\d+)/)) { let mins = speechToken.match(/set timer for (\d+)/)[1]; startTimerPrompt(mins); }
+                else if (speechToken.includes("focus time") || speechToken.includes("timer set karo")) { startTimerPrompt("25"); }
+                else if (speechToken.includes("timetable banao") || speechToken.includes("open timetable")) { if(currentModule === 'ironman') openTimetableMaker(); else jarvisSpeak("Please open Iron Man module first."); }
+                
+                // Smart File Opening
+                else if (speechToken.includes("open anatomy") || speechToken.includes("anatomy kholo")) { if(currentModule === 'ironman') openVault('Rachana Sharir (Anatomy)'); }
+                else if (speechToken.includes("open physiology")) { if(currentModule === 'ironman') openVault('Kriya Sharir (Physiology)'); }
+                else if (speechToken.includes("open samhita") || speechToken.includes("samhita kholo")) { if(currentModule === 'ironman') openVault('Samhita'); }
+                
+                // Fallback to conversational chat
+                else {
+                    openModal('jarvis-terminal-overlay');
+                    document.getElementById('chat-input').value = speechToken;
+                    sendChatMsg(speechToken);
+                }
             };
-            engineInstance.onend = function() { if(jarvisActive) try{ engineInstance.start(); }catch(e){} }; 
+            engineInstance.onend = function() { if(jarvisActive) { try{ engineInstance.start(); }catch(e){} } }; 
         }
 
-        function loadTV() {
-            setTimeout(() => {
-                const tvDiv = document.getElementById('tradingview_cap'); if(!tvDiv) return; tvDiv.innerHTML='';
-                let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js';
-                script.onload = () => new TradingView.widget({"autosize":true,"symbol":"BSE:SENSEX","interval":"15","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"});
-                document.body.appendChild(script);
-            }, 100);
-        }
+        function loadTV() { setTimeout(() => { const tvDiv = document.getElementById('tradingview_cap'); if(!tvDiv) return; tvDiv.innerHTML=''; let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js'; script.onload = () => new TradingView.widget({"autosize":true,"symbol":"BSE:SENSEX","interval":"15","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"}); document.body.appendChild(script); }, 100); }
 
-        // CANVAS
+        // CANVAS BACKGROUND ENGINE
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         let lines = []; function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
         class DigitalNode {
-            constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.vy=(Math.random()*1.2)+0.4; this.size=Math.random()*2+1; this.alpha=Math.random()*0.5+0.1; }
-            update() { this.y += this.vy; if (this.y > canvas.height) { this.y = 0; this.x = Math.random()*canvas.width; } }
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vy = (Math.random() * 1.2) + 0.4; this.size = Math.random() * 2 + 1; this.alpha = Math.random() * 0.5 + 0.1; }
+            update() { this.y += this.vy; if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; } }
             draw() { ctx.fillStyle = modules[currentModule]?.color || '#00ffaa'; ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
-        for(let i=0; i<60; i++) lines.push(new DigitalNode());
+        for(let i=0; i<40; i++) lines.push(new DigitalNode()); // reduced to save performance
         function animate() {
             ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = modules[currentModule]?.color || '#00ffaa'; ctx.lineWidth = 0.15;
             for(let a=0; a<lines.length; a++) {
