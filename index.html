@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface</title>
+    <title>K.K. Ultimate HUD | Master Interface v9.0</title>
     <style>
         :root {
             --theme-color: #00ffaa;
@@ -15,6 +15,7 @@
             --scanline-opacity: 0.08;
         }
 
+        /* STARK LAB HIGH-TECH LIGHT THEME */
         body.light-theme {
             --bg-color: #e8ecf1;
             --glass-bg: rgba(255, 255, 255, 0.85);
@@ -23,6 +24,9 @@
             --theme-color: #0088ff;
             --scanline-opacity: 0.03;
         }
+        body.light-theme .avenger-card { color: #111; box-shadow: 0 15px 35px rgba(0, 136, 255, 0.15); }
+        body.light-theme .tool-card { color: #111; background: rgba(255,255,255,0.8); border-color: rgba(0, 136, 255, 0.2); }
+        body.light-theme input, body.light-theme select, body.light-theme textarea { background: rgba(255,255,255,0.95); color: #000; }
 
         body {
             margin: 0; padding: 0; background-color: var(--bg-color); color: var(--card-text);
@@ -30,15 +34,24 @@
             user-select: none; transition: all 0.5s ease;
         }
 
-        /* Cinematic Scanline Hologram */
+        /* Cinematic Scanline Hologram Layer */
         body::before {
             content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 99999; background-size: 100% 4px, 6px 100%; pointer-events: none; opacity: var(--scanline-opacity);
         }
 
-        /* 3D Cinematic Cards */
+        .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; overflow: hidden; background: #000; }
+        .blob { position: absolute; filter: blur(130px); opacity: 0.45; border-radius: 50%; }
+        .blob-1 { width: 55vw; height: 55vw; background: #1a00ff; top: -15%; left: -10%; }
+        
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none; }
+        .vignette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; background: radial-gradient(circle at center, transparent 15%, rgba(0,0,0,0.96) 100%); }
+
+        /* 3D Carousel Setup */
         .carousel-container { display: flex; gap: 40px; padding: 50px; max-width: 100vw; overflow-x: auto; scrollbar-width: none; align-items: center; perspective: 1200px; }
+        .carousel-container::-webkit-scrollbar { display: none; }
+
         .avenger-card {
             min-width: 280px; height: 400px; background-size: cover; background-position: center;
             border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px;
@@ -47,13 +60,13 @@
             transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s, border-color 0.6s;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
-        .avenger-card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.85) 100%); z-index: 1; transition: 0.4s; }
+        .avenger-card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.85) 100%); z-index: 1; }
         .avenger-card:hover { transform: translateY(-12px) rotateY(12deg) scale(1.05); box-shadow: 0 35px 60px rgba(0,0,0,0.8), 0 0 30px currentColor; border-color: currentColor; }
         .card-content { z-index: 2; text-align: center; transform: translateZ(30px); }
-        .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); z-index: 2; transform: translateZ(40px); transition: 0.3s; }
+        .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); z-index: 2; transform: translateZ(40px); }
 
-        /* UI Utilities */
-        .sidebar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: max-content; padding: 10px 20px; gap: 12px; z-index: 1000; background: var(--glass-bg); backdrop-filter: blur(35px); border: 1px solid var(--glass-border); border-radius: 50px; display: flex; align-items: center; transition: 0.3s; }
+        /* Floating Pill Menu Layout */
+        .sidebar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: max-content; padding: 10px 20px; gap: 12px; z-index: 1000; background: var(--glass-bg); backdrop-filter: blur(35px); border: 1px solid var(--glass-border); border-radius: 50px; display: flex; align-items: center; }
         .nav-btn { font-size: 1.4rem; cursor: pointer; opacity: 0.5; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: var(--transition-hq); color: inherit; }
         .nav-btn.active { opacity: 1; transform: translateY(-6px); background: rgba(255, 255, 255, 0.12); box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 20px var(--theme-color); color: var(--theme-color); border: 1px solid var(--theme-color); }
         
@@ -65,12 +78,12 @@
         .action-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); transform: scale(1.05); }
         
-        /* Overlays */
+        /* Modals and Containers */
         .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; backdrop-filter: blur(25px); opacity: 0; transition: 0.4s; }
-        .modal-box { background: var(--glass-bg); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 650px; max-width: 92%; box-shadow: 0 25px 50px rgba(0,0,0,0.9); }
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); transition: 0.3s; }
+        .modal-box { background: var(--glass-bg); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 650px; max-width: 92%; box-shadow: 0 25px 50px rgba(0,0,0,0.9); position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); }
         
-        /* Mic Bar */
+        /* Hard-wired Mic HUD Controllers */
         #mic-status { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; background: rgba(5, 5, 8, 0.85); border: 1px solid var(--theme-color); border-radius: 30px; z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); font-size: 0.85rem; letter-spacing: 1px; transition: all 0.4s ease; display: flex; align-items: center; gap: 15px; }
         .pulse-active { animation: jarvisBreathe 1.4s infinite alternate ease-in-out; }
         @keyframes jarvisBreathe { 0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); } 100% { box-shadow: 0 0 30px var(--theme-color); transform: translateX(-50%) scale(1.02); } }
@@ -85,49 +98,49 @@
 </head>
 <body>
 
-    <!-- Holographic Engine Mic HUD -->
+    <div class="bg-mesh"><div class="blob blob-1"></div></div>
+    <canvas id="bg-canvas"></canvas>
+    <div class="vignette"></div>
+
     <div id="mic-status">
         <span id="mic-text">🔴 AI ENGINE STANDBY</span>
         <button id="mic-toggle-btn" class="manual-mic-toggle off" onclick="handleMicManualSwitch()">ACTIVATE MIC</button>
     </div>
 
-    <!-- Terminal Overlay for Responses -->
     <div class="overlay-modal" id="jarvis-terminal-overlay">
         <div class="modal-box" style="width: 750px;">
             <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚡ RESPONSE MATRIX</h2>
+            <h2 style="color: var(--theme-color);">⚡ SYSTEM TRANSMISSION MATRIX</h2>
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
             <div id="jarvis-hud-text" style="font-family: monospace; font-size: 1.1rem; line-height: 1.6; white-space: pre-wrap;"></div>
         </div>
     </div>
 
-    <!-- System Config Overlay -->
     <div class="overlay-modal" id="settings-overlay">
         <div class="modal-box" style="width: 500px;">
             <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚙️ SYSTEM OVERLOAD MATRIX</h2>
+            <h2 style="color: var(--theme-color);">⚙️ COGNITIVE HUB MANAGER</h2>
             <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px;">
-                <label>Theme Parameters</label>
-                <select id="theme-selector" onchange="adjustSystemTheme()" style="padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color);">
+                <label>Theme Settings</label>
+                <select id="theme-selector" onchange="adjustSystemTheme()" style="padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color); outline: none; border-radius: 8px;">
                     <option value="dark">Cyberpunk Dark Horizon</option>
                     <option value="light">Stark Lab Light Mode</option>
                 </select>
                 
-                <label>AI Mode</label>
-                <select id="assistant-mode-selector" style="padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color);">
-                    <option value="teacher" selected>Personal Teacher (BAMS/Trading)</option>
-                    <option value="general">Standard Assistant</option>
+                <label>Dual Conversation Routing</label>
+                <select id="assistant-mode-selector" style="padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color); outline: none; border-radius: 8px;">
+                    <option value="teacher" selected>Personal Teacher Mode (Active Core)</option>
+                    <option value="general">Standard Assistant Loop</option>
                 </select>
             </div>
-            <button class="action-btn" style="margin-top: 25px; width:100%;" onclick="closeModal('settings-overlay')">APPLY SETTINGS</button>
+            <button class="action-btn" style="margin-top: 25px; width:100%; padding:12px;" onclick="closeModal('settings-overlay')">APPLY HUD ENGINE CONFIG</button>
         </div>
     </div>
 
-    <!-- Landing Stage -->
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER HUD v8.0</h2>
-            <h1 style="margin: 0; font-weight: 300; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v9.0</h2>
+            <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
         <div class="carousel-container">
@@ -139,15 +152,24 @@
                 <div class="card-icon">🛡️</div>
                 <div class="card-content"><h3>CAPTAIN</h3><p style="color:#aaa; font-size:0.8rem;">Tactical Trading Terminal</p></div>
             </div>
+            <div class="avenger-card" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600');" onclick="initProtocol('thor', '#ffaa00')">
+                <div class="card-icon">⚡</div>
+                <div class="card-content"><h3>THOR</h3><p style="color:#aaa; font-size:0.8rem;">Creative Forge Logs</p></div>
+            </div>
+            <div class="avenger-card" style="color: #ff0055; background-image: url('https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=600');" onclick="initProtocol('spidey', '#ff0055')">
+                <div class="card-icon">🕸️</div>
+                <div class="card-content"><h3>SPIDER-MAN</h3><p style="color:#aaa; font-size:0.8rem;">Agency Ledger Hub</p></div>
+            </div>
         </div>
     </div>
 
-    <!-- Dashboard Stage -->
     <div id="dashboard-stage">
         <div class="sidebar">
-            <div class="nav-btn" onclick="returnToHome()" style="opacity: 0.8; border: 1px solid var(--glass-border);">⌂</div>
+            <div class="nav-btn" onclick="returnToHome()">⌂</div>
             <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🚀</div>
             <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">🛡️</div>
+            <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">⚡</div>
+            <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
         </div>
         <div class="content-area" id="main-content"></div>
     </div>
@@ -157,27 +179,33 @@
         let engineInstance;
         let jarvisActive = false;
 
+        // ALL REQUESTED DATA MODULES MAP FULLY RESTORED
         const modules = {
             ironman: {
-                color: '#ff2a2a', title: 'Academic Matrix Blueprint',
+                color: '#ff2a2a', title: 'Academic Matrix Blueprint Core',
                 html: `
-                    <h3>BAMS Complete Vault System</h3>
+                    <h3>BAMS Complete Vault System (All 7 Live)</h3>
                     <div class="grid-layout" style="margin-top:15px;">
                         <div class="tool-card">🦴 <h3>Anatomy</h3><p style="font-size:0.75rem; color:#aaa;">Rachana Sharir Blueprint Data</p></div>
                         <div class="tool-card">🧪 <h3>Physiology</h3><p style="font-size:0.75rem; color:#aaa;">Kriya Sharir Core Manifest</p></div>
-                        <div class="tool-card">📜 <h3>Samhita</h3><p style="font-size:0.75rem; color:#aaa;">Classical Literature</p></div>
-                        <div class="tool-card">⚛️ <h3>Padarth Vigyan</h3><p style="font-size:0.75rem; color:#aaa;">Fundamental Principles</p></div>
+                        <div class="tool-card">📜 <h3>Samhita</h3><p style="font-size:0.75rem; color:#aaa;">Classical Literature Matrices</p></div>
+                        <div class="tool-card">⚛️ <h3>Padarth Vigyan</h3><p style="font-size:0.75rem; color:#aaa;">Fundamental Principles Core</p></div>
                         <div class="tool-card">🕉️ <h3>Sanskrit</h3><p style="font-size:0.75rem; color:#aaa;">Linguistic Repositories</p></div>
+                        <div class="tool-card">✨ <h3>Sloka Library</h3><p style="font-size:0.75rem; color:#aaa;">Rhythm & Recitation Databases</p></div>
+                        <div class="tool-card">🎓 <h3>Exam Vault</h3><p style="font-size:0.75rem; color:#aaa;">Assessment Vectors & Logs</p></div>
                     </div>`
             },
             cap: { 
-                color: '#0077ff', title: 'Tactical Trading Core', 
+                color: '#0077ff', title: 'Tactical Trading Core Terminal', 
                 html: `
+                    <div id="tradingview_cap" style="height:52vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div>
                     <div class="grid-layout">
                         <div class="tool-card" onclick="window.open('https://trade.angelone.in/')">📈 <h3>Angel One Gateway</h3></div>
                         <div class="tool-card" onclick="window.open('https://web.dhan.co/')">⚡ <h3>Dhan Control Mainframe</h3></div>
                     </div>` 
-            }
+            },
+            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<textarea style="width:95%; height:120px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--theme-color); border-radius:8px; padding:10px;" placeholder="Scripting interface active..."></textarea>` },
+            spidey: { color: '#ff0055', title: 'Agency Web Ledger Control', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Google Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Google Sheets</h3></div></div>` }
         };
 
         function initProtocol(id, color) {
@@ -209,9 +237,11 @@
             contentArea.innerHTML = `
                 <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
                     <h2>${mod.title}</h2>
-                    <button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM SETTINGS</button>
+                    <button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM CONFIG</button>
                 </div>
                 <div>${mod.html}</div>`;
+                
+            if(id === 'cap') loadTV();
         }
 
         function switchModule(id) { renderModule(id); }
@@ -224,10 +254,13 @@
             if(val === 'light') document.body.classList.add('light-theme');
         }
 
-        // --- MICROPHONE AND AI LOGIC ---
+        // --- MANUALLY MANAGED SPEECH PIPELINES ---
         function handleMicManualSwitch() {
             if (jarvisActive) { shutdownMic(); } else { startMic(); }
         }
+
+        let voiceSynth = window.speechSynthesis;
+        function jarvisSpeak(phrase) { if (voiceSynth) { voiceSynth.cancel(); let u = new SpeechSynthesisUtterance(phrase); u.lang = 'en-IN'; u.rate = 1.02; u.pitch = 0.90; voiceSynth.speak(u); } }
 
         function startMic() {
             jarvisActive = true;
@@ -236,7 +269,8 @@
             const btn = document.getElementById('mic-toggle-btn');
             btn.innerText = "SWITCH OFF";
             btn.className = "manual-mic-toggle";
-            if(engineInstance) { try { engineInstance.start(); } catch(e){ console.log("Mic already listening"); } }
+            jarvisSpeak("Microphone online, Sir.");
+            if(engineInstance) { try { engineInstance.start(); } catch(e){} }
         }
 
         function shutdownMic() {
@@ -246,6 +280,7 @@
             const btn = document.getElementById('mic-toggle-btn');
             btn.innerText = "ACTIVATE MIC";
             btn.className = "manual-mic-toggle off";
+            jarvisSpeak("Microphone muted.");
             if(engineInstance) { try { engineInstance.stop(); } catch(e){} }
         }
 
@@ -253,34 +288,27 @@
             const isTeacher = document.getElementById('assistant-mode-selector').value === 'teacher';
             let dynamicPrompt = question;
 
-            // Teacher Mode Formatting
             if (isTeacher) {
                 if (currentModule === 'ironman' || question.includes('bams') || question.includes('sharir')) {
-                    dynamicPrompt = "Act as my expert personal BAMS Professor. Teach me: " + question;
+                    dynamicPrompt = "Act as my expert personal BAMS Professor. Answer concisely and teach me: " + question;
                 } else if (currentModule === 'cap' || question.includes('trade') || question.includes('market')) {
-                    dynamicPrompt = "Act as my elite financial trading coach. Analyze or teach me: " + question;
+                    dynamicPrompt = "Act as my elite financial trading coach. Teach me: " + question;
                 }
             }
 
             try {
-                console.log("--> Sending Request to Backend API");
                 const res = await fetch('/api/agent', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: dynamicPrompt, agentType: isTeacher ? "teacher" : "general" })
                 });
-                
-                if (!res.ok) throw new Error(`Server returned ${res.status}`);
-                
                 const parsed = await res.json();
-                return parsed.success ? parsed.message : "Error: " + parsed.message;
+                return parsed.success ? parsed.message : "Error parsing response stream.";
             } catch (err) {
-                console.error("--> Frontend Fetch Error:", err);
-                return "Connection Error: Backend processing failed. Check Render server logs.";
+                return "Transmission failed. Ensure your Render API Key configuration is set.";
             }
         }
 
-        // Initialize Speech Engine
         const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechEngine) {
             engineInstance = new SpeechEngine(); 
@@ -290,43 +318,62 @@
             
             engineInstance.onresult = async function(event) {
                 let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-                console.log("--> Voice Captured:", speechToken);
+                console.log("--> Stream Captured:", speechToken);
 
                 if (!jarvisActive) return;
 
-                // Command Routing
-                if (speechToken.includes("open iron man") || speechToken.includes("academic")) { 
-                    initProtocol('ironman', '#ff2a2a'); 
-                }
-                else if (speechToken.includes("open captain") || speechToken.includes("trading")) { 
-                    initProtocol('cap', '#0077ff'); 
-                }
-                else if (speechToken.includes("return to home") || speechToken.includes("go back")) { 
-                    returnToHome(); 
-                }
+                if (speechToken.includes("open iron man") || speechToken.includes("academic")) { initProtocol('ironman', '#ff2a2a'); }
+                else if (speechToken.includes("open captain") || speechToken.includes("trading")) { initProtocol('cap', '#0077ff'); }
+                else if (speechToken.includes("open thor")) { initProtocol('thor', '#ffaa00'); }
+                else if (speechToken.includes("open spider man")) { initProtocol('spidey', '#ff0055'); }
+                else if (speechToken.includes("return to home") || speechToken.includes("go back")) { returnToHome(); }
                 else {
-                    // Send to Gemini
-                    document.getElementById('mic-text').innerText = "🧠 PROCESSING FEED...";
+                    document.getElementById('mic-text').innerText = "🧠 SYNTHESIZING FEED...";
                     openModal('jarvis-terminal-overlay');
-                    document.getElementById('jarvis-hud-text').innerText = "Processing your query...";
-                    
+                    document.getElementById('jarvis-hud-text').innerText = "Routing token straight into Gemini mainframe...";
                     let aiReply = await triggerGeminiAI(speechToken);
-                    
                     document.getElementById('jarvis-hud-text').innerText = aiReply;
+                    jarvisSpeak(aiReply);
                     document.getElementById('mic-text').innerText = "🟢 AI MIC ENGINE ACTIVE";
                 }
             };
-
-            // Infinite loop logic to keep mic alive if active
-            engineInstance.onend = function() { 
-                if(jarvisActive) { 
-                    try{ engineInstance.start(); }catch(e){} 
-                } 
-            }; 
-        } else {
-            console.error("Speech Recognition not supported in this browser.");
-            document.getElementById('mic-text').innerText = "❌ BROWSER MIC NOT SUPPORTED";
+            engineInstance.onend = function() { if(jarvisActive) { try{ engineInstance.start(); }catch(e){} } }; 
         }
+
+        function loadTV() {
+            setTimeout(() => {
+                const tvDiv = document.getElementById('tradingview_cap');
+                if(!tvDiv) return;
+                tvDiv.innerHTML='';
+                let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js';
+                script.onload = () => new TradingView.widget({"autosize":true,"symbol":"BSE:SENSEX","interval":"15","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"});
+                document.body.appendChild(script);
+            }, 100);
+        }
+
+        // CANVAS PARTICLES ENGINE
+        const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
+        let lines = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        class DigitalNode {
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vy = (Math.random() * 1.2) + 0.4; this.size = Math.random() * 2 + 1; this.alpha = Math.random() * 0.5 + 0.1; }
+            update() { this.y += this.vy; if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; } }
+            draw() { ctx.fillStyle = modules[currentModule]?.color || '#00ffaa'; ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+        }
+        for(let i=0; i<60; i++) lines.push(new DigitalNode());
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = modules[currentModule]?.color || '#00ffaa'; ctx.lineWidth = 0.15;
+            for(let a=0; a<lines.length; a++) {
+                lines[a].update(); lines[a].draw();
+                for(let b=a+1; b<lines.length; b++) {
+                    let dist = Math.hypot(lines[a].x - lines[b].x, lines[a].y - lines[b].y);
+                    if(dist < 90) { ctx.globalAlpha = (90 - dist) / 600; ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke(); }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
