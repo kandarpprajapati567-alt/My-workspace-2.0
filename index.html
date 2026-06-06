@@ -2,214 +2,151 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>K.K. Jarvis OS - Mobile Cinematic</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avenger AI Assistant</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #000; overflow: hidden; font-family: 'Courier New', monospace; color: #00ffff; }
-
-        /* Mobile Boot Screen (Bypasses Browser Security) */
-        #boot-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 100;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        #boot-btn {
-            padding: 20px 40px; font-size: 1.2rem; font-weight: bold; font-family: monospace;
-            background: transparent; color: #00ffff; border: 2px solid #00ffff;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4); border-radius: 10px; cursor: pointer;
-            text-transform: uppercase; animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { box-shadow: 0 0 10px #00ffff; } 50% { box-shadow: 0 0 30px #00ffff; } 100% { box-shadow: 0 0 10px #00ffff; } }
-
-        /* Video Background */
-        #bg-video {
-            position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
-            transform: translate(-50%, -50%); z-index: -2; opacity: 0; filter: contrast(1.2) brightness(0.5);
-            transition: opacity 1s ease, filter 2s ease;
+        /* Basic body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            margin: 0;
+            padding: 20px;
         }
 
-        /* 3D Model */
-        #ironman-model {
-            width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 5; opacity: 0;
-            transform: scale(0.1) translateY(200px);
-            filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.5));
+        /* 1. Horizontal Scrolling Container for Avengers */
+        .avenger-scroll-container {
+            display: flex;
+            overflow-x: auto; /* Adds horizontal scroll */
+            gap: 20px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 10px;
+            /* Scrollbar hiding for clean look */
+            scrollbar-width: none; 
+        }
+        .avenger-scroll-container::-webkit-scrollbar {
+            display: none;
         }
 
-        /* Holographic UI - Mobile Optimized */
-        .hud-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+        /* 2. Styling individual Avenger Cards */
+        .avenger-card {
+            min-width: 120px;
+            padding: 20px;
+            background-color: #444;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+            user-select: none;
+        }
+        .avenger-card:hover {
+            transform: scale(1.05);
+            background-color: #555;
+        }
         
-        .hologram-ring {
-            position: absolute; top: 50%; left: 50%; 
-            width: 90vw; height: 90vw; /* Phone ke hisaab se 90% chaurai */
-            border: 2px dashed rgba(0, 255, 255, 0.3); border-radius: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2) inset;
-            animation: rotateRing 15s linear infinite;
-        }
-        @keyframes rotateRing { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        /* Highlight specific colors for fun */
+        .ironman { border-bottom: 4px solid red; }
+        .spiderman { border-bottom: 4px solid blue; }
+        .hulk { border-bottom: 4px solid green; }
 
-        .data-node {
-            position: absolute; background: rgba(0, 20, 40, 0.8);
-            border: 1px solid #00ffff; padding: 10px 15px; border-radius: 5px;
-            font-size: 0.8rem; /* Chota font mobile ke liye */
-            backdrop-filter: blur(10px); opacity: 0; pointer-events: auto;
-            text-transform: uppercase; font-weight: bold;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        /* 3. Styling the Hub Content areas */
+        .hub-section {
+            display: none; /* Sabhi hubs by default hide rahenge */
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            min-height: 300px;
         }
 
-        /* Mobile positions (Responsive logic) */
-        #node-samhita { top: 15%; left: 5%; }
-        #node-rachana { top: 30%; left: 5%; }
-        #node-kriya { top: 45%; left: 5%; }
-        #node-sanskrit { top: 15%; right: 5%; }
-        #node-padartha { top: 30%; right: 5%; }
-        #node-exam { top: 45%; right: 5%; border-color: red; color: red; }
-        #node-shloka { top: 80%; left: 50%; transform: translateX(-50%); border-color: #e020ff; color: #e020ff; }
+        /* Active class jo content dikhayegi */
+        .active-hub {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
 
-        #mic-status-badge { position: absolute; top: 10px; right: 10px; color: #ff0000; font-size: 0.8rem; border: 1px solid #ff0000; padding: 5px; z-index: 20; }
-        #status-text { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 1rem; text-shadow: 0 0 10px #00ffff; z-index: 20; text-align: center; width: 90%; }
+        /* Simple animation for smooth appearance */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Fake chat box styling for visualization */
+        .chat-box {
+            background-color: #111;
+            padding: 15px;
+            border-radius: 8px;
+            height: 200px;
+            border: 1px solid #444;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="boot-screen">
-        <button id="boot-btn">Tap to Wake Jarvis</button>
+    <h2>Select Your AI Teacher (Avenger Edition)</h2>
+
+    <!-- Horizontal Scrolling Section -->
+    <div class="avenger-scroll-container">
+        <!-- Har card mein onclick function pass kiya hai -->
+        <div class="avenger-card ironman" onclick="openHub('academic-hub')">
+            <strong>Iron Man</strong><br><small>Academic Hub</small>
+        </div>
+        <div class="avenger-card spiderman" onclick="openHub('trading-hub')">
+            <strong>Spider-Man</strong><br><small>Trading Hub</small>
+        </div>
+        <div class="avenger-card hulk" onclick="openHub('fitness-hub')">
+            <strong>Hulk</strong><br><small>Fitness Hub</small>
+        </div>
     </div>
 
-    <video id="bg-video" loop muted playsinline>
-        <source src="https://cdn.pixabay.com/video/2020/05/25/40131-424902148_large.mp4" type="video/mp4">
-    </video>
-
-    <model-viewer 
-        id="ironman-model"
-        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SciFiHelmet/glTF-Binary/SciFiHelmet.glb" 
-        camera-controls auto-rotate rotation-per-second="10deg"
-        environment-image="neutral" shadow-intensity="2" exposure="1">
-    </model-viewer>
-
-    <div class="hud-container">
-        <div class="hologram-ring" id="ring1"></div>
-        <div class="data-node" id="node-samhita">Samhita</div>
-        <div class="data-node" id="node-rachana">Rachana Sharir</div>
-        <div class="data-node" id="node-kriya">Kriya Sharir</div>
-        <div class="data-node" id="node-sanskrit">Sanskrit</div>
-        <div class="data-node" id="node-padartha">Padartha</div>
-        <div class="data-node" id="node-exam">Exam Vault</div>
-        <div class="data-node" id="node-shloka" style="transform: translateX(-50%);">Shloka Lib</div>
+    <!-- Interface 1: Academic Hub (Iron Man) -->
+    <div id="academic-hub" class="hub-section active-hub">
+        <h2>Iron Man: Academic Hub</h2>
+        <p>Welcome! Yahan main aapko Anatomy, Physiology aur BAMS ke subjects mein help karunga.</p>
+        <div class="chat-box">
+            <p><strong>Iron Man AI:</strong> Hello! Aaj kaunsa topic padhna hai?</p>
+            <!-- Aage chalkar yahan AI chat interface banayenge -->
+        </div>
     </div>
 
-    <div id="mic-status-badge">MIC: WAITING</div>
-    <div id="status-text" style="display:none;">SYSTEM STANDBY. SAY "K.K. COMMAND DASHBOARD ACTIVATE"</div>
+    <!-- Interface 2: Trading Hub (Spider-Man) -->
+    <div id="trading-hub" class="hub-section">
+        <h2>Spider-Man: Trading Hub</h2>
+        <p>Welcome! Yahan hum market analysis aur trading strategies sikhenge.</p>
+        <div class="chat-box">
+            <p><strong>Spidey AI:</strong> Hey! Market kaisa chal raha hai aaj?</p>
+            <!-- Aage chalkar yahan AI chat interface banayenge -->
+        </div>
+    </div>
 
+    <!-- Interface 3: Fitness Hub (Hulk) -->
+    <div id="fitness-hub" class="hub-section">
+        <h2>Hulk: Fitness Hub</h2>
+        <p>HULK SMASH! Let's talk about workout and diet.</p>
+        <div class="chat-box">
+            <p><strong>Hulk AI:</strong> Ready to lift?</p>
+        </div>
+    </div>
+
+    <!-- JavaScript to control the switching -->
     <script>
-        const statusText = document.getElementById('status-text');
-        const micBadge = document.getElementById('mic-status-badge');
-        const video = document.getElementById('bg-video');
-        let isSystemActive = false;
-        let isSpeaking = false;
-
-        // BROWSER BYPASS: Touch to Start
-        document.getElementById('boot-btn').addEventListener('click', () => {
-            // Force start video and mic
-            video.play();
-            video.style.opacity = 0.6;
-            document.getElementById('boot-screen').style.display = 'none';
-            statusText.style.display = 'block';
+        function openHub(hubId) {
+            // Step 1: Sabhi hub-sections ko dhundo
+            const allHubs = document.querySelectorAll('.hub-section');
             
-            // Start Speech Recognition
-            try { recognition.start(); } catch(e) {}
-            micBadge.innerText = "MIC: LISTENING";
-            micBadge.style.color = "#00ff00";
-            micBadge.style.borderColor = "#00ff00";
-        });
-
-        const synth = window.speechSynthesis;
-        function jarvisSpeak(text, callback) {
-            isSpeaking = true;
-            statusText.innerText = "JARVIS: " + text;
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.pitch = 0.8;
-            utterance.rate = 1.0;
-            utterance.onend = () => {
-                isSpeaking = false;
-                statusText.innerText = "SYSTEM ACTIVE: LISTENING...";
-                if(callback) callback();
-            };
-            synth.speak(utterance);
-        }
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.continuous = true;
-        recognition.lang = 'en-IN';
-
-        function activateSystem() {
-            if(isSystemActive) return;
-            isSystemActive = true;
-            video.style.filter = "contrast(1.5) brightness(1) hue-rotate(180deg)";
-            
-            jarvisSpeak("System activated. Booting up Iron Man interface. Welcome back, K.K.", () => {
-                gsap.to("#ironman-model", { opacity: 1, scale: 1, y: 0, duration: 2, ease: "power4.out" });
-                gsap.to("#ring1", { scale: 1, duration: 1.5, ease: "back.out(1.7)" });
-                gsap.to(".data-node", { opacity: 1, scale: 1, duration: 0.5, stagger: 0.1, ease: "power3.out", delay: 0.2 });
-                resumeMic();
+            // Step 2: Sabko loop karke unki 'active-hub' class remove kar do taaki wo hide ho jayein
+            allHubs.forEach(hub => {
+                hub.classList.remove('active-hub');
             });
-        }
 
-        // --- YAHAN TERA RENDER URL AAYEGA ---
-        const RENDER_BACKEND_URL = "https://YOUR-RENDER-APP-NAME.onrender.com"; 
-
-        async function sendToJarvis(prompt) {
-            recognition.stop();
-            statusText.innerText = "JARVIS IS THINKING...";
-            
-            try {
-                // Pointing to Render instead of local
-                const response = await fetch(`${RENDER_BACKEND_URL}/api/chat`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: prompt })
-                });
-                const data = await response.json();
-                jarvisSpeak(data.reply, () => resumeMic());
-            } catch (error) {
-                console.error(error);
-                jarvisSpeak("Sir, unable to connect to the Render brain network.", () => resumeMic());
+            // Step 3: Jo hub click hua hai (hubId), sirf usme 'active-hub' class add kar do
+            const selectedHub = document.getElementById(hubId);
+            if (selectedHub) {
+                selectedHub.classList.add('active-hub');
             }
         }
-
-        function resumeMic() {
-            if(!isSpeaking) {
-                try { recognition.start(); micBadge.innerText = "MIC: LISTENING"; } catch(e) {}
-            }
-        }
-
-        recognition.onresult = (event) => {
-            const current = event.resultIndex;
-            const transcript = event.results[current][0].transcript.toLowerCase();
-            console.log("Heard:", transcript);
-
-            if (transcript.includes("command dashboard activate") || transcript.includes("open iron man")) {
-                recognition.stop();
-                activateSystem();
-            } else if (isSystemActive && !isSpeaking) {
-                sendToJarvis(transcript);
-            }
-        };
-
-        recognition.onend = () => {
-            micBadge.innerText = "MIC: OFFLINE";
-            micBadge.style.color = "#ff0000";
-            micBadge.style.borderColor = "#ff0000";
-            if (isSystemActive && !isSpeaking) {
-                setTimeout(resumeMic, 500);
-            }
-        };
     </script>
 </body>
 </html>
