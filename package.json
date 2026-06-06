@@ -1,7 +1,7 @@
 {
   "name": "kk-command-dashboard",
-  "version": "4.0.0",
-  "description": "Cinematic Avenger HUD with Gemini AI integration",
+  "version": "8.0.0",
+  "description": "Cinematic Master HUD with Gemini AI integration",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
