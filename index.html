@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface v9.1</title>
+    <title>K.K. Ultimate HUD | Master Interface v9.2</title>
     <style>
         :root {
             --theme-color: #00ffaa;
@@ -118,7 +118,6 @@
         <button id="mic-toggle-btn" class="manual-mic-toggle off" onclick="handleMicManualSwitch()">ACTIVATE MIC</button>
     </div>
 
-    <!-- Terminal Overlay for AI Responses -->
     <div class="overlay-modal" id="jarvis-terminal-overlay">
         <div class="modal-box" style="width: 750px;">
             <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
@@ -128,7 +127,6 @@
         </div>
     </div>
 
-    <!-- Generic Content Vault Modal -->
     <div class="overlay-modal" id="vault-modal">
         <div class="modal-box">
             <span class="close-btn" onclick="closeModal('vault-modal')">✕</span>
@@ -138,7 +136,6 @@
         </div>
     </div>
 
-    <!-- Settings Overlay -->
     <div class="overlay-modal" id="settings-overlay">
         <div class="modal-box" style="width: 500px;">
             <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
@@ -173,7 +170,7 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v9.1</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v9.2</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
@@ -250,9 +247,9 @@
 
         // Initialize from LocalStorage
         window.onload = function() {
-            if(localStorage.getItem('bg-url')) document.documentElement.style.setProperty('--bg-image', \`url('\${localStorage.getItem('bg-url')}')\`);
-            if(localStorage.getItem('ironman-url')) document.getElementById('card-ironman').style.backgroundImage = \`url('\${localStorage.getItem('ironman-url')}')\`;
-            if(localStorage.getItem('thor-url')) document.getElementById('card-thor').style.backgroundImage = \`url('\${localStorage.getItem('thor-url')}')\`;
+            if(localStorage.getItem('bg-url')) document.documentElement.style.setProperty('--bg-image', "url('" + localStorage.getItem('bg-url') + "')");
+            if(localStorage.getItem('ironman-url')) document.getElementById('card-ironman').style.backgroundImage = "url('" + localStorage.getItem('ironman-url') + "')";
+            if(localStorage.getItem('thor-url')) document.getElementById('card-thor').style.backgroundImage = "url('" + localStorage.getItem('thor-url') + "')";
         }
 
         function saveSettings() {
@@ -260,9 +257,9 @@
             const ironUrl = document.getElementById('ironman-url-input').value;
             const thorUrl = document.getElementById('thor-url-input').value;
 
-            if(bgUrl) { localStorage.setItem('bg-url', bgUrl); document.documentElement.style.setProperty('--bg-image', \`url('\${bgUrl}')\`); }
-            if(ironUrl) { localStorage.setItem('ironman-url', ironUrl); document.getElementById('card-ironman').style.backgroundImage = \`url('\${ironUrl}')\`; }
-            if(thorUrl) { localStorage.setItem('thor-url', thorUrl); document.getElementById('card-thor').style.backgroundImage = \`url('\${thorUrl}')\`; }
+            if(bgUrl) { localStorage.setItem('bg-url', bgUrl); document.documentElement.style.setProperty('--bg-image', "url('" + bgUrl + "')"); }
+            if(ironUrl) { localStorage.setItem('ironman-url', ironUrl); document.getElementById('card-ironman').style.backgroundImage = "url('" + ironUrl + "')"; }
+            if(thorUrl) { localStorage.setItem('thor-url', thorUrl); document.getElementById('card-thor').style.backgroundImage = "url('" + thorUrl + "')"; }
             
             closeModal('settings-overlay');
             jarvisSpeak("System configurations updated and saved, Sir.");
@@ -338,7 +335,9 @@
                 secondsLeft--;
                 let m = Math.floor(secondsLeft / 60);
                 let s = secondsLeft % 60;
-                document.getElementById('timer-text').innerText = \`\${m < 10 ? '0'+m : m}:\${s < 10 ? '0'+s : s}\`;
+                let mStr = m < 10 ? '0' + m : m;
+                let sStr = s < 10 ? '0' + s : s;
+                document.getElementById('timer-text').innerText = mStr + ":" + sStr;
                 if(secondsLeft <= 0) { clearInterval(timerInterval); jarvisSpeak("Focus session complete. Great work."); }
             }, 1000);
         }
