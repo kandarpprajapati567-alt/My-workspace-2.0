@@ -3,150 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avenger AI Assistant</title>
+    <title>K.K. Command Dashboard | Cinematic HUD</title>
     <style>
-        /* Basic body styling */
+        :root {
+            --theme-color: #00ffaa;
+            --bg-color: #020205;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --transition-hq: 0.4s cubic-bezier(0.25, 1, 0.2, 1);
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #1e1e1e;
-            color: white;
-            margin: 0;
-            padding: 20px;
+            margin: 0; padding: 0; background-color: var(--bg-color); color: #fff;
+            font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden;
+            user-select: none; transition: background-color 0.5s ease;
         }
 
-        /* 1. Horizontal Scrolling Container for Avengers */
-        .avenger-scroll-container {
-            display: flex;
-            overflow-x: auto; /* Adds horizontal scroll */
-            gap: 20px;
-            padding: 10px;
-            background-color: #333;
-            border-radius: 10px;
-            /* Scrollbar hiding for clean look */
-            scrollbar-width: none; 
-        }
-        .avenger-scroll-container::-webkit-scrollbar {
-            display: none;
+        /* 1. ULTRA CINEMATIC LIVE GRID & BLOB MESH */
+        .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; overflow: hidden; background: #000; }
+        .blob { position: absolute; filter: blur(130px); opacity: 0.45; animation: floatBlob 10s infinite alternate ease-in-out; border-radius: 50%; }
+        .blob-1 { width: 55vw; height: 55vw; background: #1a00ff; top: -15%; left: -10%; }
+        .blob-2 { width: 65vw; height: 65vw; background: #aa00ff; bottom: -20%; right: -10%; animation-delay: -4s; }
+        .blob-3 { width: 45vw; height: 45vw; background: var(--theme-color); top: 25%; left: 25%; animation-duration: 15s; transition: background 0.6s ease; }
+        
+        @keyframes floatBlob { 
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); } 
+            100% { transform: translate(8vw, 8vh) scale(1.2) rotate(45deg); } 
         }
 
-        /* 2. Styling individual Avenger Cards */
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none; }
+        
+        /* 2. GLITCH FLASH CINEMATIC NAV EFFECT */
+        .stage-transition {
+            animation: cinematicPulse 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes cinematicPulse {
+            0% { transform: scale(1.08); filter: brightness(2) blur(8px); opacity: 0.5; }
+            100% { transform: scale(1); filter: brightness(1) blur(0px); opacity: 1; }
+        }
+
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
+            background: radial-gradient(circle at center, transparent 15%, rgba(0,0,0,0.96) 100%);
+        }
+
+        h1, h2, h3 { margin: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
+        .glow-text { color: var(--theme-color); text-shadow: 0 0 25px var(--theme-color); font-weight: 900; }
+
+        #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.5s ease; }
+        #landing-stage { flex-direction: column; justify-content: center; align-items: center; }
+        #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
+
+        /* 3D CAROUSEL CONTAINER */
+        .carousel-container { 
+            display: flex; gap: 40px; padding: 50px; max-width: 100vw; 
+            overflow-x: auto; scrollbar-width: none; align-items: center; 
+            perspective: 1200px; /* Essential for 3D depth */
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+
+        /* UPGRADED 8K 3D AVENGERS CARDS */
         .avenger-card {
-            min-width: 120px;
-            padding: 20px;
-            background-color: #444;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.3s, background-color 0.3s;
-            user-select: none;
+            min-width: 280px; height: 400px; background: rgba(10, 10, 15, 0.6); 
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 25px;
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+            cursor: pointer; position: relative; overflow: hidden;
+            transform-style: preserve-3d; /* Allows 3D rotations */
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s, border-color 0.6s, background 0.6s;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
         }
-        .avenger-card:hover {
-            transform: scale(1.05);
-            background-color: #555;
+        .avenger-card:hover { 
+            transform: translateY(-12px) rotateY(10deg) scale(1.05); /* 3D Tilt */
+            box-shadow: 0 35px 60px rgba(0,0,0,0.8), 0 0 30px currentColor; 
+            border-color: currentColor; background: rgba(255,255,255,0.08); 
+        }
+        .card-icon { font-size: 3.5rem; filter: drop-shadow(0 0 20px currentColor); transition: 0.3s; transform: translateZ(30px); }
+        .avenger-card:hover .card-icon { transform: translateZ(50px) scale(1.1) rotate(-5deg); }
+
+        /* REEL STYLE GLASS NAVBAR */
+        .sidebar { 
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: max-content; padding: 10px 20px; gap: 12px; z-index: 1000; 
+            background: rgba(10, 10, 15, 0.5); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 50px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            display: flex; align-items: center; transition: 0.3s;
         }
         
-        /* Highlight specific colors for fun */
-        .ironman { border-bottom: 4px solid red; }
-        .spiderman { border-bottom: 4px solid blue; }
-        .hulk { border-bottom: 4px solid green; }
-
-        /* 3. Styling the Hub Content areas */
-        .hub-section {
-            display: none; /* Sabhi hubs by default hide rahenge */
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #2a2a2a;
-            border-radius: 10px;
-            min-height: 300px;
+        .nav-btn { 
+            font-size: 1.4rem; cursor: pointer; opacity: 0.5; 
+            width: 46px; height: 46px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--transition-hq);
+        }
+        .nav-btn.home-btn { opacity: 0.8; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+        .nav-btn.active { 
+            opacity: 1; transform: translateY(-6px); 
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 20px var(--theme-color); 
+            color: var(--theme-color); border: 1px solid var(--theme-color);
         }
 
-        /* Active class jo content dikhayegi */
-        .active-hub {
-            display: block;
-            animation: fadeIn 0.5s ease-in-out;
+        .content-area { flex: 1; padding: 40px 40px 130px 40px; overflow-y: auto; position: relative; z-index: 10; transition: opacity 0.4s ease; }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
+
+        .tool-card {
+            background: rgba(10, 10, 15, 0.4); border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 22px; cursor: pointer; transition: var(--transition-hq); backdrop-filter: blur(20px); position: relative;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .tool-card:hover { border-color: var(--theme-color); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        
+        .action-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); transform: scale(1.05); }
+        
+        input, select, textarea { background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; outline: none; }
+        
+        /* OVERLAYS & PORTALS */
+        .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; backdrop-filter: blur(25px); opacity: 0; transition: 0.4s; }
+        .modal-box { background: rgba(10, 10, 15, 0.65); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 650px; max-width: 92%; position: relative; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); transition: 0.3s; }
+        .close-btn:hover { transform: scale(1.2) rotate(90deg); }
+        
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 15px; margin-top: 20px; }
+        .app-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .app-icon:hover { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--theme-color)); }
+        .app-icon .icon-img { font-size: 2.2rem; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 16px; border: 1px solid var(--glass-border); }
+        .app-icon span { font-size: 0.75rem; color: #ddd; word-break: break-all; }
+
+        /* JARVIS HUD VIZUALIZER ELEMENT */
+        #mic-status { 
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; 
+            background: rgba(5, 5, 8, 0.6); border: 1px solid var(--theme-color); border-radius: 30px; 
+            z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); 
+            box-shadow: 0 0 25px rgba(0, 255, 170, 0.15); font-size: 0.85rem; letter-spacing: 1px; transition: all 0.4s ease;
+        }
+        .pulse-active { animation: jarvisBreathe 1.4s infinite alternate ease-in-out; }
+        @keyframes jarvisBreathe { 
+            0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); border-color: rgba(0, 255, 170, 0.3); } 
+            100% { box-shadow: 0 0 30px var(--theme-color); border-color: var(--theme-color); transform: translateX(-50%) scale(1.02); } 
         }
 
-        /* Simple animation for smooth appearance */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Fake chat box styling for visualization */
-        .chat-box {
-            background-color: #111;
-            padding: 15px;
-            border-radius: 8px;
-            height: 200px;
-            border: 1px solid #444;
-            margin-top: 20px;
-        }
+        #jarvis-hud-text { font-family: monospace; font-size: 1.1rem; color: #fff; line-height: 1.6; white-space: pre-wrap; }
     </style>
 </head>
 <body>
 
-    <h2>Select Your AI Teacher (Avenger Edition)</h2>
+    <div class="bg-mesh">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    
+    <canvas id="bg-canvas"></canvas>
+    <div class="vignette"></div>
+    
+    <div id="mic-status">🔴 MATRIX SECURED | SAY "JARVIS ACTIVATE"</div>
 
-    <!-- Horizontal Scrolling Section -->
-    <div class="avenger-scroll-container">
-        <!-- Har card mein onclick function pass kiya hai -->
-        <div class="avenger-card ironman" onclick="openHub('academic-hub')">
-            <strong>Iron Man</strong><br><small>Academic Hub</small>
-        </div>
-        <div class="avenger-card spiderman" onclick="openHub('trading-hub')">
-            <strong>Spider-Man</strong><br><small>Trading Hub</small>
-        </div>
-        <div class="avenger-card hulk" onclick="openHub('fitness-hub')">
-            <strong>Hulk</strong><br><small>Fitness Hub</small>
+    <div class="overlay-modal" id="jarvis-terminal-overlay">
+        <div class="modal-box" style="width: 750px;">
+            <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
+            <h2 style="color: var(--theme-color); text-shadow:0 0 15px var(--theme-color);">⚡ JARVIS INTEGRATED INTERFACE</h2>
+            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
+            <div id="jarvis-hud-text"></div>
         </div>
     </div>
 
-    <!-- Interface 1: Academic Hub (Iron Man) -->
-    <div id="academic-hub" class="hub-section active-hub">
-        <h2>Iron Man: Academic Hub</h2>
-        <p>Welcome! Yahan main aapko Anatomy, Physiology aur BAMS ke subjects mein help karunga.</p>
-        <div class="chat-box">
-            <p><strong>Iron Man AI:</strong> Hello! Aaj kaunsa topic padhna hai?</p>
-            <!-- Aage chalkar yahan AI chat interface banayenge -->
+    <div class="overlay-modal" id="settings-overlay">
+        <div class="modal-box" style="width: 380px; text-align:center;">
+            <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
+            <h2>System Manifest</h2>
+            <p style="color:#888; font-size:0.85rem; margin-top:10px;">Voice engine loop active in background.</p>
+            <button class="action-btn" style="margin-top: 15px; width:100%; justify-content:center;" onclick="closeModal('settings-overlay')">DISMISS CONFIG</button>
         </div>
     </div>
 
-    <!-- Interface 2: Trading Hub (Spider-Man) -->
-    <div id="trading-hub" class="hub-section">
-        <h2>Spider-Man: Trading Hub</h2>
-        <p>Welcome! Yahan hum market analysis aur trading strategies sikhenge.</p>
-        <div class="chat-box">
-            <p><strong>Spidey AI:</strong> Hey! Market kaisa chal raha hai aaj?</p>
-            <!-- Aage chalkar yahan AI chat interface banayenge -->
+    <div class="overlay-modal" id="vault-overlay">
+        <div class="modal-box">
+            <span class="close-btn" onclick="closeModal('vault-overlay')">✕</span>
+            <h2 id="vault-title">Vault</h2>
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <input type="text" id="vault-file-name" placeholder="File Name" style="width: 40%;">
+                <input type="text" id="vault-file-link" placeholder="Secure Cloud Link / Data" style="flex: 1;">
+                <button class="action-btn" onclick="saveToVault()">ADD RESOURCE</button>
+            </div>
+            <div class="app-grid" id="vault-grid"></div>
         </div>
     </div>
 
-    <!-- Interface 3: Fitness Hub (Hulk) -->
-    <div id="fitness-hub" class="hub-section">
-        <h2>Hulk: Fitness Hub</h2>
-        <p>HULK SMASH! Let's talk about workout and diet.</p>
-        <div class="chat-box">
-            <p><strong>Hulk AI:</strong> Ready to lift?</p>
+    <div id="landing-stage">
+        <div style="text-align: center; margin-bottom: 4vh;">
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. COMMAND DASHBOARD v4.0 (3D Edition)</h2>
+            <h1>Select <span class="glow-text">System Protocol</span></h1>
+        </div>
+        <div class="carousel-container">
+            <div class="avenger-card" style="color: #ff2a2a;" onclick="initProtocol('ironman', '#ff2a2a')">
+                <div class="card-icon">🚀</div><div><h3>IRON MAN</h3><p style="color:#aaa; font-size:0.8rem;">Academic Matrix</p></div>
+            </div>
+            <div class="avenger-card" style="color: #0077ff;" onclick="initProtocol('cap', '#0077ff')">
+                <div class="card-icon">🛡️</div><div><h3>CAPTAIN</h3><p style="color:#aaa; font-size:0.8rem;">Tactical Terminal</p></div>
+            </div>
+            <div class="avenger-card" style="color: #ffaa00;" onclick="initProtocol('thor', '#ffaa00')">
+                <div class="card-icon">⚡</div><div><h3>THOR</h3><p style="color:#aaa; font-size:0.8rem;">Creative Forge</p></div>
+            </div>
+            <div class="avenger-card" style="color: #ff0055;" onclick="initProtocol('spidey', '#ff0055')">
+                <div class="card-icon">🕸️</div><div><h3>SPIDER-MAN</h3><p style="color:#aaa; font-size:0.8rem;">Agency Web</p></div>
+            </div>
+            <div class="avenger-card" style="color: #00ffaa;" onclick="initProtocol('strange', '#00ffaa')">
+                <div class="card-icon">👁️</div><div><h3>DR. STRANGE</h3><p style="color:#aaa; font-size:0.8rem;">AI Nexus</p></div>
+            </div>
+            <div class="avenger-card" style="color: #aa00ff;" onclick="initProtocol('starlord', '#aa00ff')">
+                <div class="card-icon">🎧</div><div><h3>STAR-LORD</h3><p style="color:#aaa; font-size:0.8rem;">Chill Galaxy</p></div>
+            </div>
         </div>
     </div>
 
-    <!-- JavaScript to control the switching -->
+    <div id="dashboard-stage">
+        <div class="sidebar">
+            <div class="nav-btn home-btn" onclick="returnToHome()">⌂</div>
+            <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🚀</div>
+            <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">🛡️</div>
+            <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">⚡</div>
+            <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
+            <div class="nav-btn" id="nav-strange" style="color: #00ffaa;" onclick="switchModule('strange')">👁️</div>
+            <div class="nav-btn" id="nav-starlord" style="color: #aa00ff;" onclick="switchModule('starlord')">🎧</div>
+        </div>
+        <div class="content-area" id="main-content"></div>
+    </div>
+
     <script>
-        function openHub(hubId) {
-            // Step 1: Sabhi hub-sections ko dhundo
-            const allHubs = document.querySelectorAll('.hub-section');
-            
-            // Step 2: Sabko loop karke unki 'active-hub' class remove kar do taaki wo hide ho jayein
-            allHubs.forEach(hub => {
-                hub.classList.remove('active-hub');
-            });
+        let currentModule = '';
+        let isFocusTimerRunning = false; let timerInterval;
 
-            // Step 3: Jo hub click hua hai (hubId), sirf usme 'active-hub' class add kar do
-            const selectedHub = document.getElementById(hubId);
-            if (selectedHub) {
-                selectedHub.classList.add('active-hub');
+        const modules = {
+            ironman: {
+                color: '#ff2a2a', title: 'Academic Matrix Core',
+                html: `
+                    <div style="display:flex; gap: 25px; margin-bottom: 25px; flex-wrap: wrap;">
+                        <div class="tool-card" style="flex: 1.5; min-width: 320px;">
+                            <h3>Master Timetable</h3>
+                            <select id="day-selector" onchange="renderTimetable()" style="margin: 15px 0; width:100%;">
+                                <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+                                <option>Thursday</option><option>Friday</option><option>Saturday</option>
+                            </select>
+                            <div id="timetable-display" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; font-size: 0.9rem; min-height: 80px;"></div>
+                        </div>
+                        <div class="tool-card" style="flex: 1; text-align: center; border-color: var(--theme-color);">
+                            <h3>Focus Matrix</h3>
+                            <div style="margin: 10px 0;"><input type="number" id="focus-mins" value="25" style="width:60px; font-size:1.1rem; text-align:center;"> mins</div>
+                            <div id="hud-timer" style="font-size: 2.8rem; font-family: monospace; font-weight: bold; color: var(--theme-color); margin-bottom:10px; text-shadow: 0 0 15px var(--theme-color);">25:00</div>
+                            <button class="action-btn" id="focus-btn" onclick="toggleTimer()">START CORE</button>
+                        </div>
+                    </div>
+                    <h3>BAMS Vaults <span style="font-size:0.8rem; color:#888;">(All RESTORED)</span></h3>
+                    <div class="grid-layout" style="margin-top:15px;">
+                        <div class="tool-card" onclick="openVault('Samhita')"><span style="font-size:1.3rem;">📜</span> <h3 style="display:inline; margin-left:8px;">Samhita</h3></div>
+                        <div class="tool-card" onclick="openVault('Anatomy')"><span style="font-size:1.3rem;">🦴</span> <h3 style="display:inline; margin-left:8px;">Anatomy</h3><p style="font-size:0.75rem; color:#777; margin-top:4px;">Rachana Sharir</p></div>
+                        <div class="tool-card" onclick="openVault('Physiology')"><span style="font-size:1.3rem;">🧪</span> <h3 style="display:inline; margin-left:8px;">Physiology</h3><p style="font-size:0.75rem; color:#777; margin-top:4px;">Kriya Sharir</p></div>
+                        <div class="tool-card" onclick="openVault('Padarth Vigyan')"><span style="font-size:1.3rem;">⚛️</span> <h3 style="display:inline; margin-left:8px;">Padarth Vigyan</h3></div>
+                        <div class="tool-card" onclick="openVault('Sanskrit')"><span style="font-size:1.3rem;">🕉️</span> <h3 style="display:inline; margin-left:8px;">Sanskrit</h3></div>
+                        <div class="tool-card" onclick="openVault('Exam Vault')"><span style="font-size:1.3rem;">🎓</span> <h3 style="display:inline; margin-left:8px;">Exam Vault</h3></div>
+                        <div class="tool-card" onclick="openVault('Sloka Library')"><span style="font-size:1.3rem;">✨</span> <h3 style="display:inline; margin-left:8px;">Sloka Library</h3></div>
+                    </div>
+                `
+            },
+            cap: { color: '#0077ff', title: 'Tactical Trading Terminal', html: `<div id="tradingview_cap" style="height:52vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div><div class="grid-layout"><div class="tool-card" onclick="window.open('https://trade.angelone.in/')"><h3>Angel One System</h3></div><div class="tool-card" onclick="window.open('https://web.dhan.co/')"><h3>Dhan Systems</h3></div></div>` },
+            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<div class="grid-layout"><div class="tool-card"><h3>Write Logs</h3><textarea id="thor-story" style="width:95%; height:90px; margin-top:8px;" placeholder="Scripting interface active..."></textarea></div></div>` },
+            spidey: { color: '#ff0055', title: 'Agency Web Control', html: `<p style="color:#aaa; margin-bottom:15px;">DDK Freelancers Ledger Panel</p><div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Google Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Google Sheets</h3></div></div>` },
+            strange: { color: '#00ffaa', title: 'AI Nexus Portal', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://chatgpt.com')"><h3>ChatGPT Module</h3></div><div class="tool-card" onclick="window.open('https://gemini.google.com')"><h3>Gemini Mainframe</h3></div></div>` },
+            starlord: { color: '#aa00ff', title: 'Chill Galaxy Lounge', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://lofi.co')"><h3>Lofi Cafe Stream</h3></div><div class="tool-card" onclick="window.open('https://popit.click/')"><h3>Pop It Engine</h3></div></div>` }
+        };
+
+        function addCinematicTransition() {
+            document.body.classList.add('stage-transition');
+            setTimeout(() => document.body.classList.remove('stage-transition'), 500);
+        }
+
+        function initProtocol(id, color) {
+            addCinematicTransition();
+            currentModule = id;
+            document.documentElement.style.setProperty('--theme-color', color);
+            document.getElementById('landing-stage').style.display = 'none';
+            document.getElementById('dashboard-stage').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('dashboard-stage').style.opacity = '1';
+                renderModule(id);
+            }, 50);
+        }
+
+        function returnToHome() {
+            addCinematicTransition();
+            document.getElementById('dashboard-stage').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('dashboard-stage').style.display = 'none';
+                document.getElementById('landing-stage').style.display = 'flex';
+                document.documentElement.style.setProperty('--theme-color', '#00ffaa');
+                clearInterval(timerInterval); isFocusTimerRunning = false;
+            }, 400);
+        }
+
+        // SMOOTH MODULE RENDERING (Fade out -> Change Content -> Fade in)
+        function renderModule(id) {
+            currentModule = id;
+            const mod = modules[id];
+            const contentArea = document.getElementById('main-content');
+            
+            // Fade out current content
+            contentArea.style.opacity = '0';
+            
+            // Change color scheme and nav buttons instantly
+            document.documentElement.style.setProperty('--theme-color', mod.color);
+            document.querySelectorAll('.nav-btn').forEach(b => { if(!b.classList.contains('home-btn')) b.style.display='none'; b.classList.remove('active');});
+            document.getElementById('nav-'+id).style.display='flex';
+            document.getElementById('nav-'+id).classList.add('active');
+
+            // Wait for fade out, then swap content and fade in
+            setTimeout(() => {
+                contentArea.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
+                        <h2>${mod.title}</h2>
+                        <button class="action-btn" onclick="openModal('settings-overlay')">⚙️ CONSOLE MANIFEST</button>
+                    </div>
+                    <div class="dynamic-interface ${id}-theme">
+                        ${mod.html}
+                    </div>`;
+                
+                contentArea.style.opacity = '1'; // Fade back in
+
+                // Initialize specific functions after DOM injection
+                if(id === 'ironman') renderTimetable();
+                if(id === 'cap') loadTV();
+            }, 300);
+        }
+
+        function switchModule(id) { addCinematicTransition(); renderModule(id); }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
+        function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
+
+        // Core Timetable
+        let kkTimetable = {"Monday": [{time: "09:00 AM", sub: "Rachana Sharir Atlas Mapping"}]};
+        function renderTimetable() {
+            let day = document.getElementById('day-selector').value;
+            let data = kkTimetable[day] || [];
+            let html = data.map((e) => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>⏰ ${e.time} &nbsp;|&nbsp; <b>${e.sub}</b></span></div>`).join('');
+            document.getElementById('timetable-display').innerHTML = html || "<p style='color:#555;'>No operations logged.</p>";
+        }
+
+        function toggleTimer() {
+            let display = document.getElementById('hud-timer'); let btn = document.getElementById('focus-btn');
+            if(!display) return;
+            if(isFocusTimerRunning) { clearInterval(timerInterval); isFocusTimerRunning = false; btn.innerText = "START CORE"; }
+            else {
+                let mins = parseInt(document.getElementById('focus-mins').value) || 25;
+                let timeLeft = mins * 60; isFocusTimerRunning = true; btn.innerText = "HALT CORE";
+                timerInterval = setInterval(() => {
+                    if(timeLeft > 0) { timeLeft--; let m = Math.floor(timeLeft/60), s = timeLeft%60; display.innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`; }
+                    else { clearInterval(timerInterval); isFocusTimerRunning = false; display.innerText = "00:00"; btn.innerText="START CORE"; }
+                }, 1000);
             }
         }
-    </script>
-</body>
-</html>
+
+        // Vault Recovered Systems
+        let vaultData = {
+            "Physiology": [{name: "x file", link: "https://drive.google.com"}, {name: "Kriya Sharir Core Notes", link: "https://drive.google.com"}],
+            "Samhita": [{name: "Charaka Samhita Reference", link: "https://archive.org"}],
+            "Anatomy": [{name: "Rachana Sharir Bone Guide", link: "https://drive.google.com"}],
+            "Padarth Vigyan": [], "Sanskrit": [], "Exam Vault": [], "Sloka Library": []
+        };
+        let currentVaultCat = '';
+        function openVault(cat) {
+            currentVaultCat = cat;
+            document.getElementById('vault-title').innerText = cat + " System Hub";
+            renderVaultGrid(); openModal('vault-overlay');
+        }
+        function renderVaultGrid() {
+            let data = vaultData[currentVaultCat] || [];
+            let html = data.map((item) => `<div class="app-icon" onclick="window.open('${item.link}')"><div class="icon-img">📄</div><span>${item.name}</span></div>`).join('');
+            document.getElementById('vault-grid').innerHTML = html || "<p style='color:#555;'>Vault Empty.</p>";
+        }
+        function saveToVault() {
+            let name = document.getElementById('vault-file-name').value; let link = document.getElementById('vault-file-link').value;
+            if(!name || !link) return;
+            vaultData[currentVaultCat].push({name, link});
+            document.getElementById('vault-file-name').value=''; document.getElementById('vault-file-link').value=''; renderVaultGrid();
+        }
+
+        function loadTV() {
+            setTimeout(() => {
+                document.getElementById('tradingview_cap').innerHTML='';
+                let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js';
+                script.onload = () => new TradingView.widget({"autosize":true,"symbol":"BSE:SENSEX","interval":"15","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"});
+                document.body.appendChild(script);
+            }, 100);
+        }
+
+        // =========================================================================
+        // GEMINI FREQUENCY CONVERSATIONAL JARVIS CORE
+        // =========================================================================
+        let voiceSynth = window.speechSynthesis;
+        let jarvisActive = false;
+
+        function jarvisSpeak(phrase) {
+            if (voiceSynth) {
+                voiceSynth.cancel(); 
+                let utterance = new SpeechSynthesisUtterance(phrase);
+                utterance.lang = 'en-IN'; 
+                utterance.rate = 1.02;  
+                utterance.pitch = 0.90; 
+                voiceSynth.speak(utterance);
+            }
+        }
+
+        const aiDialogueMatrix = {
+            ironman: ["Academic Core activated. Sharir and Samhita databases are online, Sir.", "Iron Man protocol engaged. BAMS vaults initialized."],
+            captain: ["Tactical Terminal deployed, Sir. Systems ready to track market flows.", "Captain protocol online. Chart parameters loaded."],
+            thor: ["Creative Forge open. Ready to lock in your next script.", "Thor core initialized. The script matrix is listening."],
+            spidey: ["Agency Web Control deployed. Workspaces and sheets are live.", "Spidey protocol active. Web ledger synced."],
+            strange: ["AI Nexus Portal fully calibrated. The mainframes are at your absolute command, Sir.", "Doctor Strange protocol initialized."],
+            starlord: ["Lounge mode active, Sir. Cosmic frequencies and low-fi engines are live.", "Star-Lord protocol engaged. Relaxing system parameters."]
+        };
+
+        function getAiResponse(coreId) {
+            const responses = aiDialogueMatrix[coreId];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        async function triggerGeminiAI(question, contextMode = "general") {
+            let optimizedPrompt = question;
+            if (contextMode === "trading") optimizedPrompt = "Act as my elite technical analysis trading teacher. Answer sharply: " + question;
+            if (contextMode === "bams") optimizedPrompt = "Act as an expert BAMS Ayurveda professor. Explain this clearly: " + question;
+
+            try {
+                const res = await fetch('/api/agent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: optimizedPrompt, agentType: contextMode })
+                });
+                const parsed = await res.json();
+                return parsed.success ? parsed.message : "Data stream interpreted, sir. API configurations are pending layout.";
+            } catch (err) {
+                if (optimizedPrompt.includes("trade") || optimizedPrompt.includes("mentor") || optimizedPrompt.includes("nifty")) {
+                    return "As your trading teacher, I suggest evaluating the volume profiles. Wait for confirmation before deploying asset capital, sir.";
+                }
+                return "The matrix is configured. Direct prompt routing will commence when the live endpoint connects.";
+            }
+        }
+
+        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechEngine) {
+            let engineInstance = new SpeechEngine();
+            engineInstance.continuous = true; 
+            engineInstance.interimResults = false; 
+            engineInstance.lang = 'en-US';
+
+            engineInstance.onresult = async function(event) {
+                let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+                console.log("HUD Vector Captured: ", speechToken);
+
+                if (speechToken.includes("jarvis activate") || speechToken.includes("activate")) {
+                    jarvisActive = true;
+                    document.getElementById('mic-status').innerText = "🟢 JARVIS ONLINE | HUD RESPONSIVE";
