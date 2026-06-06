@@ -1,57 +1,46 @@
-// server.js
 const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
 const path = require('path');
-
-// Load environment variables (.env file se API key uthayega)
-dotenv.config();
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+require('dotenv').config(); // Local testing ke liye
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 3000;
 
-// Frontend files (index.html, etc.) ko serve karne ke liye
+// Middleware to parse JSON and serve static files
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Gemini API ka secure endpoint
-app.post('/api/chat', async (req, res) => {
-    const userMessage = req.body.message;
-    const apiKey = process.env.GEMINI_API_KEY;
+// Gemini AI Initialisation using Environment Variable
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-    if (!apiKey) {
-        return res.status(500).json({ error: "Gemini API Key missing on server!" });
-    }
-
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    
-    // Jarvis ka System Prompt (Personality)
-    const contextPrompt = `You are JARVIS, K.K.'s highly advanced, cinematic personal AI assistant. 
-    You manage his BAMS studies (Samhita, Rachana Sharir, Kriya Sharir, etc.), Exam Vault, and Shloka Library.
-    Respond strictly in a smart, high-tech, Tony Stark AI style. Keep answers concise, direct, and slightly robotic but loyal.
-    User says: ${userMessage}`;
-
+// API Endpoint for Jarvis AI Conversations
+app.post('/api/agent', async (req, res) => {
     try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: contextPrompt }] }]
-            })
-        });
+        const { prompt, agentType } = req.body;
 
-        const data = await response.json();
-        const aiResponseText = data.candidates[0].content.parts[0].text;
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ success: false, message: "Server Configuration Error: API Key missing." });
+        }
+
+        // Using gemini-1.5-flash for fast conversational responses
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
-        res.json({ reply: aiResponseText });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        res.json({ success: true, message: text });
     } catch (error) {
-        console.error("Gemini API Error:", error);
-        res.status(500).json({ reply: "Sir, I am unable to connect to the main brain network at this moment." });
+        console.error("Gemini Error:", error);
+        res.status(500).json({ success: false, message: "Jarvis Core Error: Stream interrupted, Sir." });
     }
 });
 
-// Render.com assigns a dynamic PORT, locally it uses 3000
-const PORT = process.env.PORT || 3000;
+// Serve frontend on any root route
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(PORT, () => {
-    console.log(`JARVIS Server is online on port ${PORT}`);
+    console.log(`⚡ Command Dashboard Matrix active on port ${PORT}`);
 });
