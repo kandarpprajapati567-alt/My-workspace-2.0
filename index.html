@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface v11.0</title>
+    <title>K.K. Ultimate HUD | Master Interface v12.0</title>
     <style>
         :root {
             --theme-color: #00ffaa;
@@ -74,16 +74,22 @@
         .action-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); transform: scale(1.05); }
         
+        /* Trading Specific UI */
+        .trade-btn { padding: 10px 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 48%; transition: 0.3s; color: white;}
+        .trade-btn.buy { background: #00b894; }
+        .trade-btn.buy:hover { background: #00e6b8; box-shadow: 0 0 15px #00b894; }
+        .trade-btn.sell { background: #d63031; }
+        .trade-btn.sell:hover { background: #ff4757; box-shadow: 0 0 15px #d63031; }
+
         .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; backdrop-filter: blur(25px); opacity: 0; transition: 0.4s; }
         .modal-box { background: var(--glass-bg); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 700px; max-width: 92%; box-shadow: 0 25px 50px rgba(0,0,0,0.9); position: relative; max-height: 85vh; overflow-y: auto; transition: var(--transition-hq);}
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); z-index: 10;}
         
-        .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color); outline: none; border-radius: 8px; margin-top: 5px; transition: var(--transition-hq);}
+        .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color); outline: none; border-radius: 8px; margin-top: 5px; margin-bottom: 10px; transition: var(--transition-hq); box-sizing: border-box;}
 
         #global-timer-widget { position: fixed; top: 20px; right: 20px; background: var(--glass-bg); border: 1px solid var(--theme-color); padding: 15px 25px; border-radius: 15px; z-index: 10000; color: var(--theme-color); font-family: monospace; font-size: 2rem; display: none; backdrop-filter: blur(10px); box-shadow: 0 0 15px var(--theme-color); transition: var(--transition-hq); text-align: center;}
         .timer-label { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; color: #aaa;}
 
-        /* Unified Top Bar Widget for Global Tokens Tracking */
         #kk-token-bar { position: fixed; top: 20px; left: 20px; display: flex; gap: 15px; z-index: 10000; font-family: monospace; }
         .token-hud-pill { background: var(--glass-bg); border: 1px solid var(--theme-color); padding: 10px 18px; border-radius: 30px; font-weight: bold; color: var(--theme-color); box-shadow: 0 0 10px rgba(0,255,170,0.15); display: flex; align-items: center; gap: 8px; }
 
@@ -107,11 +113,6 @@
         #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.5s ease; }
         #landing-stage { flex-direction: column; justify-content: center; align-items: center; }
         #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
-
-        /* Quiz UI Elements */
-        .quiz-option-btn { width: 100%; text-align: left; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white; margin-top: 8px; cursor: pointer; transition: 0.2s; }
-        .quiz-option-btn:hover { background: rgba(0, 255, 170, 0.1); border-color: var(--theme-color); }
-        .league-card { border-left: 4px solid #ffaa00; background: rgba(255,170,0,0.05); padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
     </style>
 </head>
 <body>
@@ -121,7 +122,7 @@
 
     <div id="kk-token-bar">
         <div class="token-hud-pill">🪙 <span id="user-vault-coins">1,250</span> KK COINS</div>
-        <div class="token-hud-pill" style="--theme-color: #ffaa00;">🏆 Rank: <span id="user-league-rank">#42</span></div>
+        <div class="token-hud-pill" style="--theme-color: #ffaa00;">🏆 Portfolio Health: <span id="portfolio-status">STABLE</span></div>
     </div>
 
     <div id="mic-status">
@@ -139,15 +140,15 @@
     <div class="overlay-modal" id="jarvis-terminal-overlay">
         <div class="modal-box">
             <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚡ GEMINI ANALYTICS ENGINE (TRADE POST-MORTEM)</h2>
-            <p style="font-size:0.85rem; color:#aaa; margin-top:-10px;">Paste your failed trade pattern or market scenario below for AI analysis.</p>
+            <h2 style="color: var(--theme-color);">⚡ GEMINI ANALYTICS ENGINE</h2>
+            <p style="font-size:0.85rem; color:#aaa; margin-top:-10px;">Chat with your AI partner for coding, trading analysis, or study doubts.</p>
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
             <div class="chat-log" id="chat-log-box">
-                <div class="msg ai">Jai Hind Partner! I am connected via Gemini API. Put down your trade log or ask me to diagnose why a strategy failed.</div>
+                <div class="msg ai">Jai Hind Partner! I am connected via Gemini API. How can I assist you today?</div>
             </div>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" class="custom-input" placeholder="Type command or paste trade logs (e.g. 'Loss in Reliance Breakout')..." onkeypress="if(event.key==='Enter') sendChatMsg()">
-                <button class="action-btn" onclick="sendChatMsg()">DIAGNOSE</button>
+                <input type="text" id="chat-input" class="custom-input" placeholder="Type command..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') sendChatMsg()">
+                <button class="action-btn" onclick="sendChatMsg()">SEND</button>
             </div>
         </div>
     </div>
@@ -167,10 +168,8 @@
                 <iframe id="doc-iframe" class="pdf-viewer" src=""></iframe>
             </div>
 
-            <div id="dynamic-quiz-portal" style="display:none; padding:10px;"></div>
-
-            <textarea id="vault-notes" class="custom-input" rows="4" placeholder="Or keep text notes here..." style="margin-top:15px;"></textarea>
-            <br><button class="action-btn" style="margin-top:15px;" onclick="closeModal('vault-modal')">Save & Close</button>
+            <textarea id="vault-notes" class="custom-input" rows="8" placeholder="Keep your study notes, shlokas, or text here..." style="margin-top:15px; font-size:1rem;"></textarea>
+            <br><button class="action-btn" style="margin-top:15px;" onclick="saveVaultData()">Save & Close</button>
         </div>
     </div>
 
@@ -186,18 +185,6 @@
                     <option value="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1600">Digital Matrix Code</option>
                 </select>
 
-                <label>Ironman Card Graphic</label>
-                <select id="ironman-selector" class="custom-input">
-                    <option value="https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?q=80&w=600">Red Reactor</option>
-                    <option value="https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=600">Tech Red Blur</option>
-                </select>
-
-                <label>Thor Card Graphic</label>
-                <select id="thor-selector" class="custom-input">
-                    <option value="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600">Golden Sparks</option>
-                    <option value="https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600">Thunder Lightning</option>
-                </select>
-
                 <label style="margin-top: 10px;">HUD Glass Opacity</label>
                 <input type="range" id="opacity-slider" min="0.2" max="0.95" step="0.05" value="0.65" style="width: 100%;">
 
@@ -210,26 +197,26 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v11.0</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.0</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
         <div class="carousel-container">
             <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?q=80&w=600');" onclick="initProtocol('ironman', '#ff2a2a')">
-                <div class="card-icon">🚀</div>
-                <div class="card-content"><h3>IRON MAN</h3><p style="color:#aaa; font-size:0.8rem;">Academic Syllabus + Capital Quizzes</p></div>
+                <div class="card-icon">🩺</div>
+                <div class="card-content"><h3>BAMS COMMAND</h3><p style="color:#aaa; font-size:0.8rem;">Ayurvedic Studies & Notes Hub</p></div>
             </div>
             <div class="avenger-card" id="card-cap" style="color: #0077ff; background-image: url('https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=600');" onclick="initProtocol('cap', '#0077ff')">
-                <div class="card-icon">🛡️</div>
-                <div class="card-content"><h3>CAPTAIN</h3><p style="color:#aaa; font-size:0.8rem;">Real-time League Terminal</p></div>
+                <div class="card-icon">📈</div>
+                <div class="card-content"><h3>TRADE TERMINAL</h3><p style="color:#aaa; font-size:0.8rem;">Pro Virtual Trading via K.K Coins</p></div>
             </div>
             <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600');" onclick="initProtocol('thor', '#ffaa00')">
                 <div class="card-icon">⚡</div>
-                <div class="card-content"><h3>THOR</h3><p style="color:#aaa; font-size:0.8rem;">Creative Forge Logs</p></div>
+                <div class="card-content"><h3>CREATIVE FORGE</h3><p style="color:#aaa; font-size:0.8rem;">Scripting & Development</p></div>
             </div>
             <div class="avenger-card" id="card-spidey" style="color: #ff0055; background-image: url('https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=600');" onclick="initProtocol('spidey', '#ff0055')">
                 <div class="card-icon">🕸️</div>
-                <div class="card-content"><h3>SPIDER-MAN</h3><p style="color:#aaa; font-size:0.8rem;">Agency Ledger Hub</p></div>
+                <div class="card-content"><h3>AGENCY LEDGER</h3><p style="color:#aaa; font-size:0.8rem;">Spreadsheets & Docs</p></div>
             </div>
         </div>
     </div>
@@ -237,8 +224,8 @@
     <div id="dashboard-stage">
         <div class="sidebar">
             <div class="nav-btn" onclick="returnToHome()">⌂</div>
-            <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🚀</div>
-            <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">🛡️</div>
+            <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🩺</div>
+            <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">📈</div>
             <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">⚡</div>
             <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
             <div class="nav-btn" style="color: #fff;" onclick="openModal('jarvis-terminal-overlay')">💬</div>
@@ -251,77 +238,104 @@
         let globalTimerInterval; let secondsLeft = 0; let customTimetable = []; let notifiedTasks = new Set();
         let isFocusMode = true; let voiceSpeed = 1.0;
 
-        // Persistent Wallet & Ranking Architecture
-        let totalCoins = parseInt(localStorage.getItem('kk_coins')) || 1250;
-        let currentRank = parseInt(localStorage.getItem('kk_rank')) || 42;
+        // Persistent Wallet & Trading Architecture
+        let totalCoins = parseFloat(localStorage.getItem('kk_coins')) || 10000; // Raised starting capital
+        let activeTrades = JSON.parse(localStorage.getItem('kk_trades')) || [];
 
         function refreshHUDTokens() {
-            document.getElementById('user-vault-coins').innerText = totalCoins.toLocaleString();
-            document.getElementById('user-league-rank').innerText = "#" + currentRank;
+            document.getElementById('user-vault-coins').innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
             localStorage.setItem('kk_coins', totalCoins);
-            localStorage.setItem('kk_rank', currentRank);
+            localStorage.setItem('kk_trades', JSON.stringify(activeTrades));
+            
+            // Re-render positions table if trading module is active
+            if(currentModule === 'cap' && document.getElementById('positions-table-body')) {
+                renderTradePositions();
+            }
         }
 
         const modules = {
             ironman: {
-                color: '#ff2a2a', title: 'Academic Blueprints & Cheat-Code Quizzes',
+                color: '#ff2a2a', title: 'BAMS Academic Command Center',
                 html: `
                     <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                         <button class="action-btn" onclick="startTimerPrompt('focus')">⏱️ SET FOCUS TIMER</button>
-                        <button class="action-btn" onclick="openTimetableMaker()">📅 TIMETABLE MAKER</button>
-                        <button class="action-btn" style="border-color:#ff0055; background:rgba(255,0,85,0.1);" onclick="triggerSyllabusQuiz()">🧠 UNLOCK TRADING COINS (SYLLABUS QUIZ)</button>
+                        <button class="action-btn" onclick="openTimetableMaker()">📅 STUDY TIMETABLE</button>
+                        <button class="action-btn" style="border-color:#ff0055; background:rgba(255,0,85,0.1);" onclick="openVault('Shloka Repository')">📜 SHLOKA VAULT</button>
                     </div>
-                    <h3>BAMS Complete Document Vaults</h3>
+                    <h3>Core Subject Vaults</h3>
                     <div class="grid-layout" style="margin-top:15px;">
-                        <div class="tool-card" onclick="openVault('Rachana Sharir (Anatomy)')">🦴 <h3>Anatomy Vault</h3></div>
-                        <div class="tool-card" onclick="openVault('Kriya Sharir (Physiology)')">🧪 <h3>Physiology Vault</h3></div>
-                        <div class="tool-card" onclick="openVault('Samhita')">📜 <h3>Samhita Vault</h3></div>
-                        <div class="tool-card" onclick="openVault('Padarth Vigyan')">⚛️ <h3>Padarth Vigyan</h3></div>
+                        <div class="tool-card" onclick="openVault('Rachana Sharir (Anatomy)')">🦴 <h3>Anatomy (Rachana Sharir)</h3><p style="font-size:0.8rem; color:#aaa;">Notes & PDF References</p></div>
+                        <div class="tool-card" onclick="openVault('Kriya Sharir (Physiology)')">🧪 <h3>Physiology (Kriya Sharir)</h3><p style="font-size:0.8rem; color:#aaa;">Notes & PDF References</p></div>
+                        <div class="tool-card" onclick="openVault('Samhita')">📚 <h3>Samhita Studies</h3><p style="font-size:0.8rem; color:#aaa;">Sutras & Explanations</p></div>
+                        <div class="tool-card" onclick="openVault('Dravya Guna')">🌿 <h3>Dravya Guna</h3><p style="font-size:0.8rem; color:#aaa;">Herb Database & Notes</p></div>
                     </div>`
             },
             cap: { 
-                color: '#0077ff', title: 'Tactical Real-Time Trading Leagues (Crypto Engine)', 
+                color: '#0077ff', title: 'Professional Trading Hub (Virtual Execution)', 
                 html: `
                     <div class="tradingview-widget-container" style="margin-bottom: 15px;">
                       <div class="tradingview-widget-container__widget"></div>
                       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
                       {
-                      "symbols": [
-                        { "proName": "BINANCE:BTCUSDT", "title": "Bitcoin (Real-time)" },
-                        { "proName": "BINANCE:ETHUSDT", "title": "Ethereum" },
-                        { "proName": "NSE:NIFTY", "title": "Nifty 50 (15m Delay)" },
-                        { "proName": "BSE:SENSEX", "title": "Sensex" }
-                      ],
+                      "symbols": [{"proName": "BINANCE:BTCUSDT", "title": "Bitcoin"}, {"proName": "BINANCE:ETHUSDT", "title": "Ethereum"}, {"proName": "NSE:NIFTY", "title": "Nifty 50"}, {"proName": "BSE:SENSEX", "title": "Sensex"}],
                       "showSymbolLogo": true, "isTransparent": true, "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
-                    }
+                      }
                       <\/script>
                     </div>
 
-                    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; border: 1px solid rgba(0,119,255,0.2); margin-bottom: 20px;">
-                        <h3 style="margin-top:0; color:#ffaa00;">🏆 LIVE COLLEGE CHAMPIONSHIPS</h3>
-                        <div class="league-card">
-                            <div>
-                                <b>🔥 Mega Student Crypto Scalping Derby</b><br>
-                                <span style="font-size:0.8rem; color:#aaa;">Entry Fee: 500 KK Coins OR ₹20 | Prize Pool: ₹10,000 Cash</span>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 2; min-width: 500px;">
+                            <div style="display:flex; gap: 10px; margin-bottom: 10px;">
+                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol (e.g., NSE:RELIANCE)" style="margin: 0;">
+                                <button class="action-btn" onclick="updateTVSymbol()">LOAD CHART</button>
+                                <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="openModal('jarvis-terminal-overlay')">🩺 AI ANALYSIS</button>
                             </div>
-                            <button class="action-btn" onclick="joinTournament(500, 'Mega Scalping Derby')">JOIN LEAGUE</button>
+                            <div id="tradingview_cap" style="height:55vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4);"></div>
                         </div>
-                        <div class="league-card" style="border-left-color: #00ffaa;">
-                            <div>
-                                <b>⚡ Intraday Bitcoin Simulation Sprint</b><br>
-                                <span style="font-size:0.8rem; color:#aaa;">Entry Fee: Free (Requires passing 1 Economy Quiz today)</span>
-                            </div>
-                            <button class="action-btn" style="border-color:#00ffaa;" onclick="joinTournament(0, 'Bitcoin Sprint')">ENTER ARENA</button>
-                        </div>
-                    </div>
 
-                    <div style="display:flex; gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol" style="width: 250px; margin: 0;">
-                        <button class="action-btn" onclick="updateTVSymbol()">LOAD LIVE CHART</button>
-                        <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="openModal('jarvis-terminal-overlay')">🩺 AI TRADE POST-MORTEM</button>
-                    </div>
-                    
-                    <div id="tradingview_cap" style="height:45vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div>` 
+                        <div style="flex: 1; min-width: 300px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(0,119,255,0.2);">
+                            <h3 style="margin-top:0; color:#00ffaa; display:flex; justify-content:space-between;">
+                                <span>ORDER BOOK</span> 
+                                <span style="font-size:0.9rem; color:#fff;">🪙 <span id="panel-coins"></span></span>
+                            </h3>
+                            
+                            <label style="font-size:0.85rem; color:#aaa;">Instrument</label>
+                            <input type="text" id="order-symbol" class="custom-input" placeholder="e.g. BTCUSDT" value="BTCUSDT">
+                            
+                            <div style="display: flex; gap: 10px;">
+                                <div style="flex:1;">
+                                    <label style="font-size:0.85rem; color:#aaa;">Qty</label>
+                                    <input type="number" id="order-qty" class="custom-input" placeholder="0.00" step="0.01">
+                                </div>
+                                <div style="flex:1;">
+                                    <label style="font-size:0.85rem; color:#aaa;">Price (KK)</label>
+                                    <input type="number" id="order-price" class="custom-input" placeholder="0.00" step="0.1">
+                                </div>
+                            </div>
+                            
+                            <div style="display:flex; justify-content:space-between; margin-top: 15px;">
+                                <button class="trade-btn buy" onclick="executeTrade('BUY')">BUY / LONG</button>
+                                <button class="trade-btn sell" onclick="executeTrade('SELL')">SELL / SHORT</button>
+                            </div>
+
+                            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:20px 0;">
+                            
+                            <h4 style="margin: 0 0 10px 0;">OPEN POSITIONS</h4>
+                            <div style="max-height: 200px; overflow-y: auto;">
+                                <table style="width: 100%; text-align: left; font-size: 0.85rem; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                                            <th style="padding-bottom:5px;">Sym</th>
+                                            <th style="padding-bottom:5px;">Type</th>
+                                            <th style="padding-bottom:5px;">P&L Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="positions-table-body">
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>` 
             },
             thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<textarea style="width:95%; height:120px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--theme-color); border-radius:8px; padding:10px;" placeholder="Scripting interface active..."></textarea>` },
             spidey: { color: '#ff0055', title: 'Agency Web Ledger Control', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Google Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Google Sheets</h3></div></div>` }
@@ -329,8 +343,6 @@
 
         window.onload = function() {
             if(localStorage.getItem('bg-url')) document.documentElement.style.setProperty('--bg-image', "url('" + localStorage.getItem('bg-url') + "')");
-            if(localStorage.getItem('ironman-url')) document.getElementById('card-ironman').style.backgroundImage = "url('" + localStorage.getItem('ironman-url') + "')";
-            if(localStorage.getItem('thor-url')) document.getElementById('card-thor').style.backgroundImage = "url('" + localStorage.getItem('thor-url') + "')";
             if(localStorage.getItem('glass-opacity')) document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${localStorage.getItem('glass-opacity')})`);
             if(localStorage.getItem('voice-speed')) voiceSpeed = parseFloat(localStorage.getItem('voice-speed'));
             if(localStorage.getItem('myTimetable')) customTimetable = JSON.parse(localStorage.getItem('myTimetable'));
@@ -338,76 +350,108 @@
             startTimeChecker(); 
         }
 
-        /* --- TRADING LEAGUE ARENA LOGIC --- */
-        function joinTournament(fee, name) {
-            if (totalCoins < fee) {
-                jarvisSpeak("Access Denied, Partner! You don't have enough capital. Go pass a Syllabus Quiz to earn coins first.");
-                showSilentNotification("Insufficient Coins! Need " + fee + " KK Coins.");
+        /* --- REALISTIC TRADING LOGIC (VIRTUAL K.K. COINS) --- */
+        function executeTrade(type) {
+            const sym = document.getElementById('order-symbol').value.toUpperCase();
+            const qty = parseFloat(document.getElementById('order-qty').value);
+            const price = parseFloat(document.getElementById('order-price').value);
+
+            if(!sym || isNaN(qty) || isNaN(price) || qty <= 0 || price <= 0) {
+                showSilentNotification("Invalid Order! Please check Symbol, Qty, and Price.");
                 return;
             }
-            totalCoins -= fee;
-            currentRank = Math.max(1, currentRank - 3); // Moves up in rank
-            refreshHUDTokens();
-            jarvisSpeak(`Successfully entered the ${name}! Virtual Margin is assigned. Let's conquer the leaderboard, Partner.`);
-            showSilentNotification("Joined " + name + " successfully!");
-        }
 
-        /* --- INTEGRATED SYLLABUS QUIZ ENGINE (CHEAT CODES) --- */
-        function triggerSyllabusQuiz() {
-            document.getElementById('vault-title').innerText = "🧠 COGNITIVE REVENUE MODULE (STUDY TO WIN)";
-            document.getElementById('file-upload-container').style.display = 'none';
-            document.getElementById('file-display-area').style.display = 'none';
-            document.getElementById('vault-notes').style.display = 'none';
-            
-            const quizPortal = document.getElementById('dynamic-quiz-portal');
-            quizPortal.style.display = 'block';
-            
-            // Sample Gamified Quiz linking Core Study Concepts to Logic Requirements
-            quizPortal.innerHTML = `
-                <div id="quiz-question-box">
-                    <p style="font-size:1.1rem; font-weight:bold;">Q: If Inflation increases rapidly in an economy, what impact will it typically have on the central bank's interest rates and asset pricing?</p>
-                    <button class="quiz-option-btn" onclick="submitQuizAnswer(true)">A) Central Bank increases interest rates; stock valuations drop due to higher discount rates.</button>
-                    <button class="quiz-option-btn" onclick="submitQuizAnswer(false)">B) Rates decrease; liquidity flooding drives stock markets indefinitely upward.</button>
-                    <button class="quiz-option-btn" onclick="submitQuizAnswer(false)">C) No correlation exists between macroeconomics and individual stock asset trends.</button>
-                </div>
-            `;
-            
-            document.querySelector('#vault-modal .action-btn').style.display = 'none';
-            openModal('vault-modal');
-            jarvisSpeak("Economics and Logic assessment loaded. Pick the scientifically sound answer to secure capital.");
-        }
+            const tradeValue = qty * price;
 
-        function submitQuizAnswer(isCorrect) {
-            const quizPortal = document.getElementById('dynamic-quiz-portal');
-            if (isCorrect) {
-                totalCoins += 500;
-                refreshHUDTokens();
-                quizPortal.innerHTML = `<h3 style="color:#00ffaa;">🎯 CORRECT MATRIX ANSWER!</h3><p>+500 KK Coins injected into your trading vault wallet. Your deployment capital has grown.</p>`;
-                jarvisSpeak("Outstanding logic, Partner! 500 coins added. Your analytical skills just bought you entry into the real trading ring.");
-            } else {
-                quizPortal.innerHTML = `<h3 style="color:#ff3300;">❌ LOGICAL DISCONNECT DETECTED</h3><p>Incorrect analysis. Go read the reference documentation before testing your capital again.</p>`;
-                jarvisSpeak("Wrong calculation, brother. Real market would have liquidated you here. Study hard and try again.");
+            if (type === 'BUY') {
+                if (totalCoins < tradeValue) {
+                    showSilentNotification("Insufficient K.K. Coins for this trade!");
+                    jarvisSpeak("Insufficient capital, partner. Check your risk management.");
+                    return;
+                }
+                totalCoins -= tradeValue;
             }
-            setTimeout(() => {
-                closeModal('vault-modal');
-                document.querySelector('#vault-modal .action-btn').style.display = 'inline-block';
-                quizPortal.style.display = 'none';
-            }, 4000);
+
+            // Create Trade Record
+            const trade = { id: Date.now(), sym, type, qty, entryPrice: price };
+            activeTrades.push(trade);
+            
+            showSilentNotification(`${type} Order Executed: ${qty} ${sym} at ${price}`);
+            jarvisSpeak(`${type} order placed successfully for ${sym}.`);
+            
+            document.getElementById('order-qty').value = '';
+            document.getElementById('order-price').value = '';
+            refreshHUDTokens();
         }
 
-        /* --- GEMINI AI CHAT LOGIC WITH ADVANCED POST-MORTEM BRAIN --- */
+        function closeTrade(id) {
+            const tradeIndex = activeTrades.findIndex(t => t.id === id);
+            if(tradeIndex === -1) return;
+            const trade = activeTrades[tradeIndex];
+            
+            // In a real app, you'd fetch the LIVE price here. For the HUD, we ask the user to input their exit price.
+            let exitPrice = prompt(`Enter EXIT PRICE for ${trade.sym} (${trade.type}):`, trade.entryPrice);
+            if(exitPrice === null || isNaN(exitPrice)) return;
+            exitPrice = parseFloat(exitPrice);
+
+            let profitLoss = 0;
+            let returnedCapital = 0;
+
+            if(trade.type === 'BUY') {
+                returnedCapital = trade.qty * exitPrice;
+                profitLoss = returnedCapital - (trade.qty * trade.entryPrice);
+            } else if (trade.type === 'SELL') {
+                // Short selling logic simplified
+                const entryValue = trade.qty * trade.entryPrice;
+                const exitValue = trade.qty * exitPrice;
+                profitLoss = entryValue - exitValue;
+                returnedCapital = profitLoss; // Adding back the profit (or subtracting loss)
+            }
+
+            totalCoins += returnedCapital;
+            activeTrades.splice(tradeIndex, 1);
+            
+            showSilentNotification(`Position Closed. P&L: ${profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)} Coins`);
+            jarvisSpeak(`Trade closed. ${profitLoss >= 0 ? 'Profitable exit.' : 'Loss booked. Keep discipline.'}`);
+            refreshHUDTokens();
+        }
+
+        function renderTradePositions() {
+            const tbody = document.getElementById('positions-table-body');
+            const panelCoins = document.getElementById('panel-coins');
+            if(!tbody || !panelCoins) return;
+
+            panelCoins.innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+            tbody.innerHTML = '';
+
+            if(activeTrades.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="padding-top:10px; color:#aaa; text-align:center;">No open positions</td></tr>';
+                return;
+            }
+
+            activeTrades.forEach(t => {
+                const color = t.type === 'BUY' ? '#00b894' : '#d63031';
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="padding: 8px 0; font-weight:bold;">${t.sym}<br><span style="font-size:0.7rem; color:#aaa;">Qty: ${t.qty}</span></td>
+                        <td style="padding: 8px 0; color: ${color}; font-weight:bold;">${t.type}<br><span style="font-size:0.7rem; color:#aaa;">@ ${t.entryPrice}</span></td>
+                        <td style="padding: 8px 0;"><button class="action-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="closeTrade(${t.id})">CLOSE</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+
+        /* --- GEMINI AI CHAT LOGIC --- */
         function generatePAResponse(inputText) {
             let txt = inputText.toLowerCase();
             
-            // Intelligent Trade Diagnosis Simulator (Post-Mortem Logic)
-            if (txt.includes("loss") || txt.includes("breakout") || txt.includes("failed") || txt.includes("reliance")) {
-                return "CRITICAL POST-MORTEM DIAGNOSIS: Partner, look closely at the volumes during that breakout! The chart shows a classic 'Bull Trap'. Volume was 40% below average, meaning retail traders bought the top while institutional liquidity providers sold. Go check the 'Supply and Demand' logic in your Padarth Vigyan/Logical Reasoning folder before doing a blind entry next time!";
+            if (txt.includes("loss") || txt.includes("breakout") || txt.includes("failed")) {
+                return "CRITICAL POST-MORTEM DIAGNOSIS: Partner, look closely at the volumes during that breakout! The chart shows a classic 'Bull Trap'. Volume was 40% below average. Adjust your risk logic before entering again.";
             }
-            if (txt.includes("how are you") || txt.includes("kaise ho")) return "Systems are operating at peak throughput, Partner. Your business matrix looks highly disruptive today.";
-            if (txt.includes("hello") || txt.includes("hi k.k")) return "Systems online. What strategy are we deploying or evaluating today?";
-            if (txt.includes("time")) return "The system clock marks exactly " + new Date().toLocaleTimeString();
+            if (txt.includes("anatomy") || txt.includes("shloka")) return "Opening study archives. Remember to break down complex terms into their root Sanskrit meanings for better retention.";
             
-            return "I analyze your telemetry, Partner. If this relates to a specific trading strategy or syllabus milestone, let's trace the core variables. Don't build empty hypotheses.";
+            return "I am analyzing your query. If this is a trading setup, verify your stop-loss. If it's a study topic, review your summary notes.";
         }
 
         function sendChatMsg(txt) {
@@ -426,21 +470,48 @@
         }
 
         /* --- THE REST OF CODEBASE REMAINING SYNCED --- */
+        let currentVaultTitle = '';
+        
+        function openVault(title) {
+            currentVaultTitle = title;
+            document.getElementById('vault-title').innerText = title + " VAULT";
+            document.getElementById('file-uploader').value = '';
+            document.getElementById('file-upload-container').style.display = 'block';
+            document.getElementById('file-display-area').style.display = 'none';
+            document.getElementById('doc-iframe').src = '';
+            document.getElementById('vault-notes').style.display = 'block';
+            document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
+            
+            openModal('vault-modal');
+            jarvisSpeak(`Opening ${title} interface.`);
+        }
+
+        function saveVaultData() {
+            localStorage.setItem('note_' + currentVaultTitle, document.getElementById('vault-notes').value);
+            closeModal('vault-modal');
+            showSilentNotification("Notes Saved!");
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const fileURL = URL.createObjectURL(file);
+                document.getElementById('file-display-area').style.display = 'block';
+                document.getElementById('doc-iframe').src = fileURL;
+                jarvisSpeak("Document loaded to interface.");
+            }
+        }
+
         function saveSettings() {
             const bgUrl = document.getElementById('bg-selector').value;
-            const ironUrl = document.getElementById('ironman-selector').value;
-            const thorUrl = document.getElementById('thor-selector').value;
             const opacity = document.getElementById('opacity-slider').value;
             const vSpeed = document.getElementById('voice-speed-slider').value;
 
             localStorage.setItem('bg-url', bgUrl); document.documentElement.style.setProperty('--bg-image', "url('" + bgUrl + "')");
-            localStorage.setItem('ironman-url', ironUrl); document.getElementById('card-ironman').style.backgroundImage = "url('" + ironUrl + "')";
-            localStorage.setItem('thor-url', thorUrl); document.getElementById('card-thor').style.backgroundImage = "url('" + thorUrl + "')";
-            
             localStorage.setItem('glass-opacity', opacity); document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${opacity})`);
             localStorage.setItem('voice-speed', vSpeed); voiceSpeed = parseFloat(vSpeed);
 
-            closeModal('settings-overlay'); jarvisSpeak("Sir, your cognitive hub settings have been successfully applied.");
+            closeModal('settings-overlay'); jarvisSpeak("Settings applied successfully.");
         }
 
         function initProtocol(id, color) {
@@ -460,38 +531,15 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
             contentArea.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${mod.title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM CONFIG</button></div><div>${mod.html}</div>`;
-            if(id === 'cap') loadTV("BINANCE:BTCUSDT");
+            
+            if(id === 'cap') {
+                loadTV("BINANCE:BTCUSDT");
+                renderTradePositions(); // Refresh tables when switching to trade view
+            }
         }
         function switchModule(id) { renderModule(id); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
-
-        function openVault(title) {
-            document.getElementById('vault-title').innerText = title + " VAULT";
-            document.getElementById('file-uploader').value = '';
-            document.getElementById('file-upload-container').style.display = 'block';
-            document.getElementById('file-display-area').style.display = 'none';
-            document.getElementById('doc-iframe').src = '';
-            document.getElementById('vault-notes').style.display = 'block';
-            document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
-            
-            document.querySelector('#vault-modal .action-btn').onclick = function() {
-                localStorage.setItem('note_'+title, document.getElementById('vault-notes').value);
-                closeModal('vault-modal');
-            };
-            openModal('vault-modal');
-            jarvisSpeak(`The ${title} vault is now open.`);
-        }
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const fileURL = URL.createObjectURL(file);
-                document.getElementById('file-display-area').style.display = 'block';
-                document.getElementById('doc-iframe').src = fileURL;
-                jarvisSpeak("Document processed successfully.");
-            }
-        }
 
         function startTimerPrompt(type, minsParam) {
             isFocusMode = (type !== 'break');
@@ -534,7 +582,7 @@
                 </div>
                 <div id="tt-list" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:10px; max-height: 250px; overflow-y:auto;"></div>
             `;
-            document.getElementById('vault-title').innerText = "CUSTOM TIMETABLE MAKER";
+            document.getElementById('vault-title').innerText = "STUDY SCHEDULE";
             let oldTt = document.getElementById('temp-tt'); if(oldTt) oldTt.remove();
             document.getElementById('file-upload-container').style.display = 'none';
             document.getElementById('file-display-area').style.display = 'none';
@@ -607,7 +655,7 @@
                 let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
                 if (!jarvisActive) return;
 
-                if (speechToken.includes("open iron") || speechToken.includes("iron man")) { initProtocol('ironman', '#ff2a2a'); }
+                if (speechToken.includes("open iron") || speechToken.includes("studies")) { initProtocol('ironman', '#ff2a2a'); }
                 else if (speechToken.includes("open captain") || speechToken.includes("trading")) { initProtocol('cap', '#0077ff'); }
                 else if (speechToken.includes("go back") || speechToken.includes("home")) { returnToHome(); }
                 else if (speechToken.includes("open chat") || speechToken.includes("chat kholo")) { openModal('jarvis-terminal-overlay'); }
@@ -625,13 +673,17 @@
 
         function updateTVSymbol() {
             const sym = document.getElementById('tv-symbol-input').value;
-            if(sym) { loadTV(sym); jarvisSpeak(`Syncing ${sym}.`); }
+            if(sym) { 
+                loadTV(sym); 
+                document.getElementById('order-symbol').value = sym; // Auto update execution panel
+                jarvisSpeak(`Syncing ${sym}.`); 
+            }
         }
         function loadTV(symbolString) { 
             setTimeout(() => { 
                 const tvDiv = document.getElementById('tradingview_cap'); if(!tvDiv) return; tvDiv.innerHTML=''; 
                 let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js'; 
-                script.onload = () => new TradingView.widget({"autosize":true,"symbol":symbolString,"interval":"5","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"}); 
+                script.onload = () => new TradingView.widget({"autosize":true,"symbol":symbolString,"interval":"5","theme":"dark","container_id":"tradingview_cap","backgroundColor":"rgba(0,0,0,0.5)","gridColor":"rgba(0,119,255,0.05)"}); 
                 document.body.appendChild(script); 
             }, 100); 
         }
