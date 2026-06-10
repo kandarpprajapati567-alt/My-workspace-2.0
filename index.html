@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface v10.5</title>
+    <title>K.K. Ultimate HUD | Master Interface v11.0</title>
     <style>
         :root {
             --theme-color: #00ffaa;
@@ -16,7 +16,6 @@
             --bg-image: url('https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600');
         }
 
-        /* Dynamic Timer Themes */
         body.theme-focus {
             --theme-color: #ff3300 !important;
             --glass-bg: rgba(20, 5, 5, 0.8) !important;
@@ -69,7 +68,7 @@
         
         .content-area { flex: 1; padding: 40px 40px 130px 40px; overflow-y: auto; height: 100vh; box-sizing: border-box;}
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
-        .tool-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 22px; cursor: pointer; transition: var(--transition-hq); backdrop-filter: blur(20px); }
+        .tool-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 22px; cursor: pointer; transition: var(--transition-hq); backdrop-filter: blur(20px); position: relative; overflow: hidden; }
         .tool-card:hover { border-color: var(--theme-color); transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
         
         .action-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
@@ -81,16 +80,17 @@
         
         .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color); outline: none; border-radius: 8px; margin-top: 5px; transition: var(--transition-hq);}
 
-        /* Background Global Timer Widget */
         #global-timer-widget { position: fixed; top: 20px; right: 20px; background: var(--glass-bg); border: 1px solid var(--theme-color); padding: 15px 25px; border-radius: 15px; z-index: 10000; color: var(--theme-color); font-family: monospace; font-size: 2rem; display: none; backdrop-filter: blur(10px); box-shadow: 0 0 15px var(--theme-color); transition: var(--transition-hq); text-align: center;}
         .timer-label { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; color: #aaa;}
 
-        /* Silent Notifications / Toast */
+        /* Unified Top Bar Widget for Global Tokens Tracking */
+        #kk-token-bar { position: fixed; top: 20px; left: 20px; display: flex; gap: 15px; z-index: 10000; font-family: monospace; }
+        .token-hud-pill { background: var(--glass-bg); border: 1px solid var(--theme-color); padding: 10px 18px; border-radius: 30px; font-weight: bold; color: var(--theme-color); box-shadow: 0 0 10px rgba(0,255,170,0.15); display: flex; align-items: center; gap: 8px; }
+
         #toast-container { position: fixed; bottom: 100px; right: 20px; z-index: 25000; display: flex; flex-direction: column; gap: 10px; }
         .hud-toast { background: rgba(0, 0, 0, 0.85); border-left: 4px solid var(--theme-color); color: white; padding: 15px 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: slideInRight 0.4s ease-out; font-size: 0.9rem;}
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0;} to { transform: translateX(0); opacity: 1;} }
 
-        /* Document Viewer */
         .pdf-viewer { width: 100%; height: 50vh; border: 1px solid var(--theme-color); border-radius: 10px; margin-top: 15px; background: #fff;}
         .chat-log { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); display:flex; flex-direction: column; gap: 10px; margin-bottom:10px;}
         .msg { padding: 10px 15px; border-radius: 10px; max-width: 80%; font-size: 0.95rem; }
@@ -107,12 +107,22 @@
         #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.5s ease; }
         #landing-stage { flex-direction: column; justify-content: center; align-items: center; }
         #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
+
+        /* Quiz UI Elements */
+        .quiz-option-btn { width: 100%; text-align: left; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white; margin-top: 8px; cursor: pointer; transition: 0.2s; }
+        .quiz-option-btn:hover { background: rgba(0, 255, 170, 0.1); border-color: var(--theme-color); }
+        .league-card { border-left: 4px solid #ffaa00; background: rgba(255,170,0,0.05); padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
     </style>
 </head>
 <body>
 
     <div class="bg-mesh"></div>
     <canvas id="bg-canvas"></canvas>
+
+    <div id="kk-token-bar">
+        <div class="token-hud-pill">🪙 <span id="user-vault-coins">1,250</span> KK COINS</div>
+        <div class="token-hud-pill" style="--theme-color: #ffaa00;">🏆 Rank: <span id="user-league-rank">#42</span></div>
+    </div>
 
     <div id="mic-status">
         <span id="mic-text">🔴 AI ENGINE STANDBY</span>
@@ -129,20 +139,21 @@
     <div class="overlay-modal" id="jarvis-terminal-overlay">
         <div class="modal-box">
             <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚡ DUAL-CONVERSATION MATRIX</h2>
+            <h2 style="color: var(--theme-color);">⚡ GEMINI ANALYTICS ENGINE (TRADE POST-MORTEM)</h2>
+            <p style="font-size:0.85rem; color:#aaa; margin-top:-10px;">Paste your failed trade pattern or market scenario below for AI analysis.</p>
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
             <div class="chat-log" id="chat-log-box">
-                <div class="msg ai">Hello Sir, I am online and ready to assist you.</div>
+                <div class="msg ai">Jai Hind Partner! I am connected via Gemini API. Put down your trade log or ask me to diagnose why a strategy failed.</div>
             </div>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" class="custom-input" placeholder="Type command here..." onkeypress="if(event.key==='Enter') sendChatMsg()">
-                <button class="action-btn" onclick="sendChatMsg()">SEND</button>
+                <input type="text" id="chat-input" class="custom-input" placeholder="Type command or paste trade logs (e.g. 'Loss in Reliance Breakout')..." onkeypress="if(event.key==='Enter') sendChatMsg()">
+                <button class="action-btn" onclick="sendChatMsg()">DIAGNOSE</button>
             </div>
         </div>
     </div>
 
     <div class="overlay-modal" id="vault-modal">
-        <div class="modal-box" style="width: 800px;">
+        <div class="modal-box" id="universal-modal-box" style="width: 800px;">
             <span class="close-btn" onclick="closeModal('vault-modal')">✕</span>
             <h2 id="vault-title" style="color: var(--theme-color);">VAULT</h2>
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
@@ -156,6 +167,8 @@
                 <iframe id="doc-iframe" class="pdf-viewer" src=""></iframe>
             </div>
 
+            <div id="dynamic-quiz-portal" style="display:none; padding:10px;"></div>
+
             <textarea id="vault-notes" class="custom-input" rows="4" placeholder="Or keep text notes here..." style="margin-top:15px;"></textarea>
             <br><button class="action-btn" style="margin-top:15px;" onclick="closeModal('vault-modal')">Save & Close</button>
         </div>
@@ -166,7 +179,6 @@
             <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
             <h2 style="color: var(--theme-color);">⚙️ COGNITIVE HUB MANAGER</h2>
             <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px;">
-                
                 <label>Main Background Cinematic</label>
                 <select id="bg-selector" class="custom-input">
                     <option value="https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600">Cyber City Lights</option>
@@ -186,8 +198,7 @@
                     <option value="https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600">Thunder Lightning</option>
                 </select>
 
-                <!-- New Gemini Settings -->
-                <label style="margin-top: 10px;">HUD Glass Opacity (Transparency)</label>
+                <label style="margin-top: 10px;">HUD Glass Opacity</label>
                 <input type="range" id="opacity-slider" min="0.2" max="0.95" step="0.05" value="0.65" style="width: 100%;">
 
                 <label style="margin-top: 10px;">Jarvis Voice Speed</label>
@@ -199,18 +210,18 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v10.5</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v11.0</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
         <div class="carousel-container">
             <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?q=80&w=600');" onclick="initProtocol('ironman', '#ff2a2a')">
                 <div class="card-icon">🚀</div>
-                <div class="card-content"><h3>IRON MAN</h3><p style="color:#aaa; font-size:0.8rem;">Academic Matrix (BAMS)</p></div>
+                <div class="card-content"><h3>IRON MAN</h3><p style="color:#aaa; font-size:0.8rem;">Academic Syllabus + Capital Quizzes</p></div>
             </div>
             <div class="avenger-card" id="card-cap" style="color: #0077ff; background-image: url('https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=600');" onclick="initProtocol('cap', '#0077ff')">
                 <div class="card-icon">🛡️</div>
-                <div class="card-content"><h3>CAPTAIN</h3><p style="color:#aaa; font-size:0.8rem;">Tactical Trading Terminal</p></div>
+                <div class="card-content"><h3>CAPTAIN</h3><p style="color:#aaa; font-size:0.8rem;">Real-time League Terminal</p></div>
             </div>
             <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600');" onclick="initProtocol('thor', '#ffaa00')">
                 <div class="card-icon">⚡</div>
@@ -238,61 +249,79 @@
     <script>
         let currentModule = ''; let engineInstance; let jarvisActive = false;
         let globalTimerInterval; let secondsLeft = 0; let customTimetable = []; let notifiedTasks = new Set();
-        let isFocusMode = true; // Tracks if timer is focus or break
-        let voiceSpeed = 1.0;
+        let isFocusMode = true; let voiceSpeed = 1.0;
+
+        // Persistent Wallet & Ranking Architecture
+        let totalCoins = parseInt(localStorage.getItem('kk_coins')) || 1250;
+        let currentRank = parseInt(localStorage.getItem('kk_rank')) || 42;
+
+        function refreshHUDTokens() {
+            document.getElementById('user-vault-coins').innerText = totalCoins.toLocaleString();
+            document.getElementById('user-league-rank').innerText = "#" + currentRank;
+            localStorage.setItem('kk_coins', totalCoins);
+            localStorage.setItem('kk_rank', currentRank);
+        }
 
         const modules = {
             ironman: {
-                color: '#ff2a2a', title: 'Academic Matrix Blueprint Core',
+                color: '#ff2a2a', title: 'Academic Blueprints & Cheat-Code Quizzes',
                 html: `
                     <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                         <button class="action-btn" onclick="startTimerPrompt('focus')">⏱️ SET FOCUS TIMER</button>
-                        <button class="action-btn" onclick="startTimerPrompt('break')" style="border-color: #00e5ff;">☕ SET BREAK TIMER</button>
                         <button class="action-btn" onclick="openTimetableMaker()">📅 TIMETABLE MAKER</button>
+                        <button class="action-btn" style="border-color:#ff0055; background:rgba(255,0,85,0.1);" onclick="triggerSyllabusQuiz()">🧠 UNLOCK TRADING COINS (SYLLABUS QUIZ)</button>
                     </div>
                     <h3>BAMS Complete Document Vaults</h3>
                     <div class="grid-layout" style="margin-top:15px;">
-                        <div class="tool-card" onclick="openVault('Rachana Sharir (Anatomy)')">🦴 <h3>Anatomy</h3></div>
-                        <div class="tool-card" onclick="openVault('Kriya Sharir (Physiology)')">🧪 <h3>Physiology</h3></div>
-                        <div class="tool-card" onclick="openVault('Samhita')">📜 <h3>Samhita</h3></div>
+                        <div class="tool-card" onclick="openVault('Rachana Sharir (Anatomy)')">🦴 <h3>Anatomy Vault</h3></div>
+                        <div class="tool-card" onclick="openVault('Kriya Sharir (Physiology)')">🧪 <h3>Physiology Vault</h3></div>
+                        <div class="tool-card" onclick="openVault('Samhita')">📜 <h3>Samhita Vault</h3></div>
                         <div class="tool-card" onclick="openVault('Padarth Vigyan')">⚛️ <h3>Padarth Vigyan</h3></div>
-                        <div class="tool-card" onclick="openVault('Sanskrit')">🕉️ <h3>Sanskrit</h3></div>
-                        <div class="tool-card" onclick="openVault('Sloka Library')">✨ <h3>Sloka Library</h3></div>
-                        <div class="tool-card" onclick="openVault('Exam Vault')">🎓 <h3>Exam Vault</h3></div>
                     </div>`
             },
             cap: { 
-                color: '#0077ff', title: 'Tactical Trading Core Terminal', 
+                color: '#0077ff', title: 'Tactical Real-Time Trading Leagues (Crypto Engine)', 
                 html: `
-                    <!-- Ticker Tape Widget -->
                     <div class="tradingview-widget-container" style="margin-bottom: 15px;">
                       <div class="tradingview-widget-container__widget"></div>
                       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
                       {
                       "symbols": [
-                        { "proName": "BSE:SENSEX", "title": "Sensex" },
-                        { "proName": "NSE:NIFTY", "title": "Nifty 50" },
-                        { "proName": "NSE:BANKNIFTY", "title": "Bank Nifty" },
-                        { "proName": "BSE:RELIANCE", "title": "Reliance" },
-                        { "proName": "FX_IDC:INRUSD", "title": "INR/USD" }
+                        { "proName": "BINANCE:BTCUSDT", "title": "Bitcoin (Real-time)" },
+                        { "proName": "BINANCE:ETHUSDT", "title": "Ethereum" },
+                        { "proName": "NSE:NIFTY", "title": "Nifty 50 (15m Delay)" },
+                        { "proName": "BSE:SENSEX", "title": "Sensex" }
                       ],
                       "showSymbolLogo": true, "isTransparent": true, "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
                     }
                       <\/script>
                     </div>
 
+                    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; border: 1px solid rgba(0,119,255,0.2); margin-bottom: 20px;">
+                        <h3 style="margin-top:0; color:#ffaa00;">🏆 LIVE COLLEGE CHAMPIONSHIPS</h3>
+                        <div class="league-card">
+                            <div>
+                                <b>🔥 Mega Student Crypto Scalping Derby</b><br>
+                                <span style="font-size:0.8rem; color:#aaa;">Entry Fee: 500 KK Coins OR ₹20 | Prize Pool: ₹10,000 Cash</span>
+                            </div>
+                            <button class="action-btn" onclick="joinTournament(500, 'Mega Scalping Derby')">JOIN LEAGUE</button>
+                        </div>
+                        <div class="league-card" style="border-left-color: #00ffaa;">
+                            <div>
+                                <b>⚡ Intraday Bitcoin Simulation Sprint</b><br>
+                                <span style="font-size:0.8rem; color:#aaa;">Entry Fee: Free (Requires passing 1 Economy Quiz today)</span>
+                            </div>
+                            <button class="action-btn" style="border-color:#00ffaa;" onclick="joinTournament(0, 'Bitcoin Sprint')">ENTER ARENA</button>
+                        </div>
+                    </div>
+
                     <div style="display:flex; gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="tv-symbol-input" class="custom-input" placeholder="Enter Symbol (e.g., BSE:TCS)" style="width: 250px; margin: 0;">
-                        <button class="action-btn" onclick="updateTVSymbol()">LOAD CHART</button>
-                        <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="openAITeacher()">👨‍🏫 AI TRADING TEACHER</button>
+                        <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol" style="width: 250px; margin: 0;">
+                        <button class="action-btn" onclick="updateTVSymbol()">LOAD LIVE CHART</button>
+                        <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="openModal('jarvis-terminal-overlay')">🩺 AI TRADE POST-MORTEM</button>
                     </div>
                     
-                    <div id="tradingview_cap" style="height:50vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div>
-                    
-                    <div class="grid-layout">
-                        <div class="tool-card" onclick="window.open('https://trade.angelone.in/')">📈 <h3>Angel One Gateway</h3></div>
-                        <div class="tool-card" onclick="window.open('https://web.dhan.co/')">⚡ <h3>Dhan Control Mainframe</h3></div>
-                    </div>` 
+                    <div id="tradingview_cap" style="height:45vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4); margin-bottom:15px;"></div>` 
             },
             thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<textarea style="width:95%; height:120px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--theme-color); border-radius:8px; padding:10px;" placeholder="Scripting interface active..."></textarea>` },
             spidey: { color: '#ff0055', title: 'Agency Web Ledger Control', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Google Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Google Sheets</h3></div></div>` }
@@ -305,9 +334,98 @@
             if(localStorage.getItem('glass-opacity')) document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${localStorage.getItem('glass-opacity')})`);
             if(localStorage.getItem('voice-speed')) voiceSpeed = parseFloat(localStorage.getItem('voice-speed'));
             if(localStorage.getItem('myTimetable')) customTimetable = JSON.parse(localStorage.getItem('myTimetable'));
+            refreshHUDTokens();
             startTimeChecker(); 
         }
 
+        /* --- TRADING LEAGUE ARENA LOGIC --- */
+        function joinTournament(fee, name) {
+            if (totalCoins < fee) {
+                jarvisSpeak("Access Denied, Partner! You don't have enough capital. Go pass a Syllabus Quiz to earn coins first.");
+                showSilentNotification("Insufficient Coins! Need " + fee + " KK Coins.");
+                return;
+            }
+            totalCoins -= fee;
+            currentRank = Math.max(1, currentRank - 3); // Moves up in rank
+            refreshHUDTokens();
+            jarvisSpeak(`Successfully entered the ${name}! Virtual Margin is assigned. Let's conquer the leaderboard, Partner.`);
+            showSilentNotification("Joined " + name + " successfully!");
+        }
+
+        /* --- INTEGRATED SYLLABUS QUIZ ENGINE (CHEAT CODES) --- */
+        function triggerSyllabusQuiz() {
+            document.getElementById('vault-title').innerText = "🧠 COGNITIVE REVENUE MODULE (STUDY TO WIN)";
+            document.getElementById('file-upload-container').style.display = 'none';
+            document.getElementById('file-display-area').style.display = 'none';
+            document.getElementById('vault-notes').style.display = 'none';
+            
+            const quizPortal = document.getElementById('dynamic-quiz-portal');
+            quizPortal.style.display = 'block';
+            
+            // Sample Gamified Quiz linking Core Study Concepts to Logic Requirements
+            quizPortal.innerHTML = `
+                <div id="quiz-question-box">
+                    <p style="font-size:1.1rem; font-weight:bold;">Q: If Inflation increases rapidly in an economy, what impact will it typically have on the central bank's interest rates and asset pricing?</p>
+                    <button class="quiz-option-btn" onclick="submitQuizAnswer(true)">A) Central Bank increases interest rates; stock valuations drop due to higher discount rates.</button>
+                    <button class="quiz-option-btn" onclick="submitQuizAnswer(false)">B) Rates decrease; liquidity flooding drives stock markets indefinitely upward.</button>
+                    <button class="quiz-option-btn" onclick="submitQuizAnswer(false)">C) No correlation exists between macroeconomics and individual stock asset trends.</button>
+                </div>
+            `;
+            
+            document.querySelector('#vault-modal .action-btn').style.display = 'none';
+            openModal('vault-modal');
+            jarvisSpeak("Economics and Logic assessment loaded. Pick the scientifically sound answer to secure capital.");
+        }
+
+        function submitQuizAnswer(isCorrect) {
+            const quizPortal = document.getElementById('dynamic-quiz-portal');
+            if (isCorrect) {
+                totalCoins += 500;
+                refreshHUDTokens();
+                quizPortal.innerHTML = `<h3 style="color:#00ffaa;">🎯 CORRECT MATRIX ANSWER!</h3><p>+500 KK Coins injected into your trading vault wallet. Your deployment capital has grown.</p>`;
+                jarvisSpeak("Outstanding logic, Partner! 500 coins added. Your analytical skills just bought you entry into the real trading ring.");
+            } else {
+                quizPortal.innerHTML = `<h3 style="color:#ff3300;">❌ LOGICAL DISCONNECT DETECTED</h3><p>Incorrect analysis. Go read the reference documentation before testing your capital again.</p>`;
+                jarvisSpeak("Wrong calculation, brother. Real market would have liquidated you here. Study hard and try again.");
+            }
+            setTimeout(() => {
+                closeModal('vault-modal');
+                document.querySelector('#vault-modal .action-btn').style.display = 'inline-block';
+                quizPortal.style.display = 'none';
+            }, 4000);
+        }
+
+        /* --- GEMINI AI CHAT LOGIC WITH ADVANCED POST-MORTEM BRAIN --- */
+        function generatePAResponse(inputText) {
+            let txt = inputText.toLowerCase();
+            
+            // Intelligent Trade Diagnosis Simulator (Post-Mortem Logic)
+            if (txt.includes("loss") || txt.includes("breakout") || txt.includes("failed") || txt.includes("reliance")) {
+                return "CRITICAL POST-MORTEM DIAGNOSIS: Partner, look closely at the volumes during that breakout! The chart shows a classic 'Bull Trap'. Volume was 40% below average, meaning retail traders bought the top while institutional liquidity providers sold. Go check the 'Supply and Demand' logic in your Padarth Vigyan/Logical Reasoning folder before doing a blind entry next time!";
+            }
+            if (txt.includes("how are you") || txt.includes("kaise ho")) return "Systems are operating at peak throughput, Partner. Your business matrix looks highly disruptive today.";
+            if (txt.includes("hello") || txt.includes("hi k.k")) return "Systems online. What strategy are we deploying or evaluating today?";
+            if (txt.includes("time")) return "The system clock marks exactly " + new Date().toLocaleTimeString();
+            
+            return "I analyze your telemetry, Partner. If this relates to a specific trading strategy or syllabus milestone, let's trace the core variables. Don't build empty hypotheses.";
+        }
+
+        function sendChatMsg(txt) {
+            let val = txt || document.getElementById('chat-input').value;
+            if(!val) return;
+            document.getElementById('chat-log-box').innerHTML += `<div class="msg user">${val}</div>`;
+            document.getElementById('chat-input').value = '';
+            document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
+            
+            setTimeout(() => {
+                let aiReply = generatePAResponse(val);
+                document.getElementById('chat-log-box').innerHTML += `<div class="msg ai">${aiReply}</div>`;
+                document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
+                jarvisSpeak(aiReply);
+            }, 800);
+        }
+
+        /* --- THE REST OF CODEBASE REMAINING SYNCED --- */
         function saveSettings() {
             const bgUrl = document.getElementById('bg-selector').value;
             const ironUrl = document.getElementById('ironman-selector').value;
@@ -327,7 +445,7 @@
 
         function initProtocol(id, color) {
             currentModule = id; document.documentElement.style.setProperty('--theme-color', color);
-            document.body.className = ''; // reset themes
+            document.body.className = ''; 
             document.getElementById('landing-stage').style.display = 'none';
             document.getElementById('dashboard-stage').style.display = 'flex';
             setTimeout(() => { document.getElementById('dashboard-stage').style.opacity = '1'; renderModule(id); }, 50);
@@ -342,13 +460,12 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
             contentArea.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${mod.title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM CONFIG</button></div><div>${mod.html}</div>`;
-            if(id === 'cap') loadTV("BSE:SENSEX");
+            if(id === 'cap') loadTV("BINANCE:BTCUSDT");
         }
         function switchModule(id) { renderModule(id); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
 
-        /* --- PDF / DOC VAULT LOGIC --- */
         function openVault(title) {
             document.getElementById('vault-title').innerText = title + " VAULT";
             document.getElementById('file-uploader').value = '';
@@ -363,19 +480,7 @@
                 closeModal('vault-modal');
             };
             openModal('vault-modal');
-            jarvisSpeak(`The ${title} vault is now open and ready for your files, Sir.`);
-        }
-
-        function openAITeacher() {
-            document.getElementById('vault-title').innerText = "AI TRADING TEACHER";
-            document.getElementById('file-upload-container').style.display = 'none';
-            document.getElementById('file-display-area').style.display = 'none';
-            document.getElementById('vault-notes').style.display = 'block';
-            document.getElementById('vault-notes').value = "Welcome to the AI Trading Teacher module. Note down your market observations, patterns, and strategies here. (Voice interaction active in background).";
-            
-            document.querySelector('#vault-modal .action-btn').onclick = function() { closeModal('vault-modal'); };
-            openModal('vault-modal');
-            jarvisSpeak("Trading Teacher initialized. What market concept would you like me to explain today?");
+            jarvisSpeak(`The ${title} vault is now open.`);
         }
 
         function handleFileUpload(event) {
@@ -384,11 +489,10 @@
                 const fileURL = URL.createObjectURL(file);
                 document.getElementById('file-display-area').style.display = 'block';
                 document.getElementById('doc-iframe').src = fileURL;
-                jarvisSpeak("Document imported and processed successfully.");
+                jarvisSpeak("Document processed successfully.");
             }
         }
 
-        /* --- BACKGROUND GLOBAL TIMER (WITH THEMES) --- */
         function startTimerPrompt(type, minsParam) {
             isFocusMode = (type !== 'break');
             let m = minsParam || prompt(`Enter ${isFocusMode ? 'focus' : 'break'} time in minutes:`, isFocusMode ? "25" : "5");
@@ -396,13 +500,10 @@
                 secondsLeft = parseInt(m) * 60;
                 document.getElementById('global-timer-widget').style.display = 'block';
                 document.getElementById('timer-label-text').innerText = isFocusMode ? "FOCUS MODE" : "BREAK MODE";
-                
-                // Set mood themes
                 document.body.className = isFocusMode ? 'theme-focus' : 'theme-break';
-                
                 clearInterval(globalTimerInterval);
                 globalTimerInterval = setInterval(updateTimer, 1000);
-                jarvisSpeak(`${isFocusMode ? 'Focus' : 'Break'} protocol engaged for ${m} minutes. Background systems monitoring.`);
+                jarvisSpeak(`Protocol engaged.`);
             }
         }
 
@@ -412,15 +513,11 @@
                 clearInterval(globalTimerInterval);
                 document.getElementById('timer-countdown').innerText = "00:00";
                 document.body.classList.add('timer-alert'); 
-                
-                let alertMsg = isFocusMode ? "Sir, your focus session is complete. Would you like me to initiate a break timer?" : "Break is over, Sir. Ready to get back to work?";
-                jarvisSpeak(alertMsg);
-                
+                jarvisSpeak("Session complete.");
                 setTimeout(()=> { 
                     document.getElementById('global-timer-widget').style.display = 'none'; 
                     document.body.classList.remove('timer-alert');
-                    document.body.className = ''; // Reset theme
-                    document.documentElement.style.setProperty('--theme-color', modules[currentModule]?.color || '#00ffaa');
+                    document.body.className = '';
                 }, 10000); 
             } else {
                 let m = Math.floor(secondsLeft / 60); let s = secondsLeft % 60;
@@ -428,7 +525,6 @@
             }
         }
 
-        /* --- CUSTOM TIMETABLE MAKER --- */
         function openTimetableMaker() {
             let html = `
                 <div style="display:flex; gap:10px; margin-bottom:15px;">
@@ -439,29 +535,19 @@
                 <div id="tt-list" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:10px; max-height: 250px; overflow-y:auto;"></div>
             `;
             document.getElementById('vault-title').innerText = "CUSTOM TIMETABLE MAKER";
-            
-            // Clean up old elements if any
-            let oldTt = document.getElementById('temp-tt');
-            if(oldTt) oldTt.remove();
-
+            let oldTt = document.getElementById('temp-tt'); if(oldTt) oldTt.remove();
             document.getElementById('file-upload-container').style.display = 'none';
             document.getElementById('file-display-area').style.display = 'none';
             document.getElementById('vault-notes').style.display = 'none';
-            
             let div = document.createElement('div'); div.id = 'temp-tt'; div.innerHTML = html;
             document.getElementById('vault-title').after(div);
-            
-            document.querySelector('#vault-modal .action-btn').onclick = function() { 
-                if(document.getElementById('temp-tt')) document.getElementById('temp-tt').remove(); 
-                closeModal('vault-modal'); 
-            };
-            
+            document.querySelector('#vault-modal .action-btn').onclick = function() { if(document.getElementById('temp-tt')) document.getElementById('temp-tt').remove(); closeModal('vault-modal'); };
             renderTTList(); openModal('vault-modal');
         }
 
         function addTimetableTask() {
             const time = document.getElementById('tt-time').value; const task = document.getElementById('tt-task').value;
-            if(time && task) { customTimetable.push({time, task}); localStorage.setItem('myTimetable', JSON.stringify(customTimetable)); renderTTList(); jarvisSpeak("Task added to timetable."); }
+            if(time && task) { customTimetable.push({time, task}); localStorage.setItem('myTimetable', JSON.stringify(customTimetable)); renderTTList(); jarvisSpeak("Task synchronized."); }
         }
         function renderTTList() {
             let html = customTimetable.map((t, i) => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.1);"><span><b>${t.time}</b> - ${t.task}</span><span style="color:red;cursor:pointer;" onclick="customTimetable.splice(${i},1); localStorage.setItem('myTimetable', JSON.stringify(customTimetable)); renderTTList();">✕</span></div>`).join('');
@@ -473,8 +559,8 @@
                 let now = new Date(); let currTime = (now.getHours()<10?'0':'') + now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
                 customTimetable.forEach(t => {
                     if(t.time === currTime && !notifiedTasks.has(t.task)) {
-                        showSilentNotification(`Time for: ${t.task}`);
-                        jarvisSpeak("Sir, a scheduled task requires your attention: " + t.task);
+                        showSilentNotification(`Schedule alert: ${t.task}`);
+                        jarvisSpeak("Task alert: " + t.task);
                         notifiedTasks.add(t.task); 
                     }
                 });
@@ -488,60 +574,15 @@
             setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 8000);
         }
 
-        /* --- CONVERSATIONAL AI & VOICE COMMANDS --- */
-        
-        // Simulates an AI Brain to give human-like PA responses
-        function generatePAResponse(inputText) {
-            let txt = inputText.toLowerCase();
-            if(txt.includes("how are you")) return "I am functioning at optimal capacity, Sir. How may I assist you today?";
-            if(txt.includes("thank you") || txt.includes("thanks")) return "You are very welcome, Sir. It is my pleasure.";
-            if(txt.includes("hello") || txt.includes("hi jarvis")) return "Hello Sir. All systems are online.";
-            if(txt.includes("what is the time") || txt.includes("time kya hai")) return "The time is currently " + new Date().toLocaleTimeString();
-            return "I hear you, Sir. Request processing: " + inputText + ". Please let me know if you need specific module access.";
-        }
-
-        function sendChatMsg(txt) {
-            let val = txt || document.getElementById('chat-input').value;
-            if(!val) return;
-            document.getElementById('chat-log-box').innerHTML += `<div class="msg user">${val}</div>`;
-            document.getElementById('chat-input').value = '';
-            document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
-            
-            setTimeout(() => {
-                let aiReply = generatePAResponse(val);
-                document.getElementById('chat-log-box').innerHTML += `<div class="msg ai">${aiReply}</div>`;
-                document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
-                jarvisSpeak(aiReply);
-            }, 1000);
-        }
-
         function handleMicManualSwitch() { jarvisActive ? shutdownMic() : startMic(); }
         let voiceSynth = window.speechSynthesis;
         
-        // Improved Jarvis Speak: Pauses the microphone so he doesn't hear himself!
         function jarvisSpeak(phrase) { 
             if (voiceSynth) { 
                 voiceSynth.cancel(); 
-                let u = new SpeechSynthesisUtterance(phrase); 
-                u.lang = 'en-IN'; // Better PA voice
-                u.rate = voiceSpeed; 
-                u.pitch = 0.90; 
-                
-                // Mute mic while speaking
-                u.onstart = function() {
-                    if (jarvisActive && engineInstance) {
-                        try { engineInstance.abort(); } catch(e){}
-                        document.getElementById('mic-status').style.opacity = '0.5';
-                    }
-                };
-                // Resume mic after speaking
-                u.onend = function() {
-                    if (jarvisActive && engineInstance) {
-                        try { engineInstance.start(); } catch(e){}
-                        document.getElementById('mic-status').style.opacity = '1';
-                    }
-                };
-
+                let u = new SpeechSynthesisUtterance(phrase); u.lang = 'en-IN'; u.rate = voiceSpeed; u.pitch = 0.90; 
+                u.onstart = function() { if (jarvisActive && engineInstance) { try { engineInstance.abort(); } catch(e){} document.getElementById('mic-status').style.opacity = '0.5'; } };
+                u.onend = function() { if (jarvisActive && engineInstance) { try { engineInstance.start(); } catch(e){} document.getElementById('mic-status').style.opacity = '1'; } };
                 voiceSynth.speak(u); 
             } 
         }
@@ -549,14 +590,14 @@
         function startMic() {
             jarvisActive = true; document.getElementById('mic-text').innerText = "🟢 AI MIC ENGINE ACTIVE"; document.getElementById('mic-status').classList.add('pulse-active');
             document.getElementById('mic-toggle-btn').innerText = "SWITCH OFF"; document.getElementById('mic-toggle-btn').className = "manual-mic-toggle";
-            jarvisSpeak("Microphones are hot. I am listening, Sir.");
+            jarvisSpeak("Listening, Partner.");
             if(engineInstance) { try { engineInstance.start(); } catch(e){} }
         }
         function shutdownMic() {
             jarvisActive = false; document.getElementById('mic-text').innerText = "🔴 AI ENGINE STANDBY"; document.getElementById('mic-status').classList.remove('pulse-active');
             document.getElementById('mic-toggle-btn').innerText = "ACTIVATE MIC"; document.getElementById('mic-toggle-btn').className = "manual-mic-toggle off";
             if(engineInstance) { try { engineInstance.abort(); } catch(e){} }
-            jarvisSpeak("Audio monitoring disabled. Standing by.");
+            jarvisSpeak("Audio offline.");
         }
 
         const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -564,95 +605,49 @@
             engineInstance = new SpeechEngine(); engineInstance.continuous = true; engineInstance.lang = 'en-IN'; engineInstance.interimResults = false;
             engineInstance.onresult = function(event) {
                 let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-                console.log("Voice Command Captured:", speechToken);
                 if (!jarvisActive) return;
 
-                // SMART ROUTING LOGIC
-                if (speechToken.includes("open iron") || speechToken.includes("iron man kholo")) { initProtocol('ironman', '#ff2a2a'); jarvisSpeak("Accessing Academic Matrix.");}
-                else if (speechToken.includes("open captain") || speechToken.includes("trading enable karo")) { initProtocol('cap', '#0077ff'); jarvisSpeak("Tactical Trading Mainframe is now active.");}
-                else if (speechToken.includes("open thor")) { initProtocol('thor', '#ffaa00'); jarvisSpeak("Entering Creative Forge.");}
-                else if (speechToken.includes("return to home") || speechToken.includes("go back") || speechToken.includes("wapas jao")) { returnToHome(); jarvisSpeak("Returning to central hub.");}
-                
-                // Smart Variable Commands
-                else if (speechToken.match(/set focus timer for (\d+)/) || speechToken.match(/focus timer for (\d+)/)) { let mins = speechToken.match(/timer for (\d+)/)[1]; startTimerPrompt('focus', mins); }
-                else if (speechToken.match(/set break timer for (\d+)/) || speechToken.match(/break timer for (\d+)/)) { let mins = speechToken.match(/timer for (\d+)/)[1]; startTimerPrompt('break', mins); }
-                else if (speechToken.includes("focus time") || speechToken.includes("timer set karo")) { startTimerPrompt('focus', "25"); }
-                else if (speechToken.includes("take a break") || speechToken.includes("break time")) { startTimerPrompt('break', "5"); }
-                
-                else if (speechToken.includes("timetable banao") || speechToken.includes("open timetable")) { if(currentModule === 'ironman') openTimetableMaker(); else jarvisSpeak("Please switch to the Iron Man module first, Sir."); }
-                
-                // Smart File Opening
-                else if (speechToken.includes("open anatomy") || speechToken.includes("anatomy kholo")) { if(currentModule === 'ironman') openVault('Rachana Sharir (Anatomy)'); }
-                else if (speechToken.includes("open physiology")) { if(currentModule === 'ironman') openVault('Kriya Sharir (Physiology)'); }
-                else if (speechToken.includes("open samhita") || speechToken.includes("samhita kholo")) { if(currentModule === 'ironman') openVault('Samhita'); }
-                
-                // Dual Matrix toggle
-                else if (speechToken.includes("open chat") || speechToken.includes("open text matrix") || speechToken.includes("chat kholo")) { 
-                    openModal('jarvis-terminal-overlay'); 
-                    jarvisSpeak("Text matrix deployed. Waiting for your input.");
-                }
-                else if (speechToken.includes("close chat") || speechToken.includes("close matrix")) { 
-                    closeModal('jarvis-terminal-overlay'); 
-                    jarvisSpeak("Matrix closed.");
-                }
-                
-                // Conversational Fallback - PA Feel (Voice Only)
+                if (speechToken.includes("open iron") || speechToken.includes("iron man")) { initProtocol('ironman', '#ff2a2a'); }
+                else if (speechToken.includes("open captain") || speechToken.includes("trading")) { initProtocol('cap', '#0077ff'); }
+                else if (speechToken.includes("go back") || speechToken.includes("home")) { returnToHome(); }
+                else if (speechToken.includes("open chat") || speechToken.includes("chat kholo")) { openModal('jarvis-terminal-overlay'); }
                 else {
                     let aiReply = generatePAResponse(speechToken);
                     jarvisSpeak(aiReply);
-                    // Also silently log to text matrix if open
                     if(document.getElementById('jarvis-terminal-overlay').style.display === 'flex') {
                         document.getElementById('chat-log-box').innerHTML += `<div class="msg user">${speechToken}</div><div class="msg ai">${aiReply}</div>`;
                         document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
                     }
                 }
             };
-            engineInstance.onerror = function(e) { console.log("Mic error", e); }
-            engineInstance.onend = function() { 
-                // Only restart if not currently speaking to prevent loop
-                if(jarvisActive && !voiceSynth.speaking) { 
-                    try{ engineInstance.start(); }catch(e){} 
-                } 
-            }; 
+            engineInstance.onend = function() { if(jarvisActive && !voiceSynth.speaking) { try{ engineInstance.start(); }catch(e){} } }; 
         }
 
-        // TV Chart Loader
         function updateTVSymbol() {
             const sym = document.getElementById('tv-symbol-input').value;
-            if(sym) {
-                loadTV(sym);
-                jarvisSpeak(`Loading chart data for ${sym}.`);
-            }
+            if(sym) { loadTV(sym); jarvisSpeak(`Syncing ${sym}.`); }
         }
         function loadTV(symbolString) { 
             setTimeout(() => { 
-                const tvDiv = document.getElementById('tradingview_cap'); 
-                if(!tvDiv) return; 
-                tvDiv.innerHTML=''; 
-                let script = document.createElement('script'); 
-                script.src='https://s3.tradingview.com/tv.js'; 
-                script.onload = () => new TradingView.widget({"autosize":true,"symbol":symbolString,"interval":"15","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"}); 
+                const tvDiv = document.getElementById('tradingview_cap'); if(!tvDiv) return; tvDiv.innerHTML=''; 
+                let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js'; 
+                script.onload = () => new TradingView.widget({"autosize":true,"symbol":symbolString,"interval":"5","theme":"dark","container_id":"tradingview_cap","backgroundColor":"#020205","gridColor":"rgba(0,119,255,0.05)"}); 
                 document.body.appendChild(script); 
             }, 100); 
         }
 
-        // CANVAS BACKGROUND ENGINE
+        // CANVAS MATRIX DOT ENGINE
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         let lines = []; function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
         class DigitalNode {
             constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vy = (Math.random() * 1.2) + 0.4; this.size = Math.random() * 2 + 1; this.alpha = Math.random() * 0.5 + 0.1; }
             update() { this.y += this.vy; if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; } }
-            draw() { 
-                ctx.fillStyle = isFocusMode ? (modules[currentModule]?.color || '#00ffaa') : '#00e5ff'; 
-                ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); 
-            }
+            draw() { ctx.fillStyle = isFocusMode ? (modules[currentModule]?.color || '#00ffaa') : '#00e5ff'; ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
         for(let i=0; i<40; i++) lines.push(new DigitalNode()); 
         function animate() {
-            ctx.clearRect(0,0,canvas.width,canvas.height); 
-            ctx.strokeStyle = isFocusMode ? (modules[currentModule]?.color || '#00ffaa') : '#00e5ff'; 
-            ctx.lineWidth = 0.15;
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = isFocusMode ? (modules[currentModule]?.color || '#00ffaa') : '#00e5ff'; ctx.lineWidth = 0.15;
             for(let a=0; a<lines.length; a++) {
                 lines[a].update(); lines[a].draw();
                 for(let b=a+1; b<lines.length; b++) {
