@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface v12.0</title>
+    <title>K.K. Ultimate HUD | Master Interface v12.1</title>
     <style>
         :root {
             --theme-color: #00ffaa;
@@ -160,16 +160,17 @@
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
             
             <div id="file-upload-container" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <label style="color:#aaa; font-size:0.85rem;">📁 Insert eBook / PDF / Reference Doc here:</label><br>
-                <input type="file" id="file-uploader" class="custom-input" accept=".pdf,.ppt,.pptx" onchange="handleFileUpload(event)" style="border:1px dashed var(--theme-color);">
+                <label style="color:#aaa; font-size:0.85rem;">📁 Insert eBook / PDF / Image (Stored offline in browser):</label><br>
+                <input type="file" id="file-uploader" class="custom-input" accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload(event)" style="border:1px dashed var(--theme-color);">
             </div>
             
-            <div id="file-display-area" style="display:none;">
+            <div id="file-display-area" style="display:none; text-align:center;">
                 <iframe id="doc-iframe" class="pdf-viewer" src=""></iframe>
+                <button class="action-btn" style="margin-top:10px; background:#d63031; border-color:#ff4757;" onclick="clearVaultFile()">🗑️ CLEAR SAVED FILE</button>
             </div>
 
             <textarea id="vault-notes" class="custom-input" rows="8" placeholder="Keep your study notes, shlokas, or text here..." style="margin-top:15px; font-size:1rem;"></textarea>
-            <br><button class="action-btn" style="margin-top:15px;" onclick="saveVaultData()">Save & Close</button>
+            <br><button class="action-btn" style="margin-top:15px; width:100%;" onclick="saveVaultData()">💾 SAVE PROGRESS</button>
         </div>
     </div>
 
@@ -197,22 +198,22 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.0</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.1</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
         <div class="carousel-container">
             <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?q=80&w=600');" onclick="initProtocol('ironman', '#ff2a2a')">
-                <div class="card-icon">🩺</div>
-                <div class="card-content"><h3>BAMS COMMAND</h3><p style="color:#aaa; font-size:0.8rem;">Ayurvedic Studies & Notes Hub</p></div>
+                <div class="card-icon">🦾</div>
+                <div class="card-content"><h3>BAMS COMMAND</h3><p style="color:#aaa; font-size:0.8rem;">Ayurvedic Studies & Files Hub</p></div>
             </div>
             <div class="avenger-card" id="card-cap" style="color: #0077ff; background-image: url('https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=600');" onclick="initProtocol('cap', '#0077ff')">
                 <div class="card-icon">📈</div>
-                <div class="card-content"><h3>TRADE TERMINAL</h3><p style="color:#aaa; font-size:0.8rem;">Pro Virtual Trading via K.K Coins</p></div>
+                <div class="card-content"><h3>TRADE TERMINAL</h3><p style="color:#aaa; font-size:0.8rem;">Live API Virtual Trading</p></div>
             </div>
             <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600');" onclick="initProtocol('thor', '#ffaa00')">
-                <div class="card-icon">⚡</div>
-                <div class="card-content"><h3>CREATIVE FORGE</h3><p style="color:#aaa; font-size:0.8rem;">Scripting & Development</p></div>
+                <div class="card-icon">🔨</div>
+                <div class="card-content"><h3>CREATIVE FORGE</h3><p style="color:#aaa; font-size:0.8rem;">Scripting & Notes Management</p></div>
             </div>
             <div class="avenger-card" id="card-spidey" style="color: #ff0055; background-image: url('https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=600');" onclick="initProtocol('spidey', '#ff0055')">
                 <div class="card-icon">🕸️</div>
@@ -224,9 +225,9 @@
     <div id="dashboard-stage">
         <div class="sidebar">
             <div class="nav-btn" onclick="returnToHome()">⌂</div>
-            <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🩺</div>
+            <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🦾</div>
             <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">📈</div>
-            <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">⚡</div>
+            <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">🔨</div>
             <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
             <div class="nav-btn" style="color: #fff;" onclick="openModal('jarvis-terminal-overlay')">💬</div>
         </div>
@@ -239,15 +240,25 @@
         let isFocusMode = true; let voiceSpeed = 1.0;
 
         // Persistent Wallet & Trading Architecture
-        let totalCoins = parseFloat(localStorage.getItem('kk_coins')) || 10000; // Raised starting capital
+        let totalCoins = parseFloat(localStorage.getItem('kk_coins')) || 10000; 
         let activeTrades = JSON.parse(localStorage.getItem('kk_trades')) || [];
+        
+        // Custom Ironman Subjects
+        let customIronmanSubjects = JSON.parse(localStorage.getItem('kk_ironman_subjects')) || [
+            { name: 'Rachana Sharir (Anatomy)', emoji: '🦴' },
+            { name: 'Kriya Sharir (Physiology)', emoji: '🧪' },
+            { name: 'Samhita', emoji: '📚' },
+            { name: 'Dravya Guna', emoji: '🌿' }
+        ];
+
+        // Thor Notes list
+        let thorNotesList = JSON.parse(localStorage.getItem('kk_thor_notes')) || [];
 
         function refreshHUDTokens() {
             document.getElementById('user-vault-coins').innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
             localStorage.setItem('kk_coins', totalCoins);
             localStorage.setItem('kk_trades', JSON.stringify(activeTrades));
             
-            // Re-render positions table if trading module is active
             if(currentModule === 'cap' && document.getElementById('positions-table-body')) {
                 renderTradePositions();
             }
@@ -261,17 +272,14 @@
                         <button class="action-btn" onclick="startTimerPrompt('focus')">⏱️ SET FOCUS TIMER</button>
                         <button class="action-btn" onclick="openTimetableMaker()">📅 STUDY TIMETABLE</button>
                         <button class="action-btn" style="border-color:#ff0055; background:rgba(255,0,85,0.1);" onclick="openVault('Shloka Repository')">📜 SHLOKA VAULT</button>
+                        <button class="action-btn" style="border-color:#00ffaa;" onclick="createNewSubject()">➕ ADD SUBJECT FOLDER</button>
                     </div>
                     <h3>Core Subject Vaults</h3>
-                    <div class="grid-layout" style="margin-top:15px;">
-                        <div class="tool-card" onclick="openVault('Rachana Sharir (Anatomy)')">🦴 <h3>Anatomy (Rachana Sharir)</h3><p style="font-size:0.8rem; color:#aaa;">Notes & PDF References</p></div>
-                        <div class="tool-card" onclick="openVault('Kriya Sharir (Physiology)')">🧪 <h3>Physiology (Kriya Sharir)</h3><p style="font-size:0.8rem; color:#aaa;">Notes & PDF References</p></div>
-                        <div class="tool-card" onclick="openVault('Samhita')">📚 <h3>Samhita Studies</h3><p style="font-size:0.8rem; color:#aaa;">Sutras & Explanations</p></div>
-                        <div class="tool-card" onclick="openVault('Dravya Guna')">🌿 <h3>Dravya Guna</h3><p style="font-size:0.8rem; color:#aaa;">Herb Database & Notes</p></div>
-                    </div>`
+                    <div class="grid-layout" id="ironman-dynamic-grid" style="margin-top:15px;">
+                        </div>`
             },
             cap: { 
-                color: '#0077ff', title: 'Professional Trading Hub (Virtual Execution)', 
+                color: '#0077ff', title: 'Professional Trading Hub (Live Virtual Execution)', 
                 html: `
                     <div class="tradingview-widget-container" style="margin-bottom: 15px;">
                       <div class="tradingview-widget-container__widget"></div>
@@ -286,7 +294,7 @@
                     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                         <div style="flex: 2; min-width: 500px;">
                             <div style="display:flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol (e.g., NSE:RELIANCE)" style="margin: 0;">
+                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol (e.g., BINANCE:ETHUSDT)" style="margin: 0;">
                                 <button class="action-btn" onclick="updateTVSymbol()">LOAD CHART</button>
                                 <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="openModal('jarvis-terminal-overlay')">🩺 AI ANALYSIS</button>
                             </div>
@@ -299,8 +307,11 @@
                                 <span style="font-size:0.9rem; color:#fff;">🪙 <span id="panel-coins"></span></span>
                             </h3>
                             
-                            <label style="font-size:0.85rem; color:#aaa;">Instrument</label>
-                            <input type="text" id="order-symbol" class="custom-input" placeholder="e.g. BTCUSDT" value="BTCUSDT">
+                            <label style="font-size:0.85rem; color:#aaa;">Instrument (e.g., BTCUSDT)</label>
+                            <div style="display:flex; gap:5px;">
+                                <input type="text" id="order-symbol" class="custom-input" placeholder="e.g. BTCUSDT" value="BTCUSDT">
+                                <button class="action-btn" onclick="fetchLivePriceUI()" style="padding: 10px;">📡</button>
+                            </div>
                             
                             <div style="display: flex; gap: 10px;">
                                 <div style="flex:1;">
@@ -308,8 +319,8 @@
                                     <input type="number" id="order-qty" class="custom-input" placeholder="0.00" step="0.01">
                                 </div>
                                 <div style="flex:1;">
-                                    <label style="font-size:0.85rem; color:#aaa;">Price (KK)</label>
-                                    <input type="number" id="order-price" class="custom-input" placeholder="0.00" step="0.1">
+                                    <label style="font-size:0.85rem; color:#aaa;">Price</label>
+                                    <input type="number" id="order-price" class="custom-input" placeholder="Market/Live" step="0.1">
                                 </div>
                             </div>
                             
@@ -327,7 +338,7 @@
                                         <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
                                             <th style="padding-bottom:5px;">Sym</th>
                                             <th style="padding-bottom:5px;">Type</th>
-                                            <th style="padding-bottom:5px;">P&L Action</th>
+                                            <th style="padding-bottom:5px;">Live Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="positions-table-body">
@@ -337,7 +348,19 @@
                         </div>
                     </div>` 
             },
-            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<textarea style="width:95%; height:120px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--theme-color); border-radius:8px; padding:10px;" placeholder="Scripting interface active..."></textarea>` },
+            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `
+                <div style="display: flex; gap: 20px; height: 60vh;">
+                    <div style="flex: 2; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,170,0,0.2);">
+                        <input type="text" id="thor-note-title" class="custom-input" placeholder="Note Title / Idea Name..." style="font-size: 1.2rem;">
+                        <textarea id="thor-note-content" class="custom-input" style="height: 70%; font-family: monospace; resize: none;" placeholder="Write your text, scripts, or ideas here..."></textarea>
+                        <button class="action-btn" style="width: 100%;" onclick="saveThorNote()">💾 SAVE TO FORGE</button>
+                    </div>
+                    <div style="flex: 1; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,170,0,0.2); overflow-y: auto;">
+                        <h3 style="margin-top:0; color:#ffaa00;">Saved Manuscripts</h3>
+                        <div id="thor-notes-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+                    </div>
+                </div>
+            ` },
             spidey: { color: '#ff0055', title: 'Agency Web Ledger Control', html: `<div class="grid-layout"><div class="tool-card" onclick="window.open('https://docs.google.com')"><h3>Google Docs</h3></div><div class="tool-card" onclick="window.open('https://sheets.google.com')"><h3>Google Sheets</h3></div></div>` }
         };
 
@@ -350,14 +373,46 @@
             startTimeChecker(); 
         }
 
-        /* --- REALISTIC TRADING LOGIC (VIRTUAL K.K. COINS) --- */
-        function executeTrade(type) {
+        /* --- REALISTIC PAPER TRADING --- */
+        async function getLiveBinancePrice(sym) {
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym.toUpperCase()}`);
+                const data = await res.json();
+                return data.price ? parseFloat(data.price) : null;
+            } catch (error) {
+                console.error("API Fetch Error", error);
+                return null;
+            }
+        }
+
+        async function fetchLivePriceUI() {
+            const sym = document.getElementById('order-symbol').value;
+            const price = await getLiveBinancePrice(sym);
+            if (price) {
+                document.getElementById('order-price').value = price;
+                showSilentNotification(`Live price fetched for ${sym}: $${price}`);
+            } else {
+                showSilentNotification(`Failed to fetch live price for ${sym}. Check symbol.`);
+            }
+        }
+
+        async function executeTrade(type) {
             const sym = document.getElementById('order-symbol').value.toUpperCase();
             const qty = parseFloat(document.getElementById('order-qty').value);
-            const price = parseFloat(document.getElementById('order-price').value);
+            let price = parseFloat(document.getElementById('order-price').value);
 
-            if(!sym || isNaN(qty) || isNaN(price) || qty <= 0 || price <= 0) {
-                showSilentNotification("Invalid Order! Please check Symbol, Qty, and Price.");
+            // Auto-fetch price if left blank
+            if(isNaN(price) || price <= 0) {
+                showSilentNotification(`Fetching live market price for ${sym}...`);
+                price = await getLiveBinancePrice(sym);
+                if (!price) {
+                    showSilentNotification("Invalid Order! Cannot fetch price automatically. Enter manually.");
+                    return;
+                }
+            }
+
+            if(!sym || isNaN(qty) || qty <= 0) {
+                showSilentNotification("Invalid Order! Please check Symbol and Qty.");
                 return;
             }
 
@@ -372,11 +427,10 @@
                 totalCoins -= tradeValue;
             }
 
-            // Create Trade Record
             const trade = { id: Date.now(), sym, type, qty, entryPrice: price };
             activeTrades.push(trade);
             
-            showSilentNotification(`${type} Order Executed: ${qty} ${sym} at ${price}`);
+            showSilentNotification(`${type} Order Executed: ${qty} ${sym} at $${price}`);
             jarvisSpeak(`${type} order placed successfully for ${sym}.`);
             
             document.getElementById('order-qty').value = '';
@@ -384,15 +438,22 @@
             refreshHUDTokens();
         }
 
-        function closeTrade(id) {
+        async function closeTrade(id) {
             const tradeIndex = activeTrades.findIndex(t => t.id === id);
             if(tradeIndex === -1) return;
             const trade = activeTrades[tradeIndex];
             
-            // In a real app, you'd fetch the LIVE price here. For the HUD, we ask the user to input their exit price.
-            let exitPrice = prompt(`Enter EXIT PRICE for ${trade.sym} (${trade.type}):`, trade.entryPrice);
-            if(exitPrice === null || isNaN(exitPrice)) return;
-            exitPrice = parseFloat(exitPrice);
+            let exitPrice;
+            
+            // Try fetching live price first for realism
+            showSilentNotification(`Executing Market Close for ${trade.sym}...`);
+            exitPrice = await getLiveBinancePrice(trade.sym);
+            
+            if (!exitPrice) {
+                 let manualPrice = prompt(`API failed. Enter EXIT PRICE manually for ${trade.sym} (${trade.type}):`, trade.entryPrice);
+                 if(manualPrice === null || isNaN(manualPrice)) return;
+                 exitPrice = parseFloat(manualPrice);
+            }
 
             let profitLoss = 0;
             let returnedCapital = 0;
@@ -401,17 +462,16 @@
                 returnedCapital = trade.qty * exitPrice;
                 profitLoss = returnedCapital - (trade.qty * trade.entryPrice);
             } else if (trade.type === 'SELL') {
-                // Short selling logic simplified
                 const entryValue = trade.qty * trade.entryPrice;
                 const exitValue = trade.qty * exitPrice;
                 profitLoss = entryValue - exitValue;
-                returnedCapital = profitLoss; // Adding back the profit (or subtracting loss)
+                returnedCapital = profitLoss; // Adding back profit
             }
 
             totalCoins += returnedCapital;
             activeTrades.splice(tradeIndex, 1);
             
-            showSilentNotification(`Position Closed. P&L: ${profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)} Coins`);
+            showSilentNotification(`Position Closed @ $${exitPrice}. P&L: ${profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)} Coins`);
             jarvisSpeak(`Trade closed. ${profitLoss >= 0 ? 'Profitable exit.' : 'Loss booked. Keep discipline.'}`);
             refreshHUDTokens();
         }
@@ -435,22 +495,164 @@
                     <tr>
                         <td style="padding: 8px 0; font-weight:bold;">${t.sym}<br><span style="font-size:0.7rem; color:#aaa;">Qty: ${t.qty}</span></td>
                         <td style="padding: 8px 0; color: ${color}; font-weight:bold;">${t.type}<br><span style="font-size:0.7rem; color:#aaa;">@ ${t.entryPrice}</span></td>
-                        <td style="padding: 8px 0;"><button class="action-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="closeTrade(${t.id})">CLOSE</button></td>
+                        <td style="padding: 8px 0;"><button class="action-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="closeTrade(${t.id})">MKT CLOSE</button></td>
                     </tr>
                 `;
             });
         }
 
 
+        /* --- THOR NOTES MANAGER --- */
+        function saveThorNote() {
+            const title = document.getElementById('thor-note-title').value;
+            const content = document.getElementById('thor-note-content').value;
+            if(!title) { showSilentNotification("Note needs a title!"); return; }
+            
+            const existingIndex = thorNotesList.findIndex(n => n.title === title);
+            if(existingIndex > -1) {
+                thorNotesList[existingIndex].content = content; // Update
+            } else {
+                thorNotesList.push({ title, content }); // Create new
+            }
+            
+            localStorage.setItem('kk_thor_notes', JSON.stringify(thorNotesList));
+            showSilentNotification(`Note "${title}" saved to Forge!`);
+            jarvisSpeak("Manuscript secured.");
+            renderThorNotes();
+        }
+
+        function loadThorNote(title) {
+            const note = thorNotesList.find(n => n.title === title);
+            if(note) {
+                document.getElementById('thor-note-title').value = note.title;
+                document.getElementById('thor-note-content').value = note.content;
+            }
+        }
+
+        function deleteThorNote(title) {
+            thorNotesList = thorNotesList.filter(n => n.title !== title);
+            localStorage.setItem('kk_thor_notes', JSON.stringify(thorNotesList));
+            document.getElementById('thor-note-title').value = '';
+            document.getElementById('thor-note-content').value = '';
+            renderThorNotes();
+        }
+
+        function renderThorNotes() {
+            const listDiv = document.getElementById('thor-notes-list');
+            if(!listDiv) return;
+            listDiv.innerHTML = '';
+            thorNotesList.forEach(n => {
+                listDiv.innerHTML += `
+                    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border-left: 3px solid var(--theme-color); display:flex; justify-content:space-between; align-items:center;">
+                        <span style="cursor:pointer; flex:1;" onclick="loadThorNote('${n.title}')">📄 ${n.title}</span>
+                        <span style="color:red; cursor:pointer; font-size:1.2rem;" onclick="deleteThorNote('${n.title}')">×</span>
+                    </div>
+                `;
+            });
+        }
+
+        /* --- DYNAMIC IRONMAN SUBJECTS --- */
+        function createNewSubject() {
+            let name = prompt("Enter Subject Name:");
+            if(!name) return;
+            let emoji = prompt("Enter an Emoji for this subject (e.g. 🧠):", "📁");
+            
+            customIronmanSubjects.push({ name, emoji: emoji || '📁' });
+            localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
+            renderIronmanSubjects();
+            showSilentNotification("New subject added.");
+        }
+
+        function renderIronmanSubjects() {
+            const grid = document.getElementById('ironman-dynamic-grid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            customIronmanSubjects.forEach(sub => {
+                grid.innerHTML += `
+                    <div class="tool-card" onclick="openVault('${sub.name}')">
+                        <div style="font-size:2rem; margin-bottom:10px;">${sub.emoji}</div>
+                        <h3>${sub.name}</h3>
+                        <p style="font-size:0.8rem; color:#aaa;">Notes & Files</p>
+                    </div>
+                `;
+            });
+        }
+
+
+        /* --- LOCAL STORAGE FILE & VAULT HANDLING --- */
+        let currentVaultTitle = '';
+        
+        function openVault(title) {
+            currentVaultTitle = title;
+            document.getElementById('vault-title').innerText = title + " VAULT";
+            document.getElementById('file-uploader').value = '';
+            
+            // Load text notes
+            document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
+            document.getElementById('vault-notes').style.display = 'block';
+
+            // Check if Base64 file is stored
+            const savedBase64File = localStorage.getItem('file_'+title);
+            if(savedBase64File) {
+                document.getElementById('file-display-area').style.display = 'block';
+                document.getElementById('doc-iframe').src = savedBase64File;
+                document.getElementById('file-upload-container').style.display = 'none';
+            } else {
+                document.getElementById('file-display-area').style.display = 'none';
+                document.getElementById('doc-iframe').src = '';
+                document.getElementById('file-upload-container').style.display = 'block';
+            }
+            
+            openModal('vault-modal');
+            jarvisSpeak(`Opening ${title} interface.`);
+        }
+
+        function saveVaultData() {
+            localStorage.setItem('note_' + currentVaultTitle, document.getElementById('vault-notes').value);
+            closeModal('vault-modal');
+            showSilentNotification("Progress Saved!");
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if(file) {
+                if (file.size > 4000000) { // Keep under ~4MB to prevent quota error
+                     showSilentNotification("Warning: File is large. Browsers limit offline storage to ~5MB.");
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result;
+                    try {
+                        localStorage.setItem('file_' + currentVaultTitle, base64Data);
+                        document.getElementById('file-display-area').style.display = 'block';
+                        document.getElementById('doc-iframe').src = base64Data;
+                        document.getElementById('file-upload-container').style.display = 'none';
+                        jarvisSpeak("Document encrypted and saved to offline ledger.");
+                    } catch(err) {
+                        showSilentNotification("Error saving file: Storage Quota Exceeded. File is too large.");
+                    }
+                };
+                reader.readAsDataURL(file); // Converts file to base64 string for local storage saving
+            }
+        }
+
+        function clearVaultFile() {
+             localStorage.removeItem('file_' + currentVaultTitle);
+             document.getElementById('file-display-area').style.display = 'none';
+             document.getElementById('doc-iframe').src = '';
+             document.getElementById('file-upload-container').style.display = 'block';
+             document.getElementById('file-uploader').value = '';
+             showSilentNotification("Saved file removed from storage.");
+        }
+
+
         /* --- GEMINI AI CHAT LOGIC --- */
         function generatePAResponse(inputText) {
             let txt = inputText.toLowerCase();
-            
             if (txt.includes("loss") || txt.includes("breakout") || txt.includes("failed")) {
                 return "CRITICAL POST-MORTEM DIAGNOSIS: Partner, look closely at the volumes during that breakout! The chart shows a classic 'Bull Trap'. Volume was 40% below average. Adjust your risk logic before entering again.";
             }
             if (txt.includes("anatomy") || txt.includes("shloka")) return "Opening study archives. Remember to break down complex terms into their root Sanskrit meanings for better retention.";
-            
             return "I am analyzing your query. If this is a trading setup, verify your stop-loss. If it's a study topic, review your summary notes.";
         }
 
@@ -470,38 +672,6 @@
         }
 
         /* --- THE REST OF CODEBASE REMAINING SYNCED --- */
-        let currentVaultTitle = '';
-        
-        function openVault(title) {
-            currentVaultTitle = title;
-            document.getElementById('vault-title').innerText = title + " VAULT";
-            document.getElementById('file-uploader').value = '';
-            document.getElementById('file-upload-container').style.display = 'block';
-            document.getElementById('file-display-area').style.display = 'none';
-            document.getElementById('doc-iframe').src = '';
-            document.getElementById('vault-notes').style.display = 'block';
-            document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
-            
-            openModal('vault-modal');
-            jarvisSpeak(`Opening ${title} interface.`);
-        }
-
-        function saveVaultData() {
-            localStorage.setItem('note_' + currentVaultTitle, document.getElementById('vault-notes').value);
-            closeModal('vault-modal');
-            showSilentNotification("Notes Saved!");
-        }
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const fileURL = URL.createObjectURL(file);
-                document.getElementById('file-display-area').style.display = 'block';
-                document.getElementById('doc-iframe').src = fileURL;
-                jarvisSpeak("Document loaded to interface.");
-            }
-        }
-
         function saveSettings() {
             const bgUrl = document.getElementById('bg-selector').value;
             const opacity = document.getElementById('opacity-slider').value;
@@ -521,6 +691,7 @@
             document.getElementById('dashboard-stage').style.display = 'flex';
             setTimeout(() => { document.getElementById('dashboard-stage').style.opacity = '1'; renderModule(id); }, 50);
         }
+        
         function returnToHome() {
             document.getElementById('dashboard-stage').style.opacity = '0';
             setTimeout(() => { document.getElementById('dashboard-stage').style.display = 'none'; document.getElementById('landing-stage').style.display = 'flex'; document.documentElement.style.setProperty('--theme-color', '#00ffaa'); document.body.className = '';}, 400);
@@ -532,11 +703,15 @@
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
             contentArea.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${mod.title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM CONFIG</button></div><div>${mod.html}</div>`;
             
+            // Post Render initializations
             if(id === 'cap') {
                 loadTV("BINANCE:BTCUSDT");
-                renderTradePositions(); // Refresh tables when switching to trade view
+                renderTradePositions(); 
             }
+            if(id === 'ironman') renderIronmanSubjects();
+            if(id === 'thor') renderThorNotes();
         }
+        
         function switchModule(id) { renderModule(id); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
@@ -675,7 +850,7 @@
             const sym = document.getElementById('tv-symbol-input').value;
             if(sym) { 
                 loadTV(sym); 
-                document.getElementById('order-symbol').value = sym; // Auto update execution panel
+                document.getElementById('order-symbol').value = sym.split(':')[1] || sym; // Extracts ticker symbol
                 jarvisSpeak(`Syncing ${sym}.`); 
             }
         }
