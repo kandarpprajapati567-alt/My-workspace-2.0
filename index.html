@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface v12.3</title>
+    <title>K.K. Ultimate HUD | Master Interface v12.4</title>
     
     <script type="module" src="./js/model-viewer.min.js"></script>
 
@@ -77,7 +77,6 @@
         .action-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--theme-color); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .action-btn:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); transform: scale(1.05); }
         
-        /* Trading Specific UI */
         .trade-btn { padding: 10px 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 48%; transition: 0.3s; color: white;}
         .trade-btn.buy { background: #00b894; }
         .trade-btn.buy:hover { background: #00e6b8; box-shadow: 0 0 15px #00b894; }
@@ -85,10 +84,21 @@
         .trade-btn.sell:hover { background: #ff4757; box-shadow: 0 0 15px #d63031; }
 
         .overlay-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 15000; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; backdrop-filter: blur(25px); opacity: 0; transition: 0.4s; }
-        .modal-box { background: var(--glass-bg); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 700px; max-width: 92%; box-shadow: 0 25px 50px rgba(0,0,0,0.9); position: relative; max-height: 85vh; overflow-y: auto; transition: var(--transition-hq);}
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); z-index: 10;}
+        .modal-box { background: var(--glass-bg); border: 1px solid var(--theme-color); border-radius: 20px; padding: 35px; width: 850px; max-width: 92%; box-shadow: 0 25px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,255,170,0.05); position: relative; max-height: 85vh; overflow-y: auto; transition: var(--transition-hq);}
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; cursor: pointer; color: var(--theme-color); z-index: 10; transition: 0.3s;}
+        .close-btn:hover { transform: scale(1.2); color: #fff; }
         
-        .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--theme-color); outline: none; border-radius: 8px; margin-top: 5px; margin-bottom: 10px; transition: var(--transition-hq); box-sizing: border-box;}
+        .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--glass-border); outline: none; border-radius: 8px; margin-top: 5px; margin-bottom: 10px; transition: var(--transition-hq); box-sizing: border-box;}
+        .custom-input:focus { border-color: var(--theme-color); box-shadow: 0 0 15px rgba(0,255,170,0.2); }
+
+        /* DESKTOP FILE SYSTEM UI */
+        .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; margin-top: 15px; }
+        .file-item { text-align: center; padding: 15px 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: 0.3s; position: relative;}
+        .file-item:hover { background: rgba(0,255,170,0.08); border-color: var(--theme-color); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .file-item-icon { font-size: 2.8rem; margin-bottom: 8px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));}
+        .file-item-name { font-size: 0.8rem; word-break: break-all; color: #ddd; max-height: 35px; overflow: hidden; }
+        .file-item-delete { position: absolute; top: 5px; right: 5px; font-size: 0.9rem; color: #ff4757; display: none; background: rgba(0,0,0,0.8); border-radius: 50%; width: 20px; height: 20px; line-height: 20px;}
+        .file-item:hover .file-item-delete { display: block; }
 
         #global-timer-widget { position: fixed; top: 20px; right: 20px; background: var(--glass-bg); border: 1px solid var(--theme-color); padding: 15px 25px; border-radius: 15px; z-index: 10000; color: var(--theme-color); font-family: monospace; font-size: 2rem; display: none; backdrop-filter: blur(10px); box-shadow: 0 0 15px var(--theme-color); transition: var(--transition-hq); text-align: center;}
         .timer-label { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; color: #aaa;}
@@ -100,7 +110,7 @@
         .hud-toast { background: rgba(0, 0, 0, 0.85); border-left: 4px solid var(--theme-color); color: white; padding: 15px 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: slideInRight 0.4s ease-out; font-size: 0.9rem;}
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0;} to { transform: translateX(0); opacity: 1;} }
 
-        .pdf-viewer { width: 100%; height: 50vh; border: 1px solid var(--theme-color); border-radius: 10px; margin-top: 15px; background: #fff;}
+        .pdf-viewer { width: 100%; height: 55vh; border: 1px solid var(--theme-color); border-radius: 10px; margin-top: 15px; background: #fff;}
         .chat-log { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); display:flex; flex-direction: column; gap: 10px; margin-bottom:10px;}
         .msg { padding: 10px 15px; border-radius: 10px; max-width: 80%; font-size: 0.95rem; }
         .msg.user { background: rgba(255,255,255,0.1); align-self: flex-end; border-bottom-right-radius: 0; }
@@ -118,87 +128,10 @@
         #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
 
         /* --- 3D ANATOMY HOLOGRAPHIC ENGINE --- */
-        .holo-viewport {
-            flex: 1;
-            position: relative;
-            background: radial-gradient(circle at center, rgba(0, 255, 170, 0.15) 0%, rgba(2, 2, 5, 0.9) 75%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 0 18px 18px 0;
-        }
-
-        .Hotspot {
-            background: var(--theme-color);
-            border-radius: 50%;
-            border: none;
-            box-sizing: border-box;
-            cursor: pointer;
-            height: 16px;
-            width: 16px;
-            position: relative;
-            transition: var(--transition-hq);
-            box-shadow: 0 0 15px var(--theme-color), 0 0 30px var(--theme-color);
-            animation: pulseNeon 2s infinite;
-        }
-
-        .Hotspot:not([data-visible]) {
-            background: transparent;
-            border: 2px solid var(--theme-color);
-            box-shadow: none;
-            height: 12px;
-            width: 12px;
-        }
-
-        @keyframes pulseNeon {
-            0% { transform: scale(1); box-shadow: 0 0 10px var(--theme-color); }
-            50% { transform: scale(1.3); box-shadow: 0 0 25px var(--theme-color); }
-            100% { transform: scale(1); box-shadow: 0 0 10px var(--theme-color); }
-        }
-
-        .HotspotAnnotation {
-            background: rgba(10, 10, 15, 0.85);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--theme-color);
-            border-radius: 8px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            color: #fff;
-            display: block;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            font-size: 0.85rem;
-            left: calc(100% + 20px);
-            max-width: 280px;
-            padding: 15px;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: max-content;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, transform 0.3s;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        .Hotspot:hover .HotspotAnnotation {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(-50%) translateX(10px);
-        }
-
-        .HotspotAnnotation strong {
-            display: block;
-            font-size: 1.1rem;
-            color: var(--theme-color);
-            margin-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .origin-text { color: #ff2a2a; margin: 4px 0; font-weight: bold; }
-        .insertion-text { color: #0077ff; margin: 4px 0; font-weight: bold; }
+        .holo-viewport { flex: 1; position: relative; background: radial-gradient(circle at center, rgba(0, 255, 170, 0.15) 0%, rgba(2, 2, 5, 0.9) 75%); display: flex; justify-content: center; align-items: center; border-radius: 0 18px 18px 0; }
+        .Hotspot { background: var(--theme-color); border-radius: 50%; border: none; box-sizing: border-box; cursor: pointer; height: 16px; width: 16px; position: relative; transition: var(--transition-hq); box-shadow: 0 0 15px var(--theme-color), 0 0 30px var(--theme-color); animation: pulseNeon 2s infinite; }
+        .Hotspot:not([data-visible]) { background: transparent; border: 2px solid var(--theme-color); box-shadow: none; height: 12px; width: 12px; }
+        @keyframes pulseNeon { 0% { transform: scale(1); box-shadow: 0 0 10px var(--theme-color); } 50% { transform: scale(1.3); box-shadow: 0 0 25px var(--theme-color); } 100% { transform: scale(1); box-shadow: 0 0 10px var(--theme-color); } }
     </style>
 </head>
 <body>
@@ -224,7 +157,7 @@
     <div id="toast-container"></div> 
     
     <div class="overlay-modal" id="jarvis-terminal-overlay">
-        <div class="modal-box">
+        <div class="modal-box" style="width: 700px;">
             <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
             <h2 style="color: var(--theme-color);">⚡ GEMINI ANALYTICS ENGINE</h2>
             <p style="font-size:0.85rem; color:#aaa; margin-top:-10px;">Chat with your AI partner for coding, trading analysis, or study doubts.</p>
@@ -240,7 +173,7 @@
     </div>
 
     <div class="overlay-modal" id="vault-modal">
-        <div class="modal-box" id="universal-modal-box" style="width: 800px;">
+        <div class="modal-box" id="universal-modal-box">
             <span class="close-btn" onclick="closeModal('vault-modal')">✕</span>
             <h2 id="vault-title" style="color: var(--theme-color);">VAULT</h2>
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
@@ -248,26 +181,30 @@
             <div id="file-upload-container" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <div style="display:flex; gap:20px;">
                     <div style="flex:1;">
-                        <label style="color:#aaa; font-size:0.85rem;">📁 Insert Offline File (.pdf, .png):</label><br>
-                        <input type="file" id="file-uploader" class="custom-input" accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload(event)" style="border:1px dashed var(--theme-color);">
+                        <label style="color:#aaa; font-size:0.85rem;">📁 Insert Offline Files (.pdf, .png, .jpg):</label><br>
+                        <input type="file" id="file-uploader" class="custom-input" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleMultipleFileUpload(event)" style="border:1px dashed var(--theme-color);">
                     </div>
                     <div style="flex:1;">
                         <label style="color:#aaa; font-size:0.85rem;">🔗 Or Paste Google Drive Link:</label><br>
                         <div style="display:flex; gap:5px;">
                             <input type="text" id="gdrive-link" class="custom-input" placeholder="https://drive.google.com/..." style="margin-top:0;">
-                            <button class="action-btn" style="padding:10px;" onclick="loadGDrive()">EMBED</button>
+                            <button class="action-btn" style="padding:10px;" onclick="loadGDriveAsFile()">ADD LINK</button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div id="file-display-area" style="display:none; text-align:center;">
+            <div id="vault-files-grid" class="file-grid">
+                </div>
+
+            <div id="file-display-area" style="display:none; text-align:center; position:relative;">
+                <button class="action-btn" style="position:absolute; top:-40px; left:0; background: rgba(0,0,0,0.8); font-size:0.8rem;" onclick="closeFileViewer()">⬅ BACK TO FOLDER</button>
                 <iframe id="doc-iframe" class="pdf-viewer" src=""></iframe>
-                <button class="action-btn" style="margin-top:10px; background:#d63031; border-color:#ff4757;" onclick="clearVaultFile()">🗑️ CLEAR SAVED FILE / LINK</button>
             </div>
 
-            <textarea id="vault-notes" class="custom-input" rows="8" placeholder="Keep your study notes, shlokas, or text here..." style="margin-top:15px; font-size:1rem;"></textarea>
-            <br><button class="action-btn" style="margin-top:15px; width:100%;" onclick="saveVaultData()">💾 SAVE PROGRESS</button>
+            <h4 style="color:var(--theme-color); margin-bottom: 5px;">Subject Notes & Shlokas</h4>
+            <textarea id="vault-notes" class="custom-input" rows="6" placeholder="Keep your study notes, shlokas, or text here..." style="font-size:1rem;"></textarea>
+            <button class="action-btn" style="margin-top:10px; width:100%;" onclick="saveVaultData()">💾 SAVE NOTES PROGRESS</button>
         </div>
     </div>
 
@@ -281,6 +218,9 @@
                     <option value="https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600">Cyber City Lights</option>
                     <option value="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600">Earth Orbital View</option>
                     <option value="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1600">Digital Matrix Code</option>
+                    <option value="https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=1600">Quantum Neon 3D</option>
+                    <option value="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1600">Deep Space Nebula</option>
+                    <option value="https://images.unsplash.com/photo-1633630663189-9a674488b394?q=80&w=1600">Fractal Dimension 3D</option>
                 </select>
 
                 <label style="margin-top: 10px;">HUD Glass Opacity</label>
@@ -306,11 +246,6 @@
                     <option value="skeleton">Full Skeleton (कंकाल)</option>
                     <option value="skull">Human Skull (खोपड़ी)</option>
                 </select>
-                
-                <div style="margin-top: auto; padding: 15px; background: rgba(255,42,42,0.1); border: 1px dashed #ff2a2a; border-radius: 10px;">
-                    <h4 style="color: #ff2a2a; margin: 0 0 5px 0;">🎯 HUD Dev Helper</h4>
-                    <p style="font-size: 0.8rem; color: #ccc; margin: 0;">Click anywhere on the 3D model to capture exact X, Y, Z coordinates in the browser Console.</p>
-                </div>
             </div>
 
             <div class="holo-viewport">
@@ -329,12 +264,12 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.3</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.4</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
         <div class="carousel-container">
-            <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?q=80&w=600');" onclick="initProtocol('ironman', '#ff2a2a')">
+            <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1535378620166-273708d44e4c?q=80&w=800');" onclick="initProtocol('ironman', '#ff2a2a')">
                 <div class="card-icon">🦾</div>
                 <div class="card-content"><h3>BAMS COMMAND</h3><p style="color:#aaa; font-size:0.8rem;">Ayurvedic Studies & Files Hub</p></div>
             </div>
@@ -342,7 +277,7 @@
                 <div class="card-icon">📈</div>
                 <div class="card-content"><h3>TRADE TERMINAL</h3><p style="color:#aaa; font-size:0.8rem;">Live API Virtual Trading</p></div>
             </div>
-            <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600');" onclick="initProtocol('thor', '#ffaa00')">
+            <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=800');" onclick="initProtocol('thor', '#ffaa00')">
                 <div class="card-icon">🔨</div>
                 <div class="card-content"><h3>CREATIVE FORGE</h3><p style="color:#aaa; font-size:0.8rem;">Scripting & Notes Management</p></div>
             </div>
@@ -370,15 +305,13 @@
         let globalTimerInterval; let secondsLeft = 0; let customTimetable = []; let notifiedTasks = new Set();
         let isFocusMode = true; let voiceSpeed = 1.0;
 
-        // Persistent Wallet & Trading Architecture
         let totalCoins = parseFloat(localStorage.getItem('kk_coins')) || 10000; 
         let activeTrades = JSON.parse(localStorage.getItem('kk_trades')) || [];
-        
-        // Custom Ironman Subjects (Initialized as Empty - NO DEFAULT SUBJECTS)
         let customIronmanSubjects = JSON.parse(localStorage.getItem('kk_ironman_subjects')) || [];
-
-        // Thor Notes list
         let thorNotesList = JSON.parse(localStorage.getItem('kk_thor_notes')) || [];
+        
+        // NEW: Folder files memory
+        let currentVaultFiles = [];
 
         function refreshHUDTokens() {
             document.getElementById('user-vault-coins').innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
@@ -397,7 +330,6 @@
                     <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                         <button class="action-btn" onclick="startTimerPrompt('focus')">⏱️ SET FOCUS TIMER</button>
                         <button class="action-btn" onclick="openTimetableMaker()">📅 STUDY TIMETABLE</button>
-                        <button class="action-btn" style="border-color:#ff0055; background:rgba(255,0,85,0.1);" onclick="openVault('Shloka Repository')">📜 SHLOKA VAULT</button>
                         <button class="action-btn" style="border-color:#00ffaa;" onclick="createNewSubject()">➕ ADD SUBJECT FOLDER</button>
                         <button class="action-btn" style="border-color:#00ffaa; background: rgba(0, 255, 170, 0.1);" onclick="openAnatomyHologram()">🧬 3D ANATOMY</button>
                     </div>
@@ -411,7 +343,7 @@
                       <div class="tradingview-widget-container__widget"></div>
                       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
                       {
-                      "symbols": [{"proName": "BINANCE:BTCUSDT", "title": "Bitcoin"}, {"proName": "BINANCE:ETHUSDT", "title": "Ethereum"}, {"proName": "NSE:NIFTY", "title": "Nifty 50"}, {"proName": "BSE:SENSEX", "title": "Sensex"}],
+                      "symbols": [{"proName": "BINANCE:BTCUSDT", "title": "Bitcoin"}, {"proName": "BINANCE:ETHUSDT", "title": "Ethereum"}, {"proName": "NSE:NIFTY", "title": "Nifty 50"}],
                       "showSymbolLogo": true, "isTransparent": true, "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
                       }
                       <\/script>
@@ -420,7 +352,7 @@
                     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                         <div style="flex: 2; min-width: 500px;">
                             <div style="display:flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol (e.g., BINANCE:ETHUSDT)" style="margin: 0;">
+                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol" style="margin: 0;">
                                 <button class="action-btn" onclick="updateTVSymbol()">LOAD CHART</button>
                                 <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="openModal('jarvis-terminal-overlay')">🩺 AI ANALYSIS</button>
                             </div>
@@ -442,28 +374,20 @@
                             <div style="display: flex; gap: 10px;">
                                 <div style="flex:1;">
                                     <label style="font-size:0.85rem; color:#aaa;">Qty</label>
-                                    <input type="number" id="order-qty" class="custom-input" placeholder="0.00" step="0.01">
+                                    <input type="number" id="order-qty" class="custom-input" placeholder="0.00" step="0.01" oninput="liveRiskCalculator()">
                                 </div>
                                 <div style="flex:1;">
                                     <label style="font-size:0.85rem; color:#aaa;">Price</label>
-                                    <input type="number" id="order-price" class="custom-input" placeholder="Market/Live" step="0.1">
+                                    <input type="number" id="order-price" class="custom-input" placeholder="Market/Live" step="0.1" oninput="liveRiskCalculator()">
                                 </div>
                             </div>
                             
-                            <div style="display:flex; justify-content:space-between; margin-top: 15px;">
+                            <div id="auto-risk-display" style="text-align:center; font-size:0.85rem; font-weight:bold; margin-bottom: 10px; min-height: 15px;"></div>
+
+                            <div style="display:flex; justify-content:space-between; margin-top: 5px;">
                                 <button class="trade-btn buy" onclick="executeTrade('BUY')">BUY / LONG</button>
                                 <button class="trade-btn sell" onclick="executeTrade('SELL')">SELL / SHORT</button>
                             </div>
-
-                            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
-                            
-                            <h4 style="margin: 0 0 10px 0; color:#ffaa00;">🧮 RISK CALCULATOR</h4>
-                            <div style="display:flex; gap:5px; margin-bottom:5px;">
-                                <input type="number" id="calc-risk" class="custom-input" placeholder="Risk % (e.g. 1)" value="1">
-                                <input type="number" id="calc-sl" class="custom-input" placeholder="Stop Loss Price">
-                            </div>
-                            <button class="action-btn" style="width:100%; border-color:#ffaa00; font-size:0.8rem;" onclick="calculateRisk()">CALCULATE POSITION QTY</button>
-                            <div id="calc-result" style="color:#00ffaa; font-size:0.85rem; margin-top:10px; text-align:center;"></div>
 
                             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:20px 0;">
                             
@@ -477,8 +401,7 @@
                                             <th style="padding-bottom:5px;">Live Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="positions-table-body">
-                                        </tbody>
+                                    <tbody id="positions-table-body"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -502,13 +425,10 @@
                     <div class="tool-card" onclick="window.open('https://docs.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📄</div><h3>Google Docs</h3></div>
                     <div class="tool-card" onclick="window.open('https://sheets.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📊</div><h3>Google Sheets</h3></div>
                     <div class="tool-card" onclick="window.open('https://notion.so')"><div style="font-size:2rem; margin-bottom:10px;">📓</div><h3>Notion Workspace</h3></div>
-                    <div class="tool-card" onclick="window.open('https://trello.com')"><div style="font-size:2rem; margin-bottom:10px;">📋</div><h3>Trello Boards</h3></div>
                     <div class="tool-card" onclick="window.open('https://github.com')"><div style="font-size:2rem; margin-bottom:10px;">🐙</div><h3>GitHub Repositories</h3></div>
-                    <div class="tool-card" onclick="window.open('https://canva.com')"><div style="font-size:2rem; margin-bottom:10px;">🎨</div><h3>Canva Studio</h3></div>
                 </div>
                 <div style="margin-top: 25px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,0,85,0.2);">
                     <h3 style="color:#ff0055; margin-top:0;">Ledger & Quick Notes</h3>
-                    <p style="font-size:0.8rem; color:#aaa; margin-top:-10px;">Auto-saves your expenses, immediate ideas, or task dumps.</p>
                     <textarea id="spidey-ledger" class="custom-input" style="height: 120px; resize:none;" placeholder="Drop your quick expense details or agency notes here..." oninput="localStorage.setItem('kk_spidey_ledger', this.value)"></textarea>
                 </div>
             ` }
@@ -523,26 +443,24 @@
             startTimeChecker(); 
         }
 
-        /* --- TRADING CALCULATOR --- */
-        function calculateRisk() {
-            let riskPct = parseFloat(document.getElementById('calc-risk').value) / 100;
-            let slPrice = parseFloat(document.getElementById('calc-sl').value);
-            let entryPrice = parseFloat(document.getElementById('order-price').value);
-            
-            if(isNaN(entryPrice) || isNaN(slPrice)) { 
-                showSilentNotification("Need Entry Price and Stop Loss to calculate!"); 
-                return; 
-            }
-            if(entryPrice === slPrice) {
-                showSilentNotification("Entry and SL cannot be the same!"); return;
-            }
+        /* --- LIVE RISK CALCULATOR --- */
+        function liveRiskCalculator() {
+            const qty = parseFloat(document.getElementById('order-qty').value);
+            const price = parseFloat(document.getElementById('order-price').value);
+            const displayBox = document.getElementById('auto-risk-display');
 
-            let riskAmount = totalCoins * riskPct;
-            let priceDiff = Math.abs(entryPrice - slPrice);
-            let qty = (riskAmount / priceDiff).toFixed(4);
-            
-            document.getElementById('calc-result').innerText = `Recommended QTY: ${qty} | Risking: ${riskAmount.toFixed(2)} Coins`;
-            document.getElementById('order-qty').value = qty;
+            if (!isNaN(qty) && !isNaN(price) && qty > 0 && price > 0 && totalCoins > 0) {
+                const totalValue = qty * price;
+                const riskPct = (totalValue / totalCoins) * 100;
+                
+                displayBox.innerText = `Capital Utilization: ${riskPct.toFixed(2)}% (${totalValue.toFixed(2)} Coins)`;
+                
+                if(riskPct > 100) { displayBox.style.color = '#ff4757'; displayBox.innerText += " ⚠️ INSUFFICIENT FUNDS"; }
+                else if (riskPct > 30) { displayBox.style.color = '#ffaa00'; }
+                else { displayBox.style.color = '#00ffaa'; }
+            } else {
+                displayBox.innerText = '';
+            }
         }
 
         /* --- REALISTIC PAPER TRADING --- */
@@ -551,10 +469,7 @@
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym.toUpperCase()}`);
                 const data = await res.json();
                 return data.price ? parseFloat(data.price) : null;
-            } catch (error) {
-                console.error("API Fetch Error", error);
-                return null;
-            }
+            } catch (error) { return null; }
         }
 
         async function fetchLivePriceUI() {
@@ -562,9 +477,8 @@
             const price = await getLiveBinancePrice(sym);
             if (price) {
                 document.getElementById('order-price').value = price;
+                liveRiskCalculator();
                 showSilentNotification(`Live price fetched for ${sym}: $${price}`);
-            } else {
-                showSilentNotification(`Failed to fetch live price for ${sym}. Check symbol.`);
             }
         }
 
@@ -574,39 +488,23 @@
             let price = parseFloat(document.getElementById('order-price').value);
 
             if(isNaN(price) || price <= 0) {
-                showSilentNotification(`Fetching live market price for ${sym}...`);
                 price = await getLiveBinancePrice(sym);
-                if (!price) {
-                    showSilentNotification("Invalid Order! Cannot fetch price automatically. Enter manually.");
-                    return;
-                }
+                if (!price) { showSilentNotification("Cannot fetch price. Enter manually."); return; }
             }
-
-            if(!sym || isNaN(qty) || qty <= 0) {
-                showSilentNotification("Invalid Order! Please check Symbol and Qty.");
-                return;
-            }
+            if(!sym || isNaN(qty) || qty <= 0) { showSilentNotification("Invalid Order!"); return; }
 
             const tradeValue = qty * price;
-
-            // Check if enough capital
             if (totalCoins < tradeValue) {
-                showSilentNotification("Insufficient K.K. Coins for this trade!");
-                jarvisSpeak("Insufficient capital, partner. Check your risk management.");
-                return;
+                showSilentNotification("Insufficient K.K. Coins!"); jarvisSpeak("Insufficient capital."); return;
             }
 
-            // Deduct entry value for both long and short conceptually (blocking margin)
             totalCoins -= tradeValue;
-
-            const trade = { id: Date.now(), sym, type, qty, entryPrice: price };
-            activeTrades.push(trade);
+            activeTrades.push({ id: Date.now(), sym, type, qty, entryPrice: price });
             
             showSilentNotification(`${type} Order Executed: ${qty} ${sym} at $${price}`);
-            jarvisSpeak(`${type} order placed successfully for ${sym}.`);
-            
             document.getElementById('order-qty').value = '';
             document.getElementById('order-price').value = '';
+            document.getElementById('auto-risk-display').innerText = '';
             refreshHUDTokens();
         }
 
@@ -615,33 +513,21 @@
             if(tradeIndex === -1) return;
             const trade = activeTrades[tradeIndex];
             
-            let exitPrice;
-            showSilentNotification(`Executing Market Close for ${trade.sym}...`);
-            exitPrice = await getLiveBinancePrice(trade.sym);
-            
+            let exitPrice = await getLiveBinancePrice(trade.sym);
             if (!exitPrice) {
-                 let manualPrice = prompt(`API failed. Enter EXIT PRICE manually for ${trade.sym} (${trade.type}):`, trade.entryPrice);
-                 if(manualPrice === null || isNaN(manualPrice)) return;
-                 exitPrice = parseFloat(manualPrice);
+                 let manualPrice = prompt(`API failed. Enter EXIT PRICE manually for ${trade.sym}:`, trade.entryPrice);
+                 if(manualPrice === null || isNaN(manualPrice)) return; exitPrice = parseFloat(manualPrice);
             }
 
-            let profitLoss = 0;
-            let returnedMargin = trade.qty * trade.entryPrice;
+            let profitLoss = 0; let returnedMargin = trade.qty * trade.entryPrice;
 
-            if(trade.type === 'BUY') { // Long Trade
-                let exitValue = trade.qty * exitPrice;
-                profitLoss = exitValue - returnedMargin;
-            } else if (trade.type === 'SELL') { // Short Trade
-                let exitValue = trade.qty * exitPrice;
-                profitLoss = returnedMargin - exitValue;
-            }
+            if(trade.type === 'BUY') { profitLoss = (trade.qty * exitPrice) - returnedMargin; } 
+            else if (trade.type === 'SELL') { profitLoss = returnedMargin - (trade.qty * exitPrice); }
 
-            // Return Margin + PnL
             totalCoins += (returnedMargin + profitLoss);
             activeTrades.splice(tradeIndex, 1);
             
-            showSilentNotification(`Position Closed @ $${exitPrice}. P&L: ${profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)} Coins`);
-            jarvisSpeak(`Trade closed. ${profitLoss >= 0 ? 'Profitable exit.' : 'Loss booked. Keep discipline.'}`);
+            showSilentNotification(`Closed @ $${exitPrice}. P&L: ${profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)}`);
             refreshHUDTokens();
         }
 
@@ -654,8 +540,7 @@
             tbody.innerHTML = '';
 
             if(activeTrades.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="padding-top:10px; color:#aaa; text-align:center;">No open positions</td></tr>';
-                return;
+                tbody.innerHTML = '<tr><td colspan="3" style="padding-top:10px; color:#aaa; text-align:center;">No open positions</td></tr>'; return;
             }
 
             activeTrades.forEach(t => {
@@ -664,92 +549,37 @@
                     <tr>
                         <td style="padding: 8px 0; font-weight:bold;">${t.sym}<br><span style="font-size:0.7rem; color:#aaa;">Qty: ${t.qty}</span></td>
                         <td style="padding: 8px 0; color: ${color}; font-weight:bold;">${t.type}<br><span style="font-size:0.7rem; color:#aaa;">@ ${t.entryPrice}</span></td>
-                        <td style="padding: 8px 0;"><button class="action-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="closeTrade(${t.id})">MKT CLOSE</button></td>
+                        <td style="padding: 8px 0;"><button class="action-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="closeTrade(${t.id})">CLOSE</button></td>
                     </tr>
                 `;
             });
         }
 
 
-        /* --- THOR NOTES MANAGER --- */
-        function saveThorNote() {
-            const title = document.getElementById('thor-note-title').value;
-            const content = document.getElementById('thor-note-content').value;
-            if(!title) { showSilentNotification("Note needs a title!"); return; }
-            
-            const existingIndex = thorNotesList.findIndex(n => n.title === title);
-            if(existingIndex > -1) {
-                thorNotesList[existingIndex].content = content; 
-            } else {
-                thorNotesList.push({ title, content }); 
-            }
-            
-            localStorage.setItem('kk_thor_notes', JSON.stringify(thorNotesList));
-            showSilentNotification(`Note "${title}" saved to Forge!`);
-            jarvisSpeak("Manuscript secured.");
-            renderThorNotes();
-        }
-
-        function loadThorNote(title) {
-            const note = thorNotesList.find(n => n.title === title);
-            if(note) {
-                document.getElementById('thor-note-title').value = note.title;
-                document.getElementById('thor-note-content').value = note.content;
-            }
-        }
-
-        function deleteThorNote(title) {
-            thorNotesList = thorNotesList.filter(n => n.title !== title);
-            localStorage.setItem('kk_thor_notes', JSON.stringify(thorNotesList));
-            document.getElementById('thor-note-title').value = '';
-            document.getElementById('thor-note-content').value = '';
-            renderThorNotes();
-        }
-
-        function renderThorNotes() {
-            const listDiv = document.getElementById('thor-notes-list');
-            if(!listDiv) return;
-            listDiv.innerHTML = '';
-            thorNotesList.forEach(n => {
-                listDiv.innerHTML += `
-                    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border-left: 3px solid var(--theme-color); display:flex; justify-content:space-between; align-items:center;">
-                        <span style="cursor:pointer; flex:1;" onclick="loadThorNote('${n.title}')">📄 ${n.title}</span>
-                        <span style="color:red; cursor:pointer; font-size:1.2rem;" onclick="deleteThorNote('${n.title}')">×</span>
-                    </div>
-                `;
-            });
-        }
-
         /* --- DYNAMIC IRONMAN SUBJECTS --- */
         function createNewSubject() {
             let name = prompt("Enter Subject Name:");
             if(!name) return;
             let emoji = prompt("Enter an Emoji for this subject (e.g. 🧠):", "📁");
-            
             customIronmanSubjects.push({ name, emoji: emoji || '📁' });
             localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
             renderIronmanSubjects();
-            showSilentNotification("New subject folder added.");
         }
 
         function deleteSubject(event, name) {
-            event.stopPropagation(); // Prevents opening the vault when clicking delete
+            event.stopPropagation();
             if(confirm(`Are you sure you want to delete the folder: ${name}?`)) {
                 customIronmanSubjects = customIronmanSubjects.filter(s => s.name !== name);
                 localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
-                // Optional: remove related notes and files
                 localStorage.removeItem('note_' + name);
-                localStorage.removeItem('file_' + name);
-                localStorage.removeItem('gdrive_' + name);
+                localStorage.removeItem('files_' + name); // Clear array of files
                 renderIronmanSubjects();
-                showSilentNotification("Folder deleted.");
             }
         }
 
         function renderIronmanSubjects() {
             const grid = document.getElementById('ironman-dynamic-grid');
-            if(!grid) return;
-            grid.innerHTML = '';
+            if(!grid) return; grid.innerHTML = '';
             customIronmanSubjects.forEach(sub => {
                 grid.innerHTML += `
                     <div class="tool-card" onclick="openVault('${sub.name}')">
@@ -762,139 +592,140 @@
             });
         }
 
-
-        /* --- LOCAL STORAGE FILE, GDRIVE & VAULT HANDLING --- */
+        /* --- MULTI-FILE DESKTOP VAULT --- */
         let currentVaultTitle = '';
         
         function openVault(title) {
             currentVaultTitle = title;
-            document.getElementById('vault-title').innerText = title + " VAULT";
-            document.getElementById('file-uploader').value = '';
-            document.getElementById('gdrive-link').value = '';
+            document.getElementById('vault-title').innerText = title + " FOLDER";
             
-            // Load text notes
             document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
             document.getElementById('vault-notes').style.display = 'block';
 
-            // Check if Base64 file or GDrive link is stored
-            const savedBase64File = localStorage.getItem('file_'+title);
-            const savedGDriveLink = localStorage.getItem('gdrive_'+title);
+            closeFileViewer(); // Ensure we are on folder view
 
-            if(savedBase64File || savedGDriveLink) {
-                document.getElementById('file-display-area').style.display = 'block';
-                document.getElementById('doc-iframe').src = savedBase64File || savedGDriveLink;
-                document.getElementById('file-upload-container').style.display = 'none';
-            } else {
-                document.getElementById('file-display-area').style.display = 'none';
-                document.getElementById('doc-iframe').src = '';
-                document.getElementById('file-upload-container').style.display = 'block';
-            }
+            // Load multiple files array
+            let savedFilesStr = localStorage.getItem('files_'+title);
+            currentVaultFiles = savedFilesStr ? JSON.parse(savedFilesStr) : [];
             
+            renderVaultFiles();
             openModal('vault-modal');
-            jarvisSpeak(`Opening ${title} interface.`);
         }
 
         function saveVaultData() {
             localStorage.setItem('note_' + currentVaultTitle, document.getElementById('vault-notes').value);
-            closeModal('vault-modal');
-            showSilentNotification("Progress Saved!");
+            showSilentNotification("Notes Saved!");
         }
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if(file) {
-                if (file.size > 4000000) { 
-                     showSilentNotification("Warning: File is large. Browsers limit offline storage to ~5MB.");
-                }
+        // Handles uploading multiple files into the array
+        function handleMultipleFileUpload(event) {
+            const files = event.target.files;
+            if(!files || files.length === 0) return;
+
+            let fileReaders = [];
+
+            for(let i=0; i<files.length; i++) {
+                const file = files[i];
+                if (file.size > 4000000) { showSilentNotification(`Warning: ${file.name} is large. Skipping to save quota.`); continue; }
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const base64Data = e.target.result;
-                    try {
-                        localStorage.setItem('file_' + currentVaultTitle, base64Data);
-                        localStorage.removeItem('gdrive_' + currentVaultTitle); // clear alternate
-                        document.getElementById('file-display-area').style.display = 'block';
-                        document.getElementById('doc-iframe').src = base64Data;
-                        document.getElementById('file-upload-container').style.display = 'none';
-                        jarvisSpeak("Document encrypted and saved to offline ledger.");
-                    } catch(err) {
-                        showSilentNotification("Error saving file: Storage Quota Exceeded. File is too large.");
-                    }
+                    currentVaultFiles.push({
+                        id: Date.now() + Math.random(),
+                        name: file.name,
+                        type: file.type.includes('pdf') ? 'PDF' : 'IMG',
+                        data: base64Data
+                    });
+                    
+                    // Save to local storage after the last file finishes
+                    if(i === files.length - 1) { saveFilesArray(); }
                 };
-                reader.readAsDataURL(file); 
+                reader.readAsDataURL(file);
             }
+            document.getElementById('file-uploader').value = ''; // Reset input
         }
 
-        function loadGDrive() {
+        function loadGDriveAsFile() {
             let link = document.getElementById('gdrive-link').value;
             if(link.includes('drive.google.com')) {
-                // Auto convert standard sharing link to preview link to work inside iframes
                 link = link.replace(/\/view.*$/, '/preview'); 
-                
-                localStorage.setItem('gdrive_' + currentVaultTitle, link);
-                localStorage.removeItem('file_' + currentVaultTitle); // clear alternate
-                
-                document.getElementById('file-display-area').style.display = 'block';
-                document.getElementById('doc-iframe').src = link;
-                document.getElementById('file-upload-container').style.display = 'none';
-                jarvisSpeak("Google Drive link synchronized and embedded.");
-            } else {
-                showSilentNotification("Invalid Google Drive Link!");
+                currentVaultFiles.push({
+                    id: Date.now(),
+                    name: 'Google Drive Doc',
+                    type: 'LINK',
+                    data: link
+                });
+                saveFilesArray();
+                document.getElementById('gdrive-link').value = '';
+            } else { showSilentNotification("Invalid Google Drive Link!"); }
+        }
+
+        function saveFilesArray() {
+            try {
+                localStorage.setItem('files_' + currentVaultTitle, JSON.stringify(currentVaultFiles));
+                renderVaultFiles();
+                jarvisSpeak("Files synchronized to folder.");
+            } catch(err) {
+                showSilentNotification("Error saving file: Storage Quota Exceeded.");
+                currentVaultFiles.pop(); // Remove the last one that caused overflow
             }
         }
 
-        function clearVaultFile() {
-             localStorage.removeItem('file_' + currentVaultTitle);
-             localStorage.removeItem('gdrive_' + currentVaultTitle);
-             document.getElementById('file-display-area').style.display = 'none';
-             document.getElementById('doc-iframe').src = '';
-             document.getElementById('file-upload-container').style.display = 'block';
-             document.getElementById('file-uploader').value = '';
-             document.getElementById('gdrive-link').value = '';
-             showSilentNotification("Media removed from vault storage.");
+        function deleteVaultFile(event, id) {
+            event.stopPropagation();
+            currentVaultFiles = currentVaultFiles.filter(f => f.id !== id);
+            localStorage.setItem('files_' + currentVaultTitle, JSON.stringify(currentVaultFiles));
+            renderVaultFiles();
         }
 
-
-        /* --- GEMINI AI CHAT LOGIC --- */
-        function generatePAResponse(inputText) {
-            let txt = inputText.toLowerCase();
-            if (txt.includes("loss") || txt.includes("breakout") || txt.includes("failed")) {
-                return "CRITICAL POST-MORTEM DIAGNOSIS: Partner, look closely at the volumes during that breakout! The chart shows a classic 'Bull Trap'. Volume was 40% below average. Adjust your risk logic before entering again.";
-            }
-            if (txt.includes("anatomy") || txt.includes("shloka")) return "Opening study archives. Remember to break down complex terms into their root Sanskrit meanings for better retention.";
-            return "I am analyzing your query. If this is a trading setup, verify your stop-loss. If it's a study topic, review your summary notes.";
-        }
-
-        function sendChatMsg(txt) {
-            let val = txt || document.getElementById('chat-input').value;
-            if(!val) return;
-            document.getElementById('chat-log-box').innerHTML += `<div class="msg user">${val}</div>`;
-            document.getElementById('chat-input').value = '';
-            document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
+        // Renders Desktop-like UI inside the vault
+        function renderVaultFiles() {
+            const grid = document.getElementById('vault-files-grid');
+            grid.innerHTML = '';
             
-            setTimeout(() => {
-                let aiReply = generatePAResponse(val);
-                document.getElementById('chat-log-box').innerHTML += `<div class="msg ai">${aiReply}</div>`;
-                document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
-                jarvisSpeak(aiReply);
-            }, 800);
+            if(currentVaultFiles.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1 / -1; color: #666; font-size: 0.85rem; text-align: center; padding: 10px;">No files in this folder yet. Upload above.</div>`;
+                return;
+            }
+
+            currentVaultFiles.forEach(f => {
+                let icon = f.type === 'PDF' ? '📕' : (f.type === 'IMG' ? '🖼️' : '🔗');
+                grid.innerHTML += `
+                    <div class="file-item" onclick="openFileViewer('${f.data}')">
+                        <span class="file-item-delete" onclick="deleteVaultFile(event, ${f.id})">✕</span>
+                        <div class="file-item-icon">${icon}</div>
+                        <div class="file-item-name">${f.name}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function openFileViewer(dataUrl) {
+            document.getElementById('vault-files-grid').style.display = 'none';
+            document.getElementById('file-upload-container').style.display = 'none';
+            document.getElementById('file-display-area').style.display = 'block';
+            document.getElementById('doc-iframe').src = dataUrl;
+        }
+
+        function closeFileViewer() {
+            document.getElementById('file-display-area').style.display = 'none';
+            document.getElementById('doc-iframe').src = '';
+            document.getElementById('vault-files-grid').style.display = 'grid';
+            document.getElementById('file-upload-container').style.display = 'block';
         }
 
         /* --- UI NAVIGATION --- */
         function saveSettings() {
             const bgUrl = document.getElementById('bg-selector').value;
             const opacity = document.getElementById('opacity-slider').value;
-            const vSpeed = document.getElementById('voice-speed-slider').value;
-
             localStorage.setItem('bg-url', bgUrl); document.documentElement.style.setProperty('--bg-image', "url('" + bgUrl + "')");
             localStorage.setItem('glass-opacity', opacity); document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${opacity})`);
-            localStorage.setItem('voice-speed', vSpeed); voiceSpeed = parseFloat(vSpeed);
-
-            closeModal('settings-overlay'); jarvisSpeak("Settings applied successfully.");
+            closeModal('settings-overlay');
         }
 
         function initProtocol(id, color) {
             currentModule = id; document.documentElement.style.setProperty('--theme-color', color);
-            document.body.className = ''; 
             document.getElementById('landing-stage').style.display = 'none';
             document.getElementById('dashboard-stage').style.display = 'flex';
             setTimeout(() => { document.getElementById('dashboard-stage').style.opacity = '1'; renderModule(id); }, 50);
@@ -902,106 +733,23 @@
         
         function returnToHome() {
             document.getElementById('dashboard-stage').style.opacity = '0';
-            setTimeout(() => { document.getElementById('dashboard-stage').style.display = 'none'; document.getElementById('landing-stage').style.display = 'flex'; document.documentElement.style.setProperty('--theme-color', '#00ffaa'); document.body.className = '';}, 400);
+            setTimeout(() => { document.getElementById('dashboard-stage').style.display = 'none'; document.getElementById('landing-stage').style.display = 'flex'; }, 400);
         }
 
         function renderModule(id) {
-            currentModule = id; const mod = modules[id]; const contentArea = document.getElementById('main-content');
+            const mod = modules[id]; const contentArea = document.getElementById('main-content');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
             contentArea.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${mod.title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM CONFIG</button></div><div>${mod.html}</div>`;
             
-            // Post Render initializations
-            if(id === 'cap') {
-                loadTV("BINANCE:BTCUSDT");
-                renderTradePositions(); 
-            }
+            if(id === 'cap') { loadTV("BINANCE:BTCUSDT"); renderTradePositions(); }
             if(id === 'ironman') renderIronmanSubjects();
             if(id === 'thor') renderThorNotes();
-            if(id === 'spidey') {
-                const ledger = document.getElementById('spidey-ledger');
-                if(ledger) ledger.value = localStorage.getItem('kk_spidey_ledger') || '';
-            }
         }
         
         function switchModule(id) { renderModule(id); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
-
-        function startTimerPrompt(type, minsParam) {
-            isFocusMode = (type !== 'break');
-            let m = minsParam || prompt(`Enter ${isFocusMode ? 'focus' : 'break'} time in minutes:`, isFocusMode ? "25" : "5");
-            if(m && !isNaN(m)) {
-                secondsLeft = parseInt(m) * 60;
-                document.getElementById('global-timer-widget').style.display = 'block';
-                document.getElementById('timer-label-text').innerText = isFocusMode ? "FOCUS MODE" : "BREAK MODE";
-                document.body.className = isFocusMode ? 'theme-focus' : 'theme-break';
-                clearInterval(globalTimerInterval);
-                globalTimerInterval = setInterval(updateTimer, 1000);
-                jarvisSpeak(`Protocol engaged.`);
-            }
-        }
-
-        function updateTimer() {
-            secondsLeft--;
-            if(secondsLeft <= 0) {
-                clearInterval(globalTimerInterval);
-                document.getElementById('timer-countdown').innerText = "00:00";
-                document.body.classList.add('timer-alert'); 
-                jarvisSpeak("Session complete.");
-                setTimeout(()=> { 
-                    document.getElementById('global-timer-widget').style.display = 'none'; 
-                    document.body.classList.remove('timer-alert');
-                    document.body.className = '';
-                }, 10000); 
-            } else {
-                let m = Math.floor(secondsLeft / 60); let s = secondsLeft % 60;
-                document.getElementById('timer-countdown').innerText = (m<10?'0'+m:m) + ":" + (s<10?'0'+s:s);
-            }
-        }
-
-        function openTimetableMaker() {
-            let html = `
-                <div style="display:flex; gap:10px; margin-bottom:15px;">
-                    <input type="time" id="tt-time" class="custom-input" style="width:150px;">
-                    <input type="text" id="tt-task" class="custom-input" placeholder="Task name...">
-                    <button class="action-btn" onclick="addTimetableTask()">ADD</button>
-                </div>
-                <div id="tt-list" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:10px; max-height: 250px; overflow-y:auto;"></div>
-            `;
-            document.getElementById('vault-title').innerText = "STUDY SCHEDULE";
-            let oldTt = document.getElementById('temp-tt'); if(oldTt) oldTt.remove();
-            document.getElementById('file-upload-container').style.display = 'none';
-            document.getElementById('file-display-area').style.display = 'none';
-            document.getElementById('vault-notes').style.display = 'none';
-            let div = document.createElement('div'); div.id = 'temp-tt'; div.innerHTML = html;
-            document.getElementById('vault-title').after(div);
-            document.querySelector('#vault-modal .action-btn').onclick = function() { if(document.getElementById('temp-tt')) document.getElementById('temp-tt').remove(); closeModal('vault-modal'); };
-            renderTTList(); openModal('vault-modal');
-        }
-
-        function addTimetableTask() {
-            const time = document.getElementById('tt-time').value; const task = document.getElementById('tt-task').value;
-            if(time && task) { customTimetable.push({time, task}); localStorage.setItem('myTimetable', JSON.stringify(customTimetable)); renderTTList(); jarvisSpeak("Task synchronized."); }
-        }
-        function renderTTList() {
-            let html = customTimetable.map((t, i) => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.1);"><span><b>${t.time}</b> - ${t.task}</span><span style="color:red;cursor:pointer;" onclick="customTimetable.splice(${i},1); localStorage.setItem('myTimetable', JSON.stringify(customTimetable)); renderTTList();">✕</span></div>`).join('');
-            document.getElementById('tt-list').innerHTML = html;
-        }
-
-        function startTimeChecker() {
-            setInterval(() => {
-                let now = new Date(); let currTime = (now.getHours()<10?'0':'') + now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
-                customTimetable.forEach(t => {
-                    if(t.time === currTime && !notifiedTasks.has(t.task)) {
-                        showSilentNotification(`Schedule alert: ${t.task}`);
-                        jarvisSpeak("Task alert: " + t.task);
-                        notifiedTasks.add(t.task); 
-                    }
-                });
-                if(currTime === "00:00") notifiedTasks.clear();
-            }, 30000); 
-        }
 
         function showSilentNotification(msg) {
             let toast = document.createElement('div'); toast.className = 'hud-toast'; toast.innerText = "🔔 " + msg;
@@ -1009,131 +757,7 @@
             setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 8000);
         }
 
-        function handleMicManualSwitch() { jarvisActive ? shutdownMic() : startMic(); }
-        let voiceSynth = window.speechSynthesis;
-        
-        function jarvisSpeak(phrase) { 
-            if (voiceSynth) { 
-                voiceSynth.cancel(); 
-                let u = new SpeechSynthesisUtterance(phrase); u.lang = 'en-IN'; u.rate = voiceSpeed; u.pitch = 0.90; 
-                u.onstart = function() { if (jarvisActive && engineInstance) { try { engineInstance.abort(); } catch(e){} document.getElementById('mic-status').style.opacity = '0.5'; } };
-                u.onend = function() { if (jarvisActive && engineInstance) { try { engineInstance.start(); } catch(e){} document.getElementById('mic-status').style.opacity = '1'; } };
-                voiceSynth.speak(u); 
-            } 
-        }
-
-        function startMic() {
-            jarvisActive = true; document.getElementById('mic-text').innerText = "🟢 AI MIC ENGINE ACTIVE"; document.getElementById('mic-status').classList.add('pulse-active');
-            document.getElementById('mic-toggle-btn').innerText = "SWITCH OFF"; document.getElementById('mic-toggle-btn').className = "manual-mic-toggle";
-            jarvisSpeak("Listening, Partner.");
-            if(engineInstance) { try { engineInstance.start(); } catch(e){} }
-        }
-        function shutdownMic() {
-            jarvisActive = false; document.getElementById('mic-text').innerText = "🔴 AI ENGINE STANDBY"; document.getElementById('mic-status').classList.remove('pulse-active');
-            document.getElementById('mic-toggle-btn').innerText = "ACTIVATE MIC"; document.getElementById('mic-toggle-btn').className = "manual-mic-toggle off";
-            if(engineInstance) { try { engineInstance.abort(); } catch(e){} }
-            jarvisSpeak("Audio offline.");
-        }
-
-        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechEngine) {
-            engineInstance = new SpeechEngine(); engineInstance.continuous = true; engineInstance.lang = 'en-IN'; engineInstance.interimResults = false;
-            engineInstance.onresult = function(event) {
-                let speechToken = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-                if (!jarvisActive) return;
-
-                if (speechToken.includes("open iron") || speechToken.includes("studies")) { initProtocol('ironman', '#ff2a2a'); }
-                else if (speechToken.includes("open captain") || speechToken.includes("trading")) { initProtocol('cap', '#0077ff'); }
-                else if (speechToken.includes("go back") || speechToken.includes("home")) { returnToHome(); }
-                else if (speechToken.includes("open chat") || speechToken.includes("chat kholo")) { openModal('jarvis-terminal-overlay'); }
-                else {
-                    let aiReply = generatePAResponse(speechToken);
-                    jarvisSpeak(aiReply);
-                    if(document.getElementById('jarvis-terminal-overlay').style.display === 'flex') {
-                        document.getElementById('chat-log-box').innerHTML += `<div class="msg user">${speechToken}</div><div class="msg ai">${aiReply}</div>`;
-                        document.getElementById('chat-log-box').scrollTop = document.getElementById('chat-log-box').scrollHeight;
-                    }
-                }
-            };
-            engineInstance.onend = function() { if(jarvisActive && !voiceSynth.speaking) { try{ engineInstance.start(); }catch(e){} } }; 
-        }
-
-        function updateTVSymbol() {
-            const sym = document.getElementById('tv-symbol-input').value;
-            if(sym) { 
-                loadTV(sym); 
-                document.getElementById('order-symbol').value = sym.split(':')[1] || sym; // Extracts ticker symbol
-                jarvisSpeak(`Syncing ${sym}.`); 
-            }
-        }
-        function loadTV(symbolString) { 
-            setTimeout(() => { 
-                const tvDiv = document.getElementById('tradingview_cap'); if(!tvDiv) return; tvDiv.innerHTML=''; 
-                let script = document.createElement('script'); script.src='https://s3.tradingview.com/tv.js'; 
-                script.onload = () => new TradingView.widget({"autosize":true,"symbol":symbolString,"interval":"5","theme":"dark","container_id":"tradingview_cap","backgroundColor":"rgba(0,0,0,0.5)","gridColor":"rgba(0,119,255,0.05)"}); 
-                document.body.appendChild(script); 
-            }, 100); 
-        }
-
-        /* --- HOLOGRAPHIC 3D ANATOMY ENGINE --- */
-        const anatomyDatabase = {
-            skeleton: { modelSrc: "./models/skeleton.glb", hotspots: [] },
-            skull: { modelSrc: "./models/skull.glb", hotspots: [] }
-        };
-
-        function loadBoneModel() {
-            const viewer = document.getElementById('holo-viewer');
-            const selectedBone = document.getElementById('bone-selector').value;
-            const data = anatomyDatabase[selectedBone];
-            
-            if(!data) return;
-
-            viewer.src = data.modelSrc;
-            const existingHotspots = viewer.querySelectorAll('.Hotspot');
-            existingHotspots.forEach(h => h.remove());
-
-            data.hotspots.forEach((spot, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'Hotspot';
-                btn.slot = `hotspot-${index}`;
-                btn.dataset.position = spot.position;
-                btn.dataset.normal = spot.normal;
-                
-                const annotation = document.createElement('div');
-                annotation.className = 'HotspotAnnotation';
-                annotation.innerHTML = `
-                    <strong>${spot.name}</strong>
-                    <div class="origin-text">🔴 Origin: ${spot.origin}</div>
-                    <div class="insertion-text">🔵 Insertion: ${spot.insertion}</div>
-                `;
-                
-                btn.appendChild(annotation);
-                viewer.appendChild(btn);
-            });
-        }
-
-        function openAnatomyHologram() {
-            openModal('anatomy-3d-modal');
-            loadBoneModel(); 
-            jarvisSpeak("Initializing 3D anatomical projection.");
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const viewer = document.getElementById('holo-viewer');
-            if(viewer) {
-                viewer.addEventListener('click', (event) => {
-                    const hit = viewer.positionAndNormalFromPoint(event.clientX, event.clientY);
-                    if (hit != null) {
-                        console.log('%c🎯 [HUD DEV HELPER] 3D Coordinate Captured!', 'color: #00ffaa; font-weight: bold; font-size: 14px;');
-                        console.log(`position: "${hit.position.toString()}"`);
-                        console.log(`normal: "${hit.normal.toString()}"`);
-                        showSilentNotification(`Copied 3D Coordinates to Browser Console!`);
-                    }
-                });
-            }
-        });
-
-        // CANVAS MATRIX DOT ENGINE
+        /* --- BACKGROUND PARTICLES --- */
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         let lines = []; function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
