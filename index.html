@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface v12.5 Pro Max</title>
+    <title>K.K. Ultimate HUD | Master Interface v12.6 Pro Max</title>
     
     <script type="module" src="./js/model-viewer.min.js"></script>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -47,6 +47,12 @@
             z-index: 99999; background-size: 100% 4px, 6px 100%; pointer-events: none; opacity: var(--scanline-opacity);
         }
 
+        /* NEW: Video Background Support */
+        #bg-video {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            object-fit: cover; z-index: -5; display: none; opacity: 0.8;
+        }
+
         .bg-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; overflow: hidden; background: rgba(0,0,0,0.75); }
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; mix-blend-mode: screen; pointer-events: none; }
         
@@ -84,7 +90,6 @@
         .trade-btn.sell { background: #d63031; }
         .trade-btn.sell:hover { background: #ff4757; box-shadow: 0 0 15px #d63031; }
 
-        /* Learner Mode Panel CSS */
         .learner-panel { display: none; background: rgba(0, 119, 255, 0.1); border: 1px dashed #0077ff; border-radius: 10px; padding: 15px; margin-top: 15px; font-size: 0.9rem; line-height: 1.5; color: #b3d4ff; animation: fadeIn 0.5s ease-in-out; }
         .learner-panel h4 { margin: 0 0 10px 0; color: #00e5ff; }
         .learner-panel ul { margin: 0; padding-left: 20px; }
@@ -98,7 +103,6 @@
         .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--glass-border); outline: none; border-radius: 8px; margin-top: 5px; margin-bottom: 10px; transition: var(--transition-hq); box-sizing: border-box;}
         .custom-input:focus { border-color: var(--theme-color); box-shadow: 0 0 15px rgba(0,255,170,0.2); }
 
-        /* DESKTOP FILE SYSTEM UI */
         .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; margin-top: 15px; }
         .file-item { text-align: center; padding: 15px 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: 0.3s; position: relative;}
         .file-item:hover { background: rgba(0,255,170,0.08); border-color: var(--theme-color); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
@@ -134,15 +138,18 @@
         #landing-stage { flex-direction: column; justify-content: center; align-items: center; }
         #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
 
-        /* --- 3D ANATOMY HOLOGRAPHIC ENGINE --- */
         .holo-viewport { flex: 1; position: relative; background: radial-gradient(circle at center, rgba(0, 255, 170, 0.15) 0%, rgba(2, 2, 5, 0.9) 75%); display: flex; justify-content: center; align-items: center; border-radius: 0 18px 18px 0; }
-        .Hotspot { background: var(--theme-color); border-radius: 50%; border: none; box-sizing: border-box; cursor: pointer; height: 16px; width: 16px; position: relative; transition: var(--transition-hq); box-shadow: 0 0 15px var(--theme-color), 0 0 30px var(--theme-color); animation: pulseNeon 2s infinite; }
-        .Hotspot:not([data-visible]) { background: transparent; border: 2px solid var(--theme-color); box-shadow: none; height: 12px; width: 12px; }
-        @keyframes pulseNeon { 0% { transform: scale(1); box-shadow: 0 0 10px var(--theme-color); } 50% { transform: scale(1.3); box-shadow: 0 0 25px var(--theme-color); } 100% { transform: scale(1); box-shadow: 0 0 10px var(--theme-color); } }
+        
+        /* Candle Card Styles */
+        .candle-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
+        .candle-card h3 { margin-top: 0; color: #00ffaa; }
+        .sentiment-bar { height: 10px; width: 100%; background: #d63031; border-radius: 5px; margin-top: 10px; overflow: hidden; position: relative; }
+        .sentiment-fill { height: 100%; background: #00b894; width: 65%; transition: 1s ease-in-out; }
     </style>
 </head>
 <body>
 
+    <video id="bg-video" autoplay loop muted playsinline></video>
     <div class="bg-mesh"></div>
     <canvas id="bg-canvas"></canvas>
 
@@ -201,8 +208,7 @@
                 </div>
             </div>
             
-            <div id="vault-files-grid" class="file-grid">
-                </div>
+            <div id="vault-files-grid" class="file-grid"></div>
 
             <div id="file-display-area" style="display:none; text-align:center; position:relative;">
                 <button class="action-btn" style="position:absolute; top:-40px; left:0; background: rgba(0,0,0,0.8); font-size:0.8rem;" onclick="closeFileViewer()">⬅ BACK TO FOLDER</button>
@@ -215,6 +221,35 @@
         </div>
     </div>
 
+    <div class="overlay-modal" id="candle-modal">
+        <div class="modal-box" style="width: 800px; max-height: 85vh; overflow-y: auto;">
+            <span class="close-btn" onclick="closeModal('candle-modal')">✕</span>
+            <h2 style="color: var(--theme-color);">🕯️ MASTER CANDLESTICK PATTERNS</h2>
+            <p style="font-size: 0.85rem; color: #aaa;">Your built-in educational folder to read market psychology.</p>
+            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
+            
+            <div class="candle-card">
+                <h3>1. Bullish Hammer (हथौड़ा)</h3>
+                <p style="font-size: 0.9rem; color: #ddd;">Forms at the bottom of a downtrend. It shows sellers pushed the price down, but strong buyers rejected the low and pushed the price back up. Wait for the next candle to confirm a bullish reversal before entering.</p>
+                <br>            </div>
+
+            <div class="candle-card">
+                <h3>2. Bearish Engulfing</h3>
+                <p style="font-size: 0.9rem; color: #ddd;">Forms at the top of an uptrend. A small green candle is completely 'engulfed' or swallowed by a massive red candle. This indicates that sellers have violently taken control of the market.</p>
+                <br>            </div>
+
+            <div class="candle-card">
+                <h3>3. The Doji (Indecision)</h3>
+                <p style="font-size: 0.9rem; color: #ddd;">Looks like a cross or a plus sign. The open and close prices are exactly the same. It means a brutal war between buyers and sellers resulted in a tie. Often signals a major trend reversal is coming.</p>
+                <br>            </div>
+            
+            <div class="candle-card">
+                <h3>4. Morning Star Reversal</h3>
+                <p style="font-size: 0.9rem; color: #ddd;">A powerful 3-candle pattern. 1) A strong red candle. 2) A small gap-down Doji (indecision). 3) A massive green candle pushing up. This is your green light for a trend flip!</p>
+                <br>            </div>
+        </div>
+    </div>
+
     <div class="overlay-modal" id="settings-overlay">
         <div class="modal-box" style="width: 500px;">
             <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
@@ -222,12 +257,12 @@
             <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px;">
                 <label>Main Background Cinematic</label>
                 <select id="bg-selector" class="custom-input">
-                    <option value="https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600">Cyber City Lights</option>
-                    <option value="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600">Earth Orbital View</option>
-                    <option value="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1600">Digital Matrix Code</option>
-                    <option value="https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=1600">Quantum Neon 3D</option>
-                    <option value="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1600">Deep Space Nebula</option>
-                    <option value="https://images.unsplash.com/photo-1633630663189-9a674488b394?q=80&w=1600">Fractal Dimension 3D</option>
+                    <option value="img:https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600">Image: Cyber City Lights</option>
+                    <option value="img:https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600">Image: Earth Orbital View</option>
+                    <option value="img:https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=1600">Image: Quantum Neon 3D</option>
+                    <option value="vid:https://cdn.pixabay.com/video/2021/08/04/83866-584742637_tiny.mp4">Video: Matrix Digital Rain</option>
+                    <option value="vid:https://cdn.pixabay.com/video/2020/05/24/40096-424694939_tiny.mp4">Video: Hyperspace Travel</option>
+                    <option value="vid:https://cdn.pixabay.com/video/2022/10/24/136262-764516315_tiny.mp4">Video: Cyberpunk Grid Pulse</option>
                 </select>
 
                 <label style="margin-top: 10px;">HUD Glass Opacity</label>
@@ -235,6 +270,9 @@
 
                 <label style="margin-top: 10px;">Jarvis Voice Speed</label>
                 <input type="range" id="voice-speed-slider" min="0.7" max="1.5" step="0.1" value="1.0" style="width: 100%;">
+                
+                <label style="margin-top: 10px;">Assist Volume / Mute (Focus Mode)</label>
+                <input type="range" id="volume-slider" min="0.0" max="1.0" step="0.1" value="1.0" style="width: 100%;">
             </div>
             <button class="action-btn" style="margin-top: 25px; width:100%; padding:12px;" onclick="saveSettings()">APPLY HUD CONFIG</button>
         </div>
@@ -271,7 +309,7 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.5</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.6</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
@@ -310,7 +348,9 @@
     <script>
         let currentModule = ''; let engineInstance; let jarvisActive = false;
         let globalTimerInterval; let secondsLeft = 0; let customTimetable = []; let notifiedTasks = new Set();
-        let isFocusMode = true; let voiceSpeed = 1.0;
+        let isFocusMode = true; 
+        let voiceSpeed = 1.0;
+        let assistVolume = 1.0; // NEW VOLUME VARIABLE
 
         let totalCoins = parseFloat(localStorage.getItem('kk_coins')) || 10000; 
         let activeTrades = JSON.parse(localStorage.getItem('kk_trades')) || [];
@@ -377,6 +417,7 @@
                                 <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Any Global Symbol (e.g. NSE:RELIANCE)" style="margin: 0; width: 60%;">
                                 <button class="action-btn" onclick="updateTVSymbol()">LOAD CHART</button>
                                 <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="toggleLearnerMode()">🎓 LEARNER MODE</button>
+                                <button class="action-btn" style="border-color: #00ffaa;" onclick="openModal('candle-modal')">🕯️ CANDLE CHEATSHEET</button>
                             </div>
                             <div id="tradingview_cap" style="height:55vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4);"></div>
                         </div>
@@ -387,6 +428,13 @@
                                 <span style="font-size:0.9rem; color:#fff;">🪙 <span id="panel-coins"></span></span>
                             </h3>
                             
+                            <div style="margin-bottom: 15px; font-size: 0.8rem; color: #ddd;">
+                                Live Bullish Pressure (Simulated):
+                                <div class="sentiment-bar">
+                                    <div class="sentiment-fill" id="sentiment-fill-bar"></div>
+                                </div>
+                            </div>
+
                             <label style="font-size:0.85rem; color:#aaa;">Instrument (e.g., BTCUSDT)</label>
                             <div style="display:flex; gap:5px;">
                                 <input type="text" id="order-symbol" class="custom-input" placeholder="e.g. BTCUSDT" value="BTCUSDT">
@@ -466,9 +514,24 @@
         };
 
         window.onload = function() {
-            if(localStorage.getItem('bg-url')) document.documentElement.style.setProperty('--bg-image', "url('" + localStorage.getItem('bg-url') + "')");
-            if(localStorage.getItem('glass-opacity')) document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${localStorage.getItem('glass-opacity')})`);
-            if(localStorage.getItem('voice-speed')) voiceSpeed = parseFloat(localStorage.getItem('voice-speed'));
+            // Updated Boot Sequence for Video/Image Backgrounds
+            let savedBg = localStorage.getItem('bg-url');
+            if(savedBg) {
+                applyBackground(savedBg);
+                document.getElementById('bg-selector').value = savedBg;
+            }
+            if(localStorage.getItem('glass-opacity')) {
+                document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${localStorage.getItem('glass-opacity')})`);
+                document.getElementById('opacity-slider').value = localStorage.getItem('glass-opacity');
+            }
+            if(localStorage.getItem('voice-speed')) {
+                voiceSpeed = parseFloat(localStorage.getItem('voice-speed'));
+                document.getElementById('voice-speed-slider').value = voiceSpeed;
+            }
+            if(localStorage.getItem('assist-volume')) {
+                assistVolume = parseFloat(localStorage.getItem('assist-volume'));
+                document.getElementById('volume-slider').value = assistVolume;
+            }
             if(localStorage.getItem('myTimetable')) customTimetable = JSON.parse(localStorage.getItem('myTimetable'));
             refreshHUDTokens();
         }
@@ -490,6 +553,11 @@
             let sym = document.getElementById('tv-symbol-input').value;
             document.getElementById('order-symbol').value = sym.split(':')[1] || sym; // sync order book
             loadTV(sym);
+            
+            // Randomize sentiment bar for dynamic creative feel
+            if(document.getElementById('sentiment-fill-bar')) {
+                document.getElementById('sentiment-fill-bar').style.width = Math.floor(Math.random() * 80 + 10) + '%';
+            }
         }
 
         function toggleLearnerMode() {
@@ -629,7 +697,7 @@
                 customIronmanSubjects = customIronmanSubjects.filter(s => s.name !== name);
                 localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
                 localStorage.removeItem('note_' + name);
-                // Also clear from IndexedDB
+                
                 const tx = db.transaction("files", "readwrite");
                 const store = tx.objectStore("files");
                 const index = store.index("subject");
@@ -656,7 +724,7 @@
             });
         }
 
-        /* --- MULTI-FILE DESKTOP VAULT (INDEXED DB) --- */
+        /* --- MULTI-FILE DESKTOP VAULT (UPGRADED RAW BLOB FIX) --- */
         let currentVaultTitle = '';
         
         function openVault(title) {
@@ -692,28 +760,24 @@
 
             for(let i=0; i<files.length; i++) {
                 const file = files[i];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Data = e.target.result;
-                    const fileObj = {
-                        id: Date.now() + Math.random(),
-                        subject: currentVaultTitle,
-                        name: file.name,
-                        type: file.type.includes('pdf') ? 'PDF' : 'IMG',
-                        data: base64Data
-                    };
-                    // Save to IndexedDB
-                    const tx = db.transaction("files", "readwrite");
-                    tx.objectStore("files").put(fileObj);
-                    tx.oncomplete = () => {
-                        currentVaultFiles.push(fileObj);
-                        if(i === files.length - 1) { 
-                            renderVaultFiles(); 
-                            showSilentNotification("Files uploaded to Local Database successfully."); 
-                        }
-                    };
+                // UPGRADE: Store actual File Blobs instead of Base64 strings to prevent memory crashes
+                const fileObj = {
+                    id: Date.now() + Math.random(),
+                    subject: currentVaultTitle,
+                    name: file.name,
+                    type: file.type.includes('pdf') ? 'PDF' : 'IMG',
+                    blob: file // <-- Storing raw file object!
                 };
-                reader.readAsDataURL(file);
+                
+                const tx = db.transaction("files", "readwrite");
+                tx.objectStore("files").put(fileObj);
+                tx.oncomplete = () => {
+                    currentVaultFiles.push(fileObj);
+                    if(i === files.length - 1) { 
+                        renderVaultFiles(); 
+                        showSilentNotification("Files uploaded to Local Database successfully."); 
+                    }
+                };
             }
             document.getElementById('file-uploader').value = ''; 
         }
@@ -727,7 +791,7 @@
                     subject: currentVaultTitle,
                     name: 'Google Drive Doc',
                     type: 'LINK',
-                    data: link
+                    data: link // links stay as text data
                 };
                 const tx = db.transaction("files", "readwrite");
                 tx.objectStore("files").put(fileObj);
@@ -760,8 +824,9 @@
 
             currentVaultFiles.forEach(f => {
                 let icon = f.type === 'PDF' ? '📕' : (f.type === 'IMG' ? '🖼️' : '🔗');
+                // Pass ID to load from Blob correctly instead of passing giant base64 text
                 grid.innerHTML += `
-                    <div class="file-item" onclick="openFileViewer('${f.data}')">
+                    <div class="file-item" onclick="openFileViewer(${f.id})">
                         <span class="file-item-delete" onclick="deleteVaultFile(event, ${f.id})">✕</span>
                         <div class="file-item-icon">${icon}</div>
                         <div class="file-item-name">${f.name}</div>
@@ -770,26 +835,69 @@
             });
         }
 
-        function openFileViewer(dataUrl) {
-            document.getElementById('vault-files-grid').style.display = 'none';
-            document.getElementById('file-upload-container').style.display = 'none';
-            document.getElementById('file-display-area').style.display = 'block';
-            document.getElementById('doc-iframe').src = dataUrl;
+        let currentObjUrl = null; // Clean up memory when closing
+
+        function openFileViewer(id) {
+            const tx = db.transaction("files", "readonly");
+            const store = tx.objectStore("files");
+            const req = store.get(id);
+            
+            req.onsuccess = (e) => {
+                const f = e.target.result;
+                document.getElementById('vault-files-grid').style.display = 'none';
+                document.getElementById('file-upload-container').style.display = 'none';
+                document.getElementById('file-display-area').style.display = 'block';
+                
+                if (f.type === 'LINK') {
+                    document.getElementById('doc-iframe').src = f.data;
+                } else {
+                    // Create secure local URL from Blob
+                    if(currentObjUrl) URL.revokeObjectURL(currentObjUrl);
+                    currentObjUrl = URL.createObjectURL(f.blob);
+                    document.getElementById('doc-iframe').src = currentObjUrl;
+                }
+            };
         }
 
         function closeFileViewer() {
             document.getElementById('file-display-area').style.display = 'none';
             document.getElementById('doc-iframe').src = '';
+            if(currentObjUrl) { URL.revokeObjectURL(currentObjUrl); currentObjUrl = null; }
             document.getElementById('vault-files-grid').style.display = 'grid';
             document.getElementById('file-upload-container').style.display = 'block';
         }
 
-        /* --- UI NAVIGATION --- */
+        /* --- UI NAVIGATION & SETTINGS MANAGER --- */
+        function applyBackground(val) {
+            const bgVideo = document.getElementById('bg-video');
+            if(val.startsWith('vid:')) {
+                bgVideo.src = val.substring(4);
+                bgVideo.style.display = 'block';
+                document.documentElement.style.setProperty('--bg-image', "none");
+            } else {
+                bgVideo.style.display = 'none';
+                bgVideo.src = '';
+                let imgUrl = val.startsWith('img:') ? val.substring(4) : val;
+                document.documentElement.style.setProperty('--bg-image', "url('" + imgUrl + "')");
+            }
+        }
+
         function saveSettings() {
-            const bgUrl = document.getElementById('bg-selector').value;
+            const bgVal = document.getElementById('bg-selector').value;
             const opacity = document.getElementById('opacity-slider').value;
-            localStorage.setItem('bg-url', bgUrl); document.documentElement.style.setProperty('--bg-image', "url('" + bgUrl + "')");
-            localStorage.setItem('glass-opacity', opacity); document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${opacity})`);
+            voiceSpeed = document.getElementById('voice-speed-slider').value;
+            assistVolume = document.getElementById('volume-slider').value;
+            
+            localStorage.setItem('bg-url', bgVal); 
+            applyBackground(bgVal);
+
+            localStorage.setItem('glass-opacity', opacity); 
+            document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${opacity})`);
+            
+            localStorage.setItem('voice-speed', voiceSpeed);
+            localStorage.setItem('assist-volume', assistVolume); // Save new volume
+            
+            showSilentNotification(`Settings Applied! Volume: ${assistVolume*100}%`);
             closeModal('settings-overlay');
         }
 
@@ -821,6 +929,7 @@
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
 
         function showSilentNotification(msg) {
+            if(assistVolume === 0) return; // Silent logic test
             let toast = document.createElement('div'); toast.className = 'hud-toast'; toast.innerText = "🔔 " + msg;
             document.getElementById('toast-container').appendChild(toast);
             setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 8000);
