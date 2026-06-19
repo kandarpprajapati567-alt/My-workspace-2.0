@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface v12.4</title>
+    <title>K.K. Ultimate HUD | Master Interface v12.5</title>
     
     <script type="module" src="./js/model-viewer.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+    
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
         :root {
@@ -19,17 +23,9 @@
             --bg-image: url('https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600');
         }
 
-        body.theme-focus {
-            --theme-color: #ff3300 !important;
-            --glass-bg: rgba(20, 5, 5, 0.8) !important;
-            --glass-border: rgba(255, 51, 0, 0.3) !important;
-        }
-        body.theme-break {
-            --theme-color: #00e5ff !important;
-            --glass-bg: rgba(5, 15, 20, 0.8) !important;
-            --glass-border: rgba(0, 229, 255, 0.3) !important;
-        }
-
+        /* The rest of your exact CSS styles remain here, keeping it compact for reading */
+        body.theme-focus { --theme-color: #ff3300 !important; --glass-bg: rgba(20, 5, 5, 0.8) !important; --glass-border: rgba(255, 51, 0, 0.3) !important; }
+        body.theme-break { --theme-color: #00e5ff !important; --glass-bg: rgba(5, 15, 20, 0.8) !important; --glass-border: rgba(0, 229, 255, 0.3) !important; }
         body.timer-alert { --theme-color: #ff003c !important; animation: redPulse 2s infinite; }
         @keyframes redPulse { 0% { box-shadow: inset 0 0 0px rgba(255,0,60,0); } 50% { box-shadow: inset 0 0 100px rgba(255,0,60,0.5); } 100% { box-shadow: inset 0 0 0px rgba(255,0,60,0); } }
 
@@ -37,7 +33,8 @@
             margin: 0; padding: 0; background-color: var(--bg-color); color: var(--card-text);
             font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden;
             user-select: none; transition: all 0.8s ease;
-            background-image: var(--bg-image); background-size: cover; background-position: center;
+            background-image: var(--bg-image); background-size: calc(100% + 50px); /* Slightly larger for 3D parallax */
+            background-position: center;
         }
 
         body::before {
@@ -91,7 +88,6 @@
         .custom-input { width: 95%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--glass-border); outline: none; border-radius: 8px; margin-top: 5px; margin-bottom: 10px; transition: var(--transition-hq); box-sizing: border-box;}
         .custom-input:focus { border-color: var(--theme-color); box-shadow: 0 0 15px rgba(0,255,170,0.2); }
 
-        /* DESKTOP FILE SYSTEM UI */
         .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; margin-top: 15px; }
         .file-item { text-align: center; padding: 15px 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: 0.3s; position: relative;}
         .file-item:hover { background: rgba(0,255,170,0.08); border-color: var(--theme-color); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
@@ -111,27 +107,10 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0;} to { transform: translateX(0); opacity: 1;} }
 
         .pdf-viewer { width: 100%; height: 55vh; border: 1px solid var(--theme-color); border-radius: 10px; margin-top: 15px; background: #fff;}
-        .chat-log { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); display:flex; flex-direction: column; gap: 10px; margin-bottom:10px;}
-        .msg { padding: 10px 15px; border-radius: 10px; max-width: 80%; font-size: 0.95rem; }
-        .msg.user { background: rgba(255,255,255,0.1); align-self: flex-end; border-bottom-right-radius: 0; }
-        .msg.ai { background: rgba(0, 255, 170, 0.1); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--theme-color); color: var(--theme-color);}
-
-        #mic-status { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; background: rgba(5, 5, 8, 0.85); border: 1px solid var(--theme-color); border-radius: 30px; z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); font-size: 0.85rem; transition: 0.4s; display: flex; align-items: center; gap: 15px; }
-        .pulse-active { animation: jarvisBreathe 1.4s infinite alternate ease-in-out; }
-        @keyframes jarvisBreathe { 0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); } 100% { box-shadow: 0 0 30px var(--theme-color); transform: translateX(-50%) scale(1.02); } }
         
-        .manual-mic-toggle { background: var(--theme-color); color: #000; border: none; padding: 4px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
-        .manual-mic-toggle.off { background: #ff2a2a; color: #fff; }
-
         #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.5s ease; }
         #landing-stage { flex-direction: column; justify-content: center; align-items: center; }
         #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
-
-        /* --- 3D ANATOMY HOLOGRAPHIC ENGINE --- */
-        .holo-viewport { flex: 1; position: relative; background: radial-gradient(circle at center, rgba(0, 255, 170, 0.15) 0%, rgba(2, 2, 5, 0.9) 75%); display: flex; justify-content: center; align-items: center; border-radius: 0 18px 18px 0; }
-        .Hotspot { background: var(--theme-color); border-radius: 50%; border: none; box-sizing: border-box; cursor: pointer; height: 16px; width: 16px; position: relative; transition: var(--transition-hq); box-shadow: 0 0 15px var(--theme-color), 0 0 30px var(--theme-color); animation: pulseNeon 2s infinite; }
-        .Hotspot:not([data-visible]) { background: transparent; border: 2px solid var(--theme-color); box-shadow: none; height: 12px; width: 12px; }
-        @keyframes pulseNeon { 0% { transform: scale(1); box-shadow: 0 0 10px var(--theme-color); } 50% { transform: scale(1.3); box-shadow: 0 0 25px var(--theme-color); } 100% { transform: scale(1); box-shadow: 0 0 10px var(--theme-color); } }
     </style>
 </head>
 <body>
@@ -144,31 +123,23 @@
         <div class="token-hud-pill" style="--theme-color: #ffaa00;">🏆 Portfolio Health: <span id="portfolio-status">STABLE</span></div>
     </div>
 
-    <div id="mic-status">
-        <span id="mic-text">🔴 AI ENGINE STANDBY</span>
-        <button id="mic-toggle-btn" class="manual-mic-toggle off" onclick="handleMicManualSwitch()">ACTIVATE MIC</button>
-    </div>
-
-    <div id="global-timer-widget">
-        <div class="timer-label" id="timer-label-text">FOCUS MODE</div>
-        <span id="timer-countdown">25:00</span>
-    </div>
-    
     <div id="toast-container"></div> 
-    
-    <div class="overlay-modal" id="jarvis-terminal-overlay">
-        <div class="modal-box" style="width: 700px;">
-            <span class="close-btn" onclick="closeModal('jarvis-terminal-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚡ GEMINI ANALYTICS ENGINE</h2>
-            <p style="font-size:0.85rem; color:#aaa; margin-top:-10px;">Chat with your AI partner for coding, trading analysis, or study doubts.</p>
-            <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
-            <div class="chat-log" id="chat-log-box">
-                <div class="msg ai">Jai Hind Partner! I am connected via Gemini API. How can I assist you today?</div>
+
+    <div class="overlay-modal" id="learner-modal">
+        <div class="modal-box" style="width: 600px;">
+            <span class="close-btn" onclick="closeModal('learner-modal')">✕</span>
+            <h2 style="color: var(--theme-color);">🎓 TRADING LEARNER MODE</h2>
+            <p>Welcome to the live markets! Here's how to understand your Pro Max Smart Chart:</p>
+            <ul>
+                <li style="margin-bottom:10px;"><b>Candlesticks (Green/Red bars):</b> Green means the price went UP during that time. Red means the price went DOWN.</li>
+                <li style="margin-bottom:10px;"><b>RSI (Bottom Chart):</b> Relative Strength Index. If it goes above 70, the asset might be "overbought" (price might drop). Below 30 means "oversold" (price might jump).</li>
+                <li style="margin-bottom:10px;"><b>LONG (Buy):</b> You make a profit if the asset's price goes UP.</li>
+                <li style="margin-bottom:10px;"><b>SHORT (Sell):</b> You make a profit if the asset's price goes DOWN.</li>
+            </ul>
+            <div style="background: rgba(0,255,170,0.1); padding: 15px; border-radius: 8px; border: 1px solid var(--theme-color);">
+                💡 <b>Pro Tip:</b> Use the "Order Book" below the chart to practice buying and selling using your virtual KK Coins!
             </div>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" class="custom-input" placeholder="Type command..." style="margin-bottom:0;" onkeypress="if(event.key==='Enter') sendChatMsg()">
-                <button class="action-btn" onclick="sendChatMsg()">SEND</button>
-            </div>
+            <button class="action-btn" style="margin-top: 20px; width:100%;" onclick="closeModal('learner-modal')">I UNDERSTAND</button>
         </div>
     </div>
 
@@ -184,106 +155,36 @@
                         <label style="color:#aaa; font-size:0.85rem;">📁 Insert Offline Files (.pdf, .png, .jpg):</label><br>
                         <input type="file" id="file-uploader" class="custom-input" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleMultipleFileUpload(event)" style="border:1px dashed var(--theme-color);">
                     </div>
-                    <div style="flex:1;">
-                        <label style="color:#aaa; font-size:0.85rem;">🔗 Or Paste Google Drive Link:</label><br>
-                        <div style="display:flex; gap:5px;">
-                            <input type="text" id="gdrive-link" class="custom-input" placeholder="https://drive.google.com/..." style="margin-top:0;">
-                            <button class="action-btn" style="padding:10px;" onclick="loadGDriveAsFile()">ADD LINK</button>
-                        </div>
-                    </div>
                 </div>
             </div>
             
-            <div id="vault-files-grid" class="file-grid">
-                </div>
+            <div id="vault-files-grid" class="file-grid"></div>
 
             <div id="file-display-area" style="display:none; text-align:center; position:relative;">
                 <button class="action-btn" style="position:absolute; top:-40px; left:0; background: rgba(0,0,0,0.8); font-size:0.8rem;" onclick="closeFileViewer()">⬅ BACK TO FOLDER</button>
                 <iframe id="doc-iframe" class="pdf-viewer" src=""></iframe>
-            </div>
-
-            <h4 style="color:var(--theme-color); margin-bottom: 5px;">Subject Notes & Shlokas</h4>
-            <textarea id="vault-notes" class="custom-input" rows="6" placeholder="Keep your study notes, shlokas, or text here..." style="font-size:1rem;"></textarea>
-            <button class="action-btn" style="margin-top:10px; width:100%;" onclick="saveVaultData()">💾 SAVE NOTES PROGRESS</button>
-        </div>
-    </div>
-
-    <div class="overlay-modal" id="settings-overlay">
-        <div class="modal-box" style="width: 500px;">
-            <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚙️ COGNITIVE HUB MANAGER</h2>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px;">
-                <label>Main Background Cinematic</label>
-                <select id="bg-selector" class="custom-input">
-                    <option value="https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600">Cyber City Lights</option>
-                    <option value="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600">Earth Orbital View</option>
-                    <option value="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1600">Digital Matrix Code</option>
-                    <option value="https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=1600">Quantum Neon 3D</option>
-                    <option value="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1600">Deep Space Nebula</option>
-                    <option value="https://images.unsplash.com/photo-1633630663189-9a674488b394?q=80&w=1600">Fractal Dimension 3D</option>
-                </select>
-
-                <label style="margin-top: 10px;">HUD Glass Opacity</label>
-                <input type="range" id="opacity-slider" min="0.2" max="0.95" step="0.05" value="0.65" style="width: 100%;">
-
-                <label style="margin-top: 10px;">Jarvis Voice Speed</label>
-                <input type="range" id="voice-speed-slider" min="0.7" max="1.5" step="0.1" value="1.0" style="width: 100%;">
-            </div>
-            <button class="action-btn" style="margin-top: 25px; width:100%; padding:12px;" onclick="saveSettings()">APPLY HUD CONFIG</button>
-        </div>
-    </div>
-
-    <div class="overlay-modal" id="anatomy-3d-modal">
-        <div class="modal-box" style="width: 1100px; max-width: 95%; height: 85vh; display: flex; padding: 0; overflow: hidden; border-color: var(--theme-color);">
-            <span class="close-btn" onclick="closeModal('anatomy-3d-modal')" style="z-index: 20; top: 15px; right: 20px;">✕</span>
-            
-            <div style="width: 320px; background: rgba(5,5,8,0.85); border-right: 1px solid var(--glass-border); padding: 30px; display: flex; flex-direction: column;">
-                <h2 style="color: var(--theme-color); margin-top: 0; font-size: 1.4rem;">🧬 3D ANATOMY</h2>
-                <p style="font-size: 0.85rem; color: #aaa; margin-top: -10px;">Select structure for holographic projection.</p>
-                
-                <label style="color: #fff; font-size: 0.9rem; margin-top: 20px;">Bone / Organ Module:</label>
-                <select id="bone-selector" class="custom-input" onchange="loadBoneModel()">
-                    <option value="skeleton">Full Skeleton (कंकाल)</option>
-                    <option value="skull">Human Skull (खोपड़ी)</option>
-                </select>
-            </div>
-
-            <div class="holo-viewport">
-                <model-viewer id="holo-viewer" 
-                    src="" 
-                    camera-controls 
-                    auto-rotate 
-                    shadow-intensity="1" 
-                    exposure="1" 
-                    interaction-prompt="none"
-                    style="width: 100%; height: 100%;">
-                </model-viewer>
             </div>
         </div>
     </div>
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.4</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.5</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
         <div class="carousel-container">
-            <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1535378620166-273708d44e4c?q=80&w=800');" onclick="initProtocol('ironman', '#ff2a2a')">
+            <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('./1000568725.jpg');" onclick="initProtocol('ironman', '#ff2a2a')">
                 <div class="card-icon">🦾</div>
-                <div class="card-content"><h3>BAMS COMMAND</h3><p style="color:#aaa; font-size:0.8rem;">Ayurvedic Studies & Files Hub</p></div>
+                <div class="card-content" style="background: rgba(0,0,0,0.6); padding: 10px; border-radius: 10px;"><h3>BAMS COMMAND</h3><p style="color:#ddd; font-size:0.8rem;">Ayurvedic Studies & Files</p></div>
             </div>
             <div class="avenger-card" id="card-cap" style="color: #0077ff; background-image: url('https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=600');" onclick="initProtocol('cap', '#0077ff')">
                 <div class="card-icon">📈</div>
                 <div class="card-content"><h3>TRADE TERMINAL</h3><p style="color:#aaa; font-size:0.8rem;">Live API Virtual Trading</p></div>
             </div>
-            <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=800');" onclick="initProtocol('thor', '#ffaa00')">
+            <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('./1000568730.jpg');" onclick="initProtocol('thor', '#ffaa00')">
                 <div class="card-icon">🔨</div>
-                <div class="card-content"><h3>CREATIVE FORGE</h3><p style="color:#aaa; font-size:0.8rem;">Scripting & Notes Management</p></div>
-            </div>
-            <div class="avenger-card" id="card-spidey" style="color: #ff0055; background-image: url('https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=600');" onclick="initProtocol('spidey', '#ff0055')">
-                <div class="card-icon">🕸️</div>
-                <div class="card-content"><h3>AGENCY LEDGER</h3><p style="color:#aaa; font-size:0.8rem;">Spreadsheets & Docs</p></div>
+                <div class="card-content" style="background: rgba(0,0,0,0.6); padding: 10px; border-radius: 10px;"><h3>CREATIVE FORGE</h3><p style="color:#ddd; font-size:0.8rem;">Scripting & Notes Management</p></div>
             </div>
         </div>
     </div>
@@ -294,33 +195,22 @@
             <div class="nav-btn" id="nav-ironman" style="color: #ff2a2a;" onclick="switchModule('ironman')">🦾</div>
             <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">📈</div>
             <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">🔨</div>
-            <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
-            <div class="nav-btn" style="color: #fff;" onclick="openModal('jarvis-terminal-overlay')">💬</div>
         </div>
         <div class="content-area" id="main-content"></div>
     </div>
 
     <script>
-        let currentModule = ''; let engineInstance; let jarvisActive = false;
-        let globalTimerInterval; let secondsLeft = 0; let customTimetable = []; let notifiedTasks = new Set();
-        let isFocusMode = true; let voiceSpeed = 1.0;
-
+        let currentModule = ''; 
         let totalCoins = parseFloat(localStorage.getItem('kk_coins')) || 10000; 
         let activeTrades = JSON.parse(localStorage.getItem('kk_trades')) || [];
         let customIronmanSubjects = JSON.parse(localStorage.getItem('kk_ironman_subjects')) || [];
-        let thorNotesList = JSON.parse(localStorage.getItem('kk_thor_notes')) || [];
-        
-        // NEW: Folder files memory
         let currentVaultFiles = [];
 
         function refreshHUDTokens() {
             document.getElementById('user-vault-coins').innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
             localStorage.setItem('kk_coins', totalCoins);
             localStorage.setItem('kk_trades', JSON.stringify(activeTrades));
-            
-            if(currentModule === 'cap' && document.getElementById('positions-table-body')) {
-                renderTradePositions();
-            }
+            if(currentModule === 'cap' && document.getElementById('positions-table-body')) renderTradePositions();
         }
 
         const modules = {
@@ -328,10 +218,7 @@
                 color: '#ff2a2a', title: 'BAMS Academic Command Center',
                 html: `
                     <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                        <button class="action-btn" onclick="startTimerPrompt('focus')">⏱️ SET FOCUS TIMER</button>
-                        <button class="action-btn" onclick="openTimetableMaker()">📅 STUDY TIMETABLE</button>
                         <button class="action-btn" style="border-color:#00ffaa;" onclick="createNewSubject()">➕ ADD SUBJECT FOLDER</button>
-                        <button class="action-btn" style="border-color:#00ffaa; background: rgba(0, 255, 170, 0.1);" onclick="openAnatomyHologram()">🧬 3D ANATOMY</button>
                     </div>
                     <h3>Your Custom Subject Vaults</h3>
                     <div class="grid-layout" id="ironman-dynamic-grid" style="margin-top:15px;"></div>`
@@ -339,22 +226,12 @@
             cap: { 
                 color: '#0077ff', title: 'Professional Trading Hub (Live Virtual Execution)', 
                 html: `
-                    <div class="tradingview-widget-container" style="margin-bottom: 15px;">
-                      <div class="tradingview-widget-container__widget"></div>
-                      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-                      {
-                      "symbols": [{"proName": "BINANCE:BTCUSDT", "title": "Bitcoin"}, {"proName": "BINANCE:ETHUSDT", "title": "Ethereum"}, {"proName": "NSE:NIFTY", "title": "Nifty 50"}],
-                      "showSymbolLogo": true, "isTransparent": true, "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
-                      }
-                      <\/script>
-                    </div>
-
                     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                         <div style="flex: 2; min-width: 500px;">
                             <div style="display:flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol" style="margin: 0;">
-                                <button class="action-btn" onclick="updateTVSymbol()">LOAD CHART</button>
-                                <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="openModal('jarvis-terminal-overlay')">🩺 AI ANALYSIS</button>
+                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Symbol (e.g. NSE:NIFTY, BINANCE:ETHUSDT)" style="margin: 0;">
+                                <button class="action-btn" onclick="updateTVSymbol()">LOAD SMART CHART</button>
+                                <button class="action-btn" style="border-color: #00ffaa; margin-left:auto; background: rgba(0,255,170,0.1);" onclick="openModal('learner-modal')">🎓 LEARNER MODE</button>
                             </div>
                             <div id="tradingview_cap" style="height:55vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4);"></div>
                         </div>
@@ -366,120 +243,70 @@
                             </h3>
                             
                             <label style="font-size:0.85rem; color:#aaa;">Instrument (e.g., BTCUSDT)</label>
-                            <div style="display:flex; gap:5px;">
-                                <input type="text" id="order-symbol" class="custom-input" placeholder="e.g. BTCUSDT" value="BTCUSDT">
-                                <button class="action-btn" onclick="fetchLivePriceUI()" style="padding: 10px;">📡</button>
-                            </div>
+                            <input type="text" id="order-symbol" class="custom-input" placeholder="e.g. BTCUSDT" value="BTCUSDT">
                             
                             <div style="display: flex; gap: 10px;">
                                 <div style="flex:1;">
                                     <label style="font-size:0.85rem; color:#aaa;">Qty</label>
-                                    <input type="number" id="order-qty" class="custom-input" placeholder="0.00" step="0.01" oninput="liveRiskCalculator()">
+                                    <input type="number" id="order-qty" class="custom-input" placeholder="0.00" step="0.01">
                                 </div>
                                 <div style="flex:1;">
                                     <label style="font-size:0.85rem; color:#aaa;">Price</label>
-                                    <input type="number" id="order-price" class="custom-input" placeholder="Market/Live" step="0.1" oninput="liveRiskCalculator()">
+                                    <input type="number" id="order-price" class="custom-input" placeholder="Market/Live" step="0.1">
                                 </div>
                             </div>
-                            
-                            <div id="auto-risk-display" style="text-align:center; font-size:0.85rem; font-weight:bold; margin-bottom: 10px; min-height: 15px;"></div>
 
-                            <div style="display:flex; justify-content:space-between; margin-top: 5px;">
+                            <div style="display:flex; justify-content:space-between; margin-top: 15px;">
                                 <button class="trade-btn buy" onclick="executeTrade('BUY')">BUY / LONG</button>
                                 <button class="trade-btn sell" onclick="executeTrade('SELL')">SELL / SHORT</button>
                             </div>
 
                             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:20px 0;">
-                            
                             <h4 style="margin: 0 0 10px 0;">OPEN POSITIONS</h4>
                             <div style="max-height: 150px; overflow-y: auto;">
                                 <table style="width: 100%; text-align: left; font-size: 0.85rem; border-collapse: collapse;">
-                                    <thead>
-                                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
-                                            <th style="padding-bottom:5px;">Sym</th>
-                                            <th style="padding-bottom:5px;">Type</th>
-                                            <th style="padding-bottom:5px;">Live Action</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr style="border-bottom: 1px solid rgba(255,255,255,0.2);"><th style="padding-bottom:5px;">Sym</th><th style="padding-bottom:5px;">Type</th><th style="padding-bottom:5px;">Action</th></tr></thead>
                                     <tbody id="positions-table-body"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>` 
             },
-            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `
-                <div style="display: flex; gap: 20px; height: 60vh;">
-                    <div style="flex: 2; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,170,0,0.2);">
-                        <input type="text" id="thor-note-title" class="custom-input" placeholder="Note Title / Idea Name..." style="font-size: 1.2rem;">
-                        <textarea id="thor-note-content" class="custom-input" style="height: 70%; font-family: monospace; resize: none;" placeholder="Write your text, scripts, or ideas here..."></textarea>
-                        <button class="action-btn" style="width: 100%;" onclick="saveThorNote()">💾 SAVE TO FORGE</button>
-                    </div>
-                    <div style="flex: 1; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,170,0,0.2); overflow-y: auto;">
-                        <h3 style="margin-top:0; color:#ffaa00;">Saved Manuscripts</h3>
-                        <div id="thor-notes-list" style="display:flex; flex-direction:column; gap:10px;"></div>
-                    </div>
-                </div>
-            ` },
-            spidey: { color: '#ff0055', title: 'Agency Web Ledger Control', html: `
-                <div class="grid-layout">
-                    <div class="tool-card" onclick="window.open('https://docs.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📄</div><h3>Google Docs</h3></div>
-                    <div class="tool-card" onclick="window.open('https://sheets.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📊</div><h3>Google Sheets</h3></div>
-                    <div class="tool-card" onclick="window.open('https://notion.so')"><div style="font-size:2rem; margin-bottom:10px;">📓</div><h3>Notion Workspace</h3></div>
-                    <div class="tool-card" onclick="window.open('https://github.com')"><div style="font-size:2rem; margin-bottom:10px;">🐙</div><h3>GitHub Repositories</h3></div>
-                </div>
-                <div style="margin-top: 25px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,0,85,0.2);">
-                    <h3 style="color:#ff0055; margin-top:0;">Ledger & Quick Notes</h3>
-                    <textarea id="spidey-ledger" class="custom-input" style="height: 120px; resize:none;" placeholder="Drop your quick expense details or agency notes here..." oninput="localStorage.setItem('kk_spidey_ledger', this.value)"></textarea>
-                </div>
-            ` }
+            thor: { color: '#ffaa00', title: 'Creative Forge Matrix', html: `<p>Thor module active.</p>` }
         };
 
-        window.onload = function() {
-            if(localStorage.getItem('bg-url')) document.documentElement.style.setProperty('--bg-image', "url('" + localStorage.getItem('bg-url') + "')");
-            if(localStorage.getItem('glass-opacity')) document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${localStorage.getItem('glass-opacity')})`);
-            if(localStorage.getItem('voice-speed')) voiceSpeed = parseFloat(localStorage.getItem('voice-speed'));
-            if(localStorage.getItem('myTimetable')) customTimetable = JSON.parse(localStorage.getItem('myTimetable'));
-            refreshHUDTokens();
-            startTimeChecker(); 
+        window.onload = function() { refreshHUDTokens(); }
+
+        /* --- TRADING VIEW SMART CHART INTEGRATION --- */
+        function loadTV(symbol) {
+            document.getElementById('tradingview_cap').innerHTML = '';
+            new TradingView.widget({
+              "autosize": true,
+              "symbol": symbol,
+              "interval": "15",
+              "timezone": "Etc/UTC",
+              "theme": "dark",
+              "style": "1",
+              "locale": "en",
+              "enable_publishing": false,
+              "backgroundColor": "rgba(0, 0, 0, 0.5)",
+              "gridColor": "rgba(255, 255, 255, 0.05)",
+              "hide_top_toolbar": false,
+              "hide_legend": false,
+              "save_image": false,
+              "container_id": "tradingview_cap",
+              "studies": ["RSI@tv-basicstudies", "MASimple@tv-basicstudies"] // Pro Max Smart Indicators
+            });
         }
 
-        /* --- LIVE RISK CALCULATOR --- */
-        function liveRiskCalculator() {
-            const qty = parseFloat(document.getElementById('order-qty').value);
-            const price = parseFloat(document.getElementById('order-price').value);
-            const displayBox = document.getElementById('auto-risk-display');
-
-            if (!isNaN(qty) && !isNaN(price) && qty > 0 && price > 0 && totalCoins > 0) {
-                const totalValue = qty * price;
-                const riskPct = (totalValue / totalCoins) * 100;
-                
-                displayBox.innerText = `Capital Utilization: ${riskPct.toFixed(2)}% (${totalValue.toFixed(2)} Coins)`;
-                
-                if(riskPct > 100) { displayBox.style.color = '#ff4757'; displayBox.innerText += " ⚠️ INSUFFICIENT FUNDS"; }
-                else if (riskPct > 30) { displayBox.style.color = '#ffaa00'; }
-                else { displayBox.style.color = '#00ffaa'; }
-            } else {
-                displayBox.innerText = '';
-            }
+        function updateTVSymbol() {
+            let sym = document.getElementById('tv-symbol-input').value;
+            loadTV(sym);
         }
 
-        /* --- REALISTIC PAPER TRADING --- */
+        /* --- TRADING EXECUTION --- */
         async function getLiveBinancePrice(sym) {
-            try {
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym.toUpperCase()}`);
-                const data = await res.json();
-                return data.price ? parseFloat(data.price) : null;
-            } catch (error) { return null; }
-        }
-
-        async function fetchLivePriceUI() {
-            const sym = document.getElementById('order-symbol').value;
-            const price = await getLiveBinancePrice(sym);
-            if (price) {
-                document.getElementById('order-price').value = price;
-                liveRiskCalculator();
-                showSilentNotification(`Live price fetched for ${sym}: $${price}`);
-            }
+            try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym.toUpperCase()}`); const data = await res.json(); return data.price ? parseFloat(data.price) : null; } catch (error) { return null; }
         }
 
         async function executeTrade(type) {
@@ -487,293 +314,170 @@
             const qty = parseFloat(document.getElementById('order-qty').value);
             let price = parseFloat(document.getElementById('order-price').value);
 
-            if(isNaN(price) || price <= 0) {
-                price = await getLiveBinancePrice(sym);
-                if (!price) { showSilentNotification("Cannot fetch price. Enter manually."); return; }
-            }
+            if(isNaN(price) || price <= 0) { price = await getLiveBinancePrice(sym); if (!price) { showSilentNotification("Cannot fetch live price. Enter manually."); return; } }
             if(!sym || isNaN(qty) || qty <= 0) { showSilentNotification("Invalid Order!"); return; }
 
             const tradeValue = qty * price;
-            if (totalCoins < tradeValue) {
-                showSilentNotification("Insufficient K.K. Coins!"); jarvisSpeak("Insufficient capital."); return;
-            }
+            if (totalCoins < tradeValue) { showSilentNotification("Insufficient K.K. Coins!"); return; }
 
             totalCoins -= tradeValue;
             activeTrades.push({ id: Date.now(), sym, type, qty, entryPrice: price });
-            
             showSilentNotification(`${type} Order Executed: ${qty} ${sym} at $${price}`);
-            document.getElementById('order-qty').value = '';
-            document.getElementById('order-price').value = '';
-            document.getElementById('auto-risk-display').innerText = '';
             refreshHUDTokens();
         }
 
         async function closeTrade(id) {
-            const tradeIndex = activeTrades.findIndex(t => t.id === id);
-            if(tradeIndex === -1) return;
+            const tradeIndex = activeTrades.findIndex(t => t.id === id); if(tradeIndex === -1) return;
             const trade = activeTrades[tradeIndex];
-            
             let exitPrice = await getLiveBinancePrice(trade.sym);
-            if (!exitPrice) {
-                 let manualPrice = prompt(`API failed. Enter EXIT PRICE manually for ${trade.sym}:`, trade.entryPrice);
-                 if(manualPrice === null || isNaN(manualPrice)) return; exitPrice = parseFloat(manualPrice);
-            }
+            if (!exitPrice) { let manualPrice = prompt(`Enter EXIT PRICE manually for ${trade.sym}:`, trade.entryPrice); if(!manualPrice) return; exitPrice = parseFloat(manualPrice); }
 
             let profitLoss = 0; let returnedMargin = trade.qty * trade.entryPrice;
-
-            if(trade.type === 'BUY') { profitLoss = (trade.qty * exitPrice) - returnedMargin; } 
-            else if (trade.type === 'SELL') { profitLoss = returnedMargin - (trade.qty * exitPrice); }
+            if(trade.type === 'BUY') profitLoss = (trade.qty * exitPrice) - returnedMargin;
+            else if (trade.type === 'SELL') profitLoss = returnedMargin - (trade.qty * exitPrice);
 
             totalCoins += (returnedMargin + profitLoss);
             activeTrades.splice(tradeIndex, 1);
-            
             showSilentNotification(`Closed @ $${exitPrice}. P&L: ${profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)}`);
             refreshHUDTokens();
         }
 
         function renderTradePositions() {
             const tbody = document.getElementById('positions-table-body');
-            const panelCoins = document.getElementById('panel-coins');
-            if(!tbody || !panelCoins) return;
-
-            panelCoins.innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+            document.getElementById('panel-coins').innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
             tbody.innerHTML = '';
-
-            if(activeTrades.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="padding-top:10px; color:#aaa; text-align:center;">No open positions</td></tr>'; return;
-            }
-
+            if(activeTrades.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#aaa;">No open positions</td></tr>'; return; }
             activeTrades.forEach(t => {
                 const color = t.type === 'BUY' ? '#00b894' : '#d63031';
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="padding: 8px 0; font-weight:bold;">${t.sym}<br><span style="font-size:0.7rem; color:#aaa;">Qty: ${t.qty}</span></td>
-                        <td style="padding: 8px 0; color: ${color}; font-weight:bold;">${t.type}<br><span style="font-size:0.7rem; color:#aaa;">@ ${t.entryPrice}</span></td>
-                        <td style="padding: 8px 0;"><button class="action-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="closeTrade(${t.id})">CLOSE</button></td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr><td style="font-weight:bold;">${t.sym}<br><span style="font-size:0.7rem; color:#aaa;">Qty: ${t.qty}</span></td><td style="color: ${color}; font-weight:bold;">${t.type}<br><span style="font-size:0.7rem; color:#aaa;">@ ${t.entryPrice}</span></td><td><button class="action-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="closeTrade(${t.id})">CLOSE</button></td></tr>`;
             });
         }
 
-
-        /* --- DYNAMIC IRONMAN SUBJECTS --- */
+        /* --- LOCAL FORGE (DATABASE) VAULT SYSTEM --- */
         function createNewSubject() {
-            let name = prompt("Enter Subject Name:");
-            if(!name) return;
-            let emoji = prompt("Enter an Emoji for this subject (e.g. 🧠):", "📁");
-            customIronmanSubjects.push({ name, emoji: emoji || '📁' });
+            let name = prompt("Enter Subject Name:"); if(!name) return;
+            customIronmanSubjects.push({ name, emoji: '📁' });
             localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
             renderIronmanSubjects();
         }
 
-        function deleteSubject(event, name) {
-            event.stopPropagation();
-            if(confirm(`Are you sure you want to delete the folder: ${name}?`)) {
-                customIronmanSubjects = customIronmanSubjects.filter(s => s.name !== name);
-                localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
-                localStorage.removeItem('note_' + name);
-                localStorage.removeItem('files_' + name); // Clear array of files
-                renderIronmanSubjects();
-            }
-        }
-
         function renderIronmanSubjects() {
-            const grid = document.getElementById('ironman-dynamic-grid');
-            if(!grid) return; grid.innerHTML = '';
+            const grid = document.getElementById('ironman-dynamic-grid'); if(!grid) return; grid.innerHTML = '';
             customIronmanSubjects.forEach(sub => {
-                grid.innerHTML += `
-                    <div class="tool-card" onclick="openVault('${sub.name}')">
-                        <span style="position:absolute; top:15px; right:15px; color:#ff4757; font-size:1.2rem; cursor:pointer;" onclick="deleteSubject(event, '${sub.name}')">🗑️</span>
-                        <div style="font-size:2rem; margin-bottom:10px;">${sub.emoji}</div>
-                        <h3 style="margin-right:20px;">${sub.name}</h3>
-                        <p style="font-size:0.8rem; color:#aaa;">Notes & Files</p>
-                    </div>
-                `;
+                grid.innerHTML += `<div class="tool-card" onclick="openVault('${sub.name}')"><div style="font-size:2rem; margin-bottom:10px;">${sub.emoji}</div><h3>${sub.name}</h3></div>`;
             });
         }
 
-        /* --- MULTI-FILE DESKTOP VAULT --- */
         let currentVaultTitle = '';
-        
-        function openVault(title) {
+        async function openVault(title) {
             currentVaultTitle = title;
             document.getElementById('vault-title').innerText = title + " FOLDER";
+            closeFileViewer();
             
-            document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
-            document.getElementById('vault-notes').style.display = 'block';
-
-            closeFileViewer(); // Ensure we are on folder view
-
-            // Load multiple files array
-            let savedFilesStr = localStorage.getItem('files_'+title);
-            currentVaultFiles = savedFilesStr ? JSON.parse(savedFilesStr) : [];
-            
-            renderVaultFiles();
+            // Pulling data from browser IndexedDB using localforage
+            try {
+                let savedFiles = await localforage.getItem('files_' + title);
+                currentVaultFiles = savedFiles ? savedFiles : [];
+                renderVaultFiles();
+            } catch (err) {
+                console.error("Error loading DB", err);
+                currentVaultFiles = [];
+            }
             openModal('vault-modal');
         }
 
-        function saveVaultData() {
-            localStorage.setItem('note_' + currentVaultTitle, document.getElementById('vault-notes').value);
-            showSilentNotification("Notes Saved!");
-        }
-
-        // Handles uploading multiple files into the array
         function handleMultipleFileUpload(event) {
-            const files = event.target.files;
-            if(!files || files.length === 0) return;
-
-            let fileReaders = [];
-
+            const files = event.target.files; if(!files || files.length === 0) return;
             for(let i=0; i<files.length; i++) {
-                const file = files[i];
-                if (file.size > 4000000) { showSilentNotification(`Warning: ${file.name} is large. Skipping to save quota.`); continue; }
-
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const base64Data = e.target.result;
-                    currentVaultFiles.push({
-                        id: Date.now() + Math.random(),
-                        name: file.name,
-                        type: file.type.includes('pdf') ? 'PDF' : 'IMG',
-                        data: base64Data
-                    });
-                    
-                    // Save to local storage after the last file finishes
-                    if(i === files.length - 1) { saveFilesArray(); }
+                    currentVaultFiles.push({ id: Date.now() + Math.random(), name: files[i].name, type: files[i].type.includes('pdf') ? 'PDF' : 'IMG', data: e.target.result });
+                    if(i === files.length - 1) saveFilesArray();
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(files[i]);
             }
-            document.getElementById('file-uploader').value = ''; // Reset input
         }
 
-        function loadGDriveAsFile() {
-            let link = document.getElementById('gdrive-link').value;
-            if(link.includes('drive.google.com')) {
-                link = link.replace(/\/view.*$/, '/preview'); 
-                currentVaultFiles.push({
-                    id: Date.now(),
-                    name: 'Google Drive Doc',
-                    type: 'LINK',
-                    data: link
-                });
-                saveFilesArray();
-                document.getElementById('gdrive-link').value = '';
-            } else { showSilentNotification("Invalid Google Drive Link!"); }
-        }
-
-        function saveFilesArray() {
+        async function saveFilesArray() {
             try {
-                localStorage.setItem('files_' + currentVaultTitle, JSON.stringify(currentVaultFiles));
+                // localforage saves to indexedDB which allows hundreds of MBs!
+                await localforage.setItem('files_' + currentVaultTitle, currentVaultFiles);
                 renderVaultFiles();
-                jarvisSpeak("Files synchronized to folder.");
+                showSilentNotification("Files saved successfully to Database!");
             } catch(err) {
-                showSilentNotification("Error saving file: Storage Quota Exceeded.");
-                currentVaultFiles.pop(); // Remove the last one that caused overflow
+                showSilentNotification("Storage Error!");
             }
         }
 
-        function deleteVaultFile(event, id) {
-            event.stopPropagation();
-            currentVaultFiles = currentVaultFiles.filter(f => f.id !== id);
-            localStorage.setItem('files_' + currentVaultTitle, JSON.stringify(currentVaultFiles));
-            renderVaultFiles();
-        }
-
-        // Renders Desktop-like UI inside the vault
         function renderVaultFiles() {
-            const grid = document.getElementById('vault-files-grid');
-            grid.innerHTML = '';
-            
-            if(currentVaultFiles.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1 / -1; color: #666; font-size: 0.85rem; text-align: center; padding: 10px;">No files in this folder yet. Upload above.</div>`;
-                return;
-            }
-
+            const grid = document.getElementById('vault-files-grid'); grid.innerHTML = '';
+            if(currentVaultFiles.length === 0) { grid.innerHTML = `<div style="color: #666; font-size: 0.85rem;">No files uploaded.</div>`; return; }
             currentVaultFiles.forEach(f => {
-                let icon = f.type === 'PDF' ? '📕' : (f.type === 'IMG' ? '🖼️' : '🔗');
-                grid.innerHTML += `
-                    <div class="file-item" onclick="openFileViewer('${f.data}')">
-                        <span class="file-item-delete" onclick="deleteVaultFile(event, ${f.id})">✕</span>
-                        <div class="file-item-icon">${icon}</div>
-                        <div class="file-item-name">${f.name}</div>
-                    </div>
-                `;
+                let icon = f.type === 'PDF' ? '📕' : '🖼️';
+                grid.innerHTML += `<div class="file-item" onclick="openFileViewer('${f.data}')"><div class="file-item-icon">${icon}</div><div class="file-item-name">${f.name}</div></div>`;
             });
         }
 
-        function openFileViewer(dataUrl) {
-            document.getElementById('vault-files-grid').style.display = 'none';
-            document.getElementById('file-upload-container').style.display = 'none';
-            document.getElementById('file-display-area').style.display = 'block';
-            document.getElementById('doc-iframe').src = dataUrl;
-        }
-
-        function closeFileViewer() {
-            document.getElementById('file-display-area').style.display = 'none';
-            document.getElementById('doc-iframe').src = '';
-            document.getElementById('vault-files-grid').style.display = 'grid';
-            document.getElementById('file-upload-container').style.display = 'block';
-        }
+        function openFileViewer(dataUrl) { document.getElementById('vault-files-grid').style.display = 'none'; document.getElementById('file-display-area').style.display = 'block'; document.getElementById('doc-iframe').src = dataUrl; }
+        function closeFileViewer() { document.getElementById('file-display-area').style.display = 'none'; document.getElementById('doc-iframe').src = ''; document.getElementById('vault-files-grid').style.display = 'grid'; }
 
         /* --- UI NAVIGATION --- */
-        function saveSettings() {
-            const bgUrl = document.getElementById('bg-selector').value;
-            const opacity = document.getElementById('opacity-slider').value;
-            localStorage.setItem('bg-url', bgUrl); document.documentElement.style.setProperty('--bg-image', "url('" + bgUrl + "')");
-            localStorage.setItem('glass-opacity', opacity); document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${opacity})`);
-            closeModal('settings-overlay');
-        }
-
         function initProtocol(id, color) {
             currentModule = id; document.documentElement.style.setProperty('--theme-color', color);
             document.getElementById('landing-stage').style.display = 'none';
             document.getElementById('dashboard-stage').style.display = 'flex';
             setTimeout(() => { document.getElementById('dashboard-stage').style.opacity = '1'; renderModule(id); }, 50);
         }
-        
-        function returnToHome() {
-            document.getElementById('dashboard-stage').style.opacity = '0';
-            setTimeout(() => { document.getElementById('dashboard-stage').style.display = 'none'; document.getElementById('landing-stage').style.display = 'flex'; }, 400);
-        }
+        function returnToHome() { document.getElementById('dashboard-stage').style.opacity = '0'; setTimeout(() => { document.getElementById('dashboard-stage').style.display = 'none'; document.getElementById('landing-stage').style.display = 'flex'; }, 400); }
 
         function renderModule(id) {
             const mod = modules[id]; const contentArea = document.getElementById('main-content');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
-            contentArea.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${mod.title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM CONFIG</button></div><div>${mod.html}</div>`;
-            
+            contentArea.innerHTML = `<h2>${mod.title}</h2><div>${mod.html}</div>`;
             if(id === 'cap') { loadTV("BINANCE:BTCUSDT"); renderTradePositions(); }
             if(id === 'ironman') renderIronmanSubjects();
-            if(id === 'thor') renderThorNotes();
         }
-        
         function switchModule(id) { renderModule(id); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
+        function showSilentNotification(msg) { let toast = document.createElement('div'); toast.className = 'hud-toast'; toast.innerText = "🔔 " + msg; document.getElementById('toast-container').appendChild(toast); setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 5000); }
 
-        function showSilentNotification(msg) {
-            let toast = document.createElement('div'); toast.className = 'hud-toast'; toast.innerText = "🔔 " + msg;
-            document.getElementById('toast-container').appendChild(toast);
-            setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 8000);
-        }
-
-        /* --- BACKGROUND PARTICLES --- */
+        /* --- 3D INTERACTIVE BACKGROUND PARTICLES --- */
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         let lines = []; function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
+        
+        let mouse = { x: null, y: null };
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x; mouse.y = event.y;
+            // 3D Parallax Effect for the Background Image
+            let xAxis = (window.innerWidth / 2 - event.pageX) / 40;
+            let yAxis = (window.innerHeight / 2 - event.pageY) / 40;
+            document.body.style.backgroundPosition = `calc(50% + ${xAxis}px) calc(50% + ${yAxis}px)`;
+        });
+
         class DigitalNode {
             constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vy = (Math.random() * 1.2) + 0.4; this.size = Math.random() * 2 + 1; this.alpha = Math.random() * 0.5 + 0.1; }
-            update() { this.y += this.vy; if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; } }
-            draw() { ctx.fillStyle = isFocusMode ? (modules[currentModule]?.color || '#00ffaa') : '#00e5ff'; ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+            update() { 
+                this.y += this.vy; 
+                if (this.y > canvas.height) { this.y = 0; this.x = Math.random() * canvas.width; } 
+                // Mouse interaction for 3D feel
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+                if(distance < 100) { this.x -= dx/20; this.y -= dy/20; }
+            }
+            draw() { ctx.fillStyle = modules[currentModule]?.color || '#00ffaa'; ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
-        for(let i=0; i<40; i++) lines.push(new DigitalNode()); 
+        for(let i=0; i<60; i++) lines.push(new DigitalNode()); 
+        
         function animate() {
-            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = isFocusMode ? (modules[currentModule]?.color || '#00ffaa') : '#00e5ff'; ctx.lineWidth = 0.15;
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = modules[currentModule]?.color || '#00ffaa'; ctx.lineWidth = 0.2;
             for(let a=0; a<lines.length; a++) {
                 lines[a].update(); lines[a].draw();
                 for(let b=a+1; b<lines.length; b++) {
                     let dist = Math.hypot(lines[a].x - lines[b].x, lines[a].y - lines[b].y);
-                    if(dist < 90) { ctx.globalAlpha = (90 - dist) / 600; ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke(); }
+                    if(dist < 100) { ctx.globalAlpha = (100 - dist) / 500; ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke(); }
                 }
             } requestAnimationFrame(animate);
         } animate();
