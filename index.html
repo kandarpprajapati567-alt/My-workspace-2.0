@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.K. Ultimate HUD | Master Interface v12.6 Pro Max</title>
+    <title>K.K. Ultimate HUD | Master Interface v12.7 Pro Max</title>
     
     <script type="module" src="./js/model-viewer.min.js"></script>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -19,19 +19,7 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --transition-hq: 0.4s cubic-bezier(0.25, 1, 0.2, 1);
             --card-text: #fff;
-            --scanline-opacity: 0.08;
             --bg-image: url('https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600');
-        }
-
-        body.theme-focus {
-            --theme-color: #ff3300 !important;
-            --glass-bg: rgba(20, 5, 5, 0.8) !important;
-            --glass-border: rgba(255, 51, 0, 0.3) !important;
-        }
-        body.theme-break {
-            --theme-color: #00e5ff !important;
-            --glass-bg: rgba(5, 15, 20, 0.8) !important;
-            --glass-border: rgba(0, 229, 255, 0.3) !important;
         }
 
         body.timer-alert { --theme-color: #ff003c !important; animation: redPulse 2s infinite; }
@@ -42,12 +30,6 @@
             font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden;
             user-select: none; transition: all 0.8s ease;
             background-image: var(--bg-image); background-size: cover; background-position: center;
-        }
-
-        body::before {
-            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 99999; background-size: 100% 4px, 6px 100%; pointer-events: none; opacity: var(--scanline-opacity);
         }
 
         /* Video Background Support */
@@ -141,110 +123,88 @@
         .sentiment-bar { height: 10px; width: 100%; background: #d63031; border-radius: 5px; margin-top: 10px; overflow: hidden; position: relative; }
         .sentiment-fill { height: 100%; background: #00b894; width: 65%; transition: 1s ease-in-out; }
 
-        /* --- MARVEL REALISTIC PRELOADER STYLES --- */
+        /* --- NEW UPGRADED BOOT SEQUENCE PRELOADER --- */
         #premium-preloader {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #030305; display: flex; justify-content: center; align-items: center;
             flex-direction: column; z-index: 999999; overflow: hidden; perspective: 1000px;
-            transition: opacity 1.5s cubic-bezier(0.77, 0, 0.175, 1), transform 1.5s ease-in-out;
+            transition: opacity 1.2s cubic-bezier(0.77, 0, 0.175, 1), transform 1.2s ease-in-out;
         }
-        .jarvis-reactor {
-            width: 150px; height: 150px; border-radius: 50%;
-            border: 4px solid rgba(0, 229, 255, 0.2); position: relative;
-            box-shadow: 0 0 50px rgba(0, 229, 255, 0.4), inset 0 0 50px rgba(0, 229, 255, 0.4);
-            animation: pulseReactor 2s infinite alternate; margin-bottom: 40px;
+        .quantum-ring {
+            width: 180px; height: 180px; border-radius: 50%;
+            border: 2px solid transparent; border-top: 3px solid #00e5ff; border-bottom: 3px solid #00ffaa;
+            position: relative; animation: spinSmooth 2s linear infinite; margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
         }
-        .jarvis-reactor::before {
-            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border-radius: 50%; border: 2px dashed #00e5ff; animation: spinRotate 5s linear infinite;
+        .quantum-ring::before {
+            content: ''; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border-radius: 50%; border: 2px dashed rgba(255, 255, 255, 0.3); animation: spinSmooth 4s linear infinite reverse;
         }
-        .jarvis-reactor::after {
-            content: ''; position: absolute; top: 30px; left: 30px; right: 30px; bottom: 30px;
-            border-radius: 50%; background: rgba(0, 229, 255, 0.8);
-            box-shadow: 0 0 40px #00e5ff;
+        .quantum-core {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-family: 'Orbitron', sans-serif; font-size: 2rem; color: #fff; font-weight: bold;
+            text-shadow: 0 0 15px #00e5ff;
         }
-        @keyframes pulseReactor { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; } }
-        @keyframes spinRotate { 100% { transform: rotate(360deg); } }
+        @keyframes spinSmooth { 100% { transform: rotate(360deg); } }
         
-        .preloader-content { text-align: center; transform-style: preserve-3d; animation: cinematicEnter 3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .preloader-content { text-align: center; transform-style: preserve-3d; animation: cinematicEnter 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .title-3d {
-            font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: #ffffff; text-transform: uppercase;
-            letter-spacing: 6px; margin: 0; position: relative;
-            text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff;
+            font-family: 'Orbitron', sans-serif; font-size: 2.2rem; color: #ffffff; text-transform: uppercase;
+            letter-spacing: 5px; margin: 0; text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
         }
-        .jarvis-typing {
-            font-family: monospace; color: #00e5ff; font-size: 1rem; margin-top: 15px;
-            white-space: nowrap; overflow: hidden; border-right: 2px solid #00e5ff;
-            width: 0; animation: typing 2.5s steps(30, end) forwards, blinkCursor 0.75s step-end infinite;
-        }
-        .loading-bar-container { width: 400px; height: 3px; background: rgba(0, 229, 255, 0.1); margin: 30px auto 0; position: relative; overflow: hidden; border-radius: 2px; }
-        .loading-bar { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: #00e5ff; box-shadow: 0 0 15px #00e5ff; animation: loadProgress 3.5s cubic-bezier(0.77, 0, 0.175, 1) forwards; }
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blinkCursor { from, to { border-color: transparent } 50% { border-color: #00e5ff } }
-        @keyframes cinematicEnter { 0% { transform: translateZ(-500px) rotateX(20deg); opacity: 0; filter: blur(10px); } 100% { transform: translateZ(0) rotateX(0); opacity: 1; filter: blur(0); } }
-        @keyframes loadProgress { 0% { width: 0%; } 50% { width: 60%; } 100% { width: 100%; } }
+        .boot-text { font-family: monospace; color: #00ffaa; font-size: 1.1rem; margin-top: 15px; letter-spacing: 2px;}
+        @keyframes cinematicEnter { 0% { transform: translateZ(-300px) scale(0.8); opacity: 0; } 100% { transform: translateZ(0) scale(1); opacity: 1; } }
         .hide-preloader { opacity: 0 !important; pointer-events: none; transform: scale(1.1); }
 
-        /* --- ADVANCED IRONMAN SHLOKA MATRIX STYLES --- */
-        .shloka-matrix-container { display: flex; height: 75vh; border-top: 1px solid rgba(255, 42, 42, 0.3); margin-top: 15px; background: linear-gradient(180deg, rgba(255, 42, 42, 0.05) 0%, transparent 100%); position: relative; border-radius: 10px; box-shadow: inset 0 0 30px rgba(255, 42, 42, 0.05);}
-        .shloka-matrix-container::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background-image: radial-gradient(rgba(255, 42, 42, 0.15) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3; pointer-events: none; }
-        
-        .samhita-tabs { display: flex; gap: 10px; padding: 15px; border-bottom: 1px solid rgba(255, 42, 42, 0.2); overflow-x: auto; scrollbar-width: none;}
-        .samhita-btn { background: rgba(0,0,0,0.6); border: 1px solid rgba(255, 42, 42, 0.3); color: #888; padding: 10px 20px; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; transition: 0.3s; white-space: nowrap;}
-        .samhita-btn.active, .samhita-btn:hover { background: rgba(255, 42, 42, 0.15); color: #fff; border-color: #ff2a2a; box-shadow: 0 0 15px rgba(255, 42, 42, 0.4); }
+        /* --- CLEAN SHLOKA MATRIX STYLES (No Scanning, No Red Shadows) --- */
+        .shloka-matrix-container { display: flex; height: 75vh; border-top: 1px solid rgba(0, 255, 170, 0.3); margin-top: 15px; background: rgba(5, 10, 15, 0.4); position: relative; border-radius: 10px; }
+        .samhita-tabs { display: flex; gap: 10px; padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); overflow-x: auto; scrollbar-width: none;}
+        .samhita-btn { background: rgba(0,0,0,0.6); border: 1px solid rgba(255, 255, 255, 0.2); color: #aaa; padding: 10px 20px; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; transition: 0.3s; white-space: nowrap;}
+        .samhita-btn.active, .samhita-btn:hover { background: rgba(0, 255, 170, 0.15); color: #fff; border-color: #00ffaa; box-shadow: 0 0 10px rgba(0, 255, 170, 0.2); }
 
         .matrix-body { display: flex; flex: 1; overflow: hidden; }
-        .chapter-tabs { width: 260px; border-right: 1px solid rgba(255, 42, 42, 0.2); overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; z-index: 1; }
+        .chapter-tabs { width: 260px; border-right: 1px solid rgba(255, 255, 255, 0.1); overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; z-index: 1; }
         .chapter-tabs::-webkit-scrollbar { width: 4px; }
-        .chapter-tabs::-webkit-scrollbar-thumb { background: #ff2a2a; border-radius: 4px; }
+        .chapter-tabs::-webkit-scrollbar-thumb { background: #00ffaa; border-radius: 4px; }
         
-        .chapter-btn { background: rgba(5, 10, 15, 0.6); border: 1px solid rgba(255,255,255,0.08); color: #888; padding: 15px 20px; border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); font-weight: bold; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
-        .chapter-btn::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #ff2a2a; transition: 0.4s ease; z-index: -1; opacity: 0.1; }
-        .chapter-btn.active, .chapter-btn:hover { border-color: #ff2a2a; color: #fff; box-shadow: 0 0 20px rgba(255, 42, 42, 0.15); transform: translateX(5px); }
-        .chapter-btn.active::before { width: 100%; }
-        .chapter-btn.active { border-left: 4px solid #ff2a2a; }
+        .chapter-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.08); color: #aaa; padding: 15px 20px; border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; font-weight: bold; }
+        .chapter-btn.active, .chapter-btn:hover { background: rgba(0, 255, 170, 0.1); border-color: #00ffaa; color: #fff; border-left: 4px solid #00ffaa; transform: translateX(5px); }
         
         .shloka-content-area { flex: 1; padding: 20px; display: flex; flex-direction: column; z-index: 1; position: relative;}
-        
-        /* JARVIS Scanning Animation Overlay */
-        .shloka-content-area::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 10px;
-            background: rgba(255, 42, 42, 0.5); box-shadow: 0 0 20px #ff2a2a;
-            animation: jarvisScan 4s linear infinite; pointer-events: none; opacity: 0.5;
-        }
-        @keyframes jarvisScan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
-
         .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         
         #shloka-display-grid { overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 15px; }
         #shloka-display-grid::-webkit-scrollbar { width: 4px; }
-        #shloka-display-grid::-webkit-scrollbar-thumb { background: #ff2a2a; border-radius: 4px;}
+        #shloka-display-grid::-webkit-scrollbar-thumb { background: #00ffaa; border-radius: 4px;}
         
-        .shloka-card { background: rgba(20, 5, 5, 0.7); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 42, 42, 0.2); display: flex; justify-content: space-between; align-items: center; transition: all 0.4s ease; backdrop-filter: blur(15px); position: relative; overflow: hidden; }
-        .shloka-card::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #ff2a2a; opacity: 0; transition: 0.4s ease; }
-        .shloka-card:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 42, 42, 0.1); border-color: rgba(255, 42, 42, 0.5); }
-        .shloka-card:hover::after { opacity: 1; }
+        /* Clean elegant reading card */
+        .shloka-card { background: rgba(10, 15, 20, 0.85); padding: 25px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #00ffaa; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
+        .shloka-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-color: rgba(0, 255, 170, 0.5); }
         
-        /* Highlight styling for specific words (JARVIS UI feel) */
-        .shloka-text { font-size: 1.3rem; color: #e0e0e0; flex: 1; line-height: 1.6; font-weight: 500; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 0.5px; }
-        .shloka-text strong { color: #ff2a2a; text-shadow: 0 0 10px rgba(255, 42, 42, 0.8); }
-
-        .star-btn { font-size: 1.8rem; cursor: pointer; color: rgba(255,255,255,0.1); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; padding: 10px; }
+        .shloka-text { font-size: 1.3rem; color: #f0f0f0; flex: 1; line-height: 1.6; font-weight: 500; letter-spacing: 0.5px; font-family: 'Segoe UI', serif; }
+        
+        .star-btn { font-size: 1.8rem; cursor: pointer; color: rgba(255,255,255,0.1); transition: all 0.3s ease; user-select: none; padding: 10px; }
         .star-btn:hover { transform: scale(1.2); color: rgba(255, 170, 0, 0.5); }
-        .star-btn.active { color: #ffaa00; text-shadow: 0 0 20px rgba(255, 170, 0, 0.8), 0 0 40px rgba(255, 170, 0, 0.4); transform: scale(1.1); }
+        .star-btn.active { color: #ffaa00; transform: scale(1.1); filter: drop-shadow(0 0 5px rgba(255, 170, 0, 0.6));}
+
+        /* Mini Calculator Styles */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .calc-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 15px; font-size: 1.2rem; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .calc-btn:hover { background: var(--theme-color); color: #000; }
+        .calc-btn.op { background: rgba(0, 255, 170, 0.2); border-color: var(--theme-color); color: var(--theme-color); }
+        .calc-display { width: 100%; background: rgba(0,0,0,0.8); color: #00ffaa; font-size: 2rem; text-align: right; padding: 15px; border-radius: 8px; border: 1px solid var(--theme-color); box-sizing: border-box; font-family: monospace;}
 
     </style>
 </head>
 <body>
 
     <div id="premium-preloader">
-        <div class="jarvis-reactor"></div>
+        <div class="quantum-ring">
+            <div class="quantum-core" id="boot-progress">0%</div>
+        </div>
         <div class="preloader-content">
             <h1 class="title-3d">K.K. Master Interface</h1>
-            <div class="jarvis-typing">> INITIALIZING SYSTEM PROTOCOLS... v12.6 PRO MAX</div>
-            <div class="loading-bar-container">
-                <div class="loading-bar"></div>
-            </div>
+            <div class="boot-text" id="boot-status">INITIALIZING SYSTEM...</div>
         </div>
     </div>
 
@@ -253,7 +213,7 @@
     <canvas id="bg-canvas"></canvas>
 
     <div id="kk-token-bar">
-        <div class="token-hud-pill">🪙 <span id="user-vault-coins">1,250</span> KK COINS</div>
+        <div class="token-hud-pill">🪙 <span id="user-vault-coins">1,250</span> <span id="currency-label">COINS</span></div>
         <div class="token-hud-pill" style="--theme-color: #ffaa00;">🏆 Portfolio Health: <span id="portfolio-status">STABLE</span></div>
     </div>
 
@@ -280,6 +240,36 @@
         </div>
     </div>
 
+    <div class="overlay-modal" id="calculator-modal">
+        <div class="modal-box" style="width: 350px;">
+            <span class="close-btn" onclick="closeModal('calculator-modal')">✕</span>
+            <h2 style="color: var(--theme-color); margin-top: 0;">🧮 QUICK CALC</h2>
+            <div class="calc-display" id="calc-screen">0</div>
+            <div class="calc-grid">
+                <button class="calc-btn op" onclick="calcInput('C')">C</button>
+                <button class="calc-btn op" onclick="calcInput('(')">(</button>
+                <button class="calc-btn op" onclick="calcInput(')')">)</button>
+                <button class="calc-btn op" onclick="calcInput('/')">÷</button>
+                <button class="calc-btn" onclick="calcInput('7')">7</button>
+                <button class="calc-btn" onclick="calcInput('8')">8</button>
+                <button class="calc-btn" onclick="calcInput('9')">9</button>
+                <button class="calc-btn op" onclick="calcInput('*')">×</button>
+                <button class="calc-btn" onclick="calcInput('4')">4</button>
+                <button class="calc-btn" onclick="calcInput('5')">5</button>
+                <button class="calc-btn" onclick="calcInput('6')">6</button>
+                <button class="calc-btn op" onclick="calcInput('-')">-</button>
+                <button class="calc-btn" onclick="calcInput('1')">1</button>
+                <button class="calc-btn" onclick="calcInput('2')">2</button>
+                <button class="calc-btn" onclick="calcInput('3')">3</button>
+                <button class="calc-btn op" onclick="calcInput('+')">+</button>
+                <button class="calc-btn" onclick="calcInput('0')">0</button>
+                <button class="calc-btn" onclick="calcInput('.')">.</button>
+                <button class="calc-btn" onclick="calcInput('DEL')">⌫</button>
+                <button class="calc-btn op" style="background: var(--theme-color); color:#000;" onclick="calcInput('=')">=</button>
+            </div>
+        </div>
+    </div>
+
     <div class="overlay-modal" id="vault-modal">
         <div class="modal-box" id="universal-modal-box">
             <span class="close-btn" onclick="closeModal('vault-modal')">✕</span>
@@ -289,14 +279,14 @@
             <div id="file-upload-container" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <div style="display:flex; gap:20px;">
                     <div style="flex:1;">
-                        <label style="color:#aaa; font-size:0.85rem;">📁 Insert Offline Files (IndexedDB Unlimited Storage):</label><br>
+                        <label style="color:#aaa; font-size:0.85rem;">📁 Insert Offline Files (IndexedDB):</label><br>
                         <input type="file" id="file-uploader" class="custom-input" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleMultipleFileUpload(event)" style="border:1px dashed var(--theme-color);">
                     </div>
                     <div style="flex:1;">
                         <label style="color:#aaa; font-size:0.85rem;">🔗 Or Paste Google Drive Link:</label><br>
                         <div style="display:flex; gap:5px;">
                             <input type="text" id="gdrive-link" class="custom-input" placeholder="https://drive.google.com/..." style="margin-top:0;">
-                            <button class="action-btn" style="padding:10px;" onclick="loadGDriveAsFile()">ADD LINK</button>
+                            <button class="action-btn" style="padding:10px;" onclick="loadGDriveAsFile()">ADD</button>
                         </div>
                     </div>
                 </div>
@@ -319,35 +309,18 @@
         <div class="modal-box" style="width: 800px; max-height: 85vh; overflow-y: auto;">
             <span class="close-btn" onclick="closeModal('candle-modal')">✕</span>
             <h2 style="color: var(--theme-color);">🕯️ MASTER CANDLESTICK PATTERNS</h2>
-            <p style="font-size: 0.85rem; color: #aaa;">Your built-in educational folder to read market psychology.</p>
             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:15px 0;">
-            
-            <div class="candle-card">
-                <h3>1. Bullish Hammer (हथौड़ा)</h3>
-                <p style="font-size: 0.9rem; color: #ddd;">Forms at the bottom of a downtrend. It shows sellers pushed the price down, but strong buyers rejected the low and pushed the price back up. Wait for the next candle to confirm a bullish reversal before entering.</p>
-            </div>
-
-            <div class="candle-card">
-                <h3>2. Bearish Engulfing</h3>
-                <p style="font-size: 0.9rem; color: #ddd;">Forms at the top of an uptrend. A small green candle is completely 'engulfed' or swallowed by a massive red candle. This indicates that sellers have violently taken control of the market.</p>
-            </div>
-
-            <div class="candle-card">
-                <h3>3. The Doji (Indecision)</h3>
-                <p style="font-size: 0.9rem; color: #ddd;">Looks like a cross or a plus sign. The open and close prices are exactly the same. It means a brutal war between buyers and sellers resulted in a tie. Often signals a major trend reversal is coming.</p>
-            </div>
-            
-            <div class="candle-card">
-                <h3>4. Morning Star Reversal</h3>
-                <p style="font-size: 0.9rem; color: #ddd;">A powerful 3-candle pattern. 1) A strong red candle. 2) A small gap-down Doji (indecision). 3) A massive green candle pushing up. This is your green light for a trend flip!</p>
-            </div>
+            <div class="candle-card"><h3>1. Bullish Hammer (हथौड़ा)</h3><p style="color: #ddd;">Forms at the bottom of a downtrend. Strong buyers rejected the low.</p></div>
+            <div class="candle-card"><h3>2. Bearish Engulfing</h3><p style="color: #ddd;">Forms at the top of an uptrend. Massive red candle swallows the green.</p></div>
+            <div class="candle-card"><h3>3. The Doji (Indecision)</h3><p style="color: #ddd;">Open and close prices are the same. Signals a trend reversal.</p></div>
+            <div class="candle-card"><h3>4. Morning Star Reversal</h3><p style="color: #ddd;">3-candle pattern indicating a massive trend flip upward.</p></div>
         </div>
     </div>
 
     <div class="overlay-modal" id="settings-overlay">
         <div class="modal-box" style="width: 600px;">
             <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚙️ COGNITIVE HUB MANAGER (PRO)</h2>
+            <h2 style="color: var(--theme-color);">⚙️ COGNITIVE HUB MANAGER</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
                 
                 <div>
@@ -367,28 +340,34 @@
                 </div>
 
                 <div>
-                    <label>3. Jarvis Voice Speed</label>
-                    <input type="range" id="voice-speed-slider" min="0.7" max="1.5" step="0.1" value="1.0" style="width: 100%; margin-top:10px;">
+                    <label>3. Primary HUD Color</label>
+                    <input type="color" id="theme-color-picker" class="custom-input" value="#00ffaa" style="height: 40px; padding: 2px;">
                 </div>
                 
                 <div>
-                    <label>4. Assist Volume / Mute</label>
-                    <input type="range" id="volume-slider" min="0.0" max="1.0" step="0.1" value="1.0" style="width: 100%; margin-top:10px;">
+                    <label>4. Default Currency</label>
+                    <select id="currency-selector" class="custom-input">
+                        <option value="COINS">KK COINS</option>
+                        <option value="INR">₹ INR</option>
+                        <option value="USD">$ USD</option>
+                    </select>
                 </div>
 
                 <div>
-                    <label>5. Primary HUD Color Override</label>
-                    <input type="color" id="theme-color-picker" class="custom-input" value="#00ffaa" style="height: 40px; padding: 2px;">
+                    <label>5. Pomodoro Focus Duration (Mins)</label>
+                    <input type="range" id="focus-time-slider" min="15" max="60" step="5" value="25" style="width: 100%; margin-top:10px;" oninput="document.getElementById('focus-time-display').innerText = this.value + 'm'">
+                    <span id="focus-time-display" style="font-size:0.8rem; color:var(--theme-color);">25m</span>
                 </div>
 
-                <div>
-                    <label>6. Scanline Matrix Intensity</label>
-                    <input type="range" id="scanline-slider" min="0.0" max="0.3" step="0.02" value="0.08" style="width: 100%; margin-top:10px;">
-                </div>
-
-                <div style="grid-column: 1 / -1; display:flex; align-items:center; gap: 10px; margin-top: 10px;">
-                    <input type="checkbox" id="power-saver" style="width: 20px; height: 20px;">
-                    <label>7. Power Saver Mode (Disable 3D Particles & Blur)</label>
+                <div style="display:flex; flex-direction:column; gap: 10px; margin-top: 10px;">
+                    <div style="display:flex; align-items:center; gap: 10px;">
+                        <input type="checkbox" id="auto-save-notes" checked style="width: 20px; height: 20px;">
+                        <label>6. Auto-Save Notes</label>
+                    </div>
+                    <div style="display:flex; align-items:center; gap: 10px;">
+                        <input type="checkbox" id="power-saver" style="width: 20px; height: 20px;">
+                        <label>7. Power Saver (Disable Particles)</label>
+                    </div>
                 </div>
 
             </div>
@@ -399,39 +378,27 @@
     <div class="overlay-modal" id="anatomy-3d-modal">
         <div class="modal-box" style="width: 1100px; max-width: 95%; height: 85vh; display: flex; padding: 0; overflow: hidden; border-color: var(--theme-color);">
             <span class="close-btn" onclick="closeModal('anatomy-3d-modal')" style="z-index: 20; top: 15px; right: 20px;">✕</span>
-            
             <div style="width: 320px; background: rgba(5,5,8,0.85); border-right: 1px solid var(--glass-border); padding: 30px; display: flex; flex-direction: column;">
                 <h2 style="color: var(--theme-color); margin-top: 0; font-size: 1.4rem;">🧬 3D ANATOMY</h2>
-                <p style="font-size: 0.85rem; color: #aaa; margin-top: -10px;">Select structure for holographic projection.</p>
-                
-                <label style="color: #fff; font-size: 0.9rem; margin-top: 20px;">Bone / Organ Module:</label>
-                <select id="bone-selector" class="custom-input" onchange="loadBoneModel()">
+                <label style="color: #fff; font-size: 0.9rem; margin-top: 20px;">Select Module:</label>
+                <select id="bone-selector" class="custom-input">
                     <option value="skeleton">Full Skeleton (कंकाल)</option>
                     <option value="skull">Human Skull (खोपड़ी)</option>
                 </select>
             </div>
-
             <div class="holo-viewport">
-                <model-viewer id="holo-viewer" 
-                    src="" 
-                    camera-controls 
-                    auto-rotate 
-                    shadow-intensity="1" 
-                    exposure="1" 
-                    interaction-prompt="none"
-                    style="width: 100%; height: 100%;">
-                </model-viewer>
+                <model-viewer id="holo-viewer" src="" camera-controls auto-rotate shadow-intensity="1" style="width: 100%; height: 100%;"></model-viewer>
             </div>
         </div>
     </div>
 
     <div class="overlay-modal" id="shloka-matrix-modal">
-        <div class="modal-box" style="width: 1100px; max-width: 95%; border-color: #ff2a2a; box-shadow: 0 0 50px rgba(255, 42, 42, 0.2);">
-            <span class="close-btn" onclick="closeModal('shloka-matrix-modal')" style="color: #ff2a2a;">✕</span>
-            <h2 style="color: #ff2a2a; margin-top:0; font-family: 'Orbitron', sans-serif;">🔴 JARVIS SHLOKA ARCHIVE</h2>
+        <div class="modal-box" style="width: 1100px; max-width: 95%; border-color: #00ffaa; box-shadow: 0 0 40px rgba(0, 255, 170, 0.1);">
+            <span class="close-btn" onclick="closeModal('shloka-matrix-modal')" style="color: #00ffaa;">✕</span>
+            <h2 style="color: #00ffaa; margin-top:0; font-family: 'Orbitron', sans-serif;">📖 MASTER SHLOKA ARCHIVE</h2>
             
             <div class="shloka-matrix-container">
-                <div style="position: absolute; top: 0; left: 0; width: 100%; z-index: 5; background: rgba(10,5,5,0.9);">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; z-index: 5; background: rgba(5,5,10,0.95); border-radius: 10px 10px 0 0;">
                     <div class="samhita-tabs" id="samhita-tab-list">
                         <button class="samhita-btn active" onclick="loadSamhita('Ashtang Hridayam')">Ashtang Hridayam</button>
                         <button class="samhita-btn" onclick="loadSamhita('Charak Samhita')">Charak Samhita</button>
@@ -441,17 +408,13 @@
                 </div>
 
                 <div class="matrix-body" style="margin-top: 60px; width: 100%;">
-                    <div class="chapter-tabs" id="chapter-tab-list">
-                        </div>
-                    
+                    <div class="chapter-tabs" id="chapter-tab-list"></div>
                     <div class="shloka-content-area">
                         <div class="filter-bar">
-                            <button class="action-btn" id="filter-all" onclick="setStarFilter(false)" style="border-color: #ff2a2a; background: rgba(255,42,42,0.1);">ALL SHLOKAS</button>
-                            <button class="action-btn" id="filter-starred" onclick="setStarFilter(true)" style="color: #ffaa00; border-color: #ffaa00;">⭐ STARRED ONLY</button>
+                            <button class="action-btn" id="filter-all" onclick="setStarFilter(false)" style="border-color: #00ffaa; background: rgba(0,255,170,0.1);">ALL SHLOKAS</button>
+                            <button class="action-btn" id="filter-starred" onclick="setStarFilter(true)" style="color: #ffaa00; border-color: #ffaa00; background:transparent;">⭐ STARRED</button>
                         </div>
-                        
-                        <div id="shloka-display-grid">
-                            </div>
+                        <div id="shloka-display-grid"></div>
                     </div>
                 </div>
             </div>
@@ -460,26 +423,26 @@
 
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
-            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.6</h2>
+            <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.7</h2>
             <h1 style="margin:0; text-transform: uppercase;">Select <span style="color: var(--theme-color); font-weight: 900;">System Protocol</span></h1>
         </div>
         
         <div class="carousel-container">
-            <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1508675801648-96f3bbccf351?q=80&w=600');" onclick="initProtocol('ironman', '#ff2a2a')">
+            <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1535378620166-273708d44e4c?q=80&w=600');" onclick="initProtocol('ironman', '#ff2a2a')">
                 <div class="card-icon">🦾</div>
-                <div class="card-content"><h3>BAMS COMMAND</h3><p style="color:#aaa; font-size:0.8rem;">Ayurvedic Studies & Local Vault Hub</p></div>
+                <div class="card-content"><h3>BAMS COMMAND</h3><p style="color:#ddd; font-size:0.8rem;">Ayurvedic Studies & Vault</p></div>
             </div>
             <div class="avenger-card" id="card-cap" style="color: #0077ff; background-image: url('https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=600');" onclick="initProtocol('cap', '#0077ff')">
                 <div class="card-icon">📈</div>
-                <div class="card-content"><h3>TRADE TERMINAL</h3><p style="color:#aaa; font-size:0.8rem;">Live Smart Virtual Trading</p></div>
+                <div class="card-content"><h3>TRADE TERMINAL</h3><p style="color:#ddd; font-size:0.8rem;">Live Smart Virtual Trading</p></div>
             </div>
-            <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1601646271926-258055627772?q=80&w=600');" onclick="initProtocol('thor', '#ffaa00')">
+            <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1546313134-8c8f000bba52?q=80&w=600');" onclick="initProtocol('thor', '#ffaa00')">
                 <div class="card-icon">🔨</div>
-                <div class="card-content"><h3>CREATIVE FORGE</h3><p style="color:#aaa; font-size:0.8rem;">Scripting & Notes Management</p></div>
+                <div class="card-content"><h3>CREATIVE FORGE</h3><p style="color:#ddd; font-size:0.8rem;">Scripting & Notes Management</p></div>
             </div>
             <div class="avenger-card" id="card-spidey" style="color: #ff0055; background-image: url('https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=600');" onclick="initProtocol('spidey', '#ff0055')">
                 <div class="card-icon">🕸️</div>
-                <div class="card-content"><h3>AGENCY LEDGER</h3><p style="color:#aaa; font-size:0.8rem;">Spreadsheets & Docs</p></div>
+                <div class="card-content"><h3>AGENCY LEDGER</h3><p style="color:#ddd; font-size:0.8rem;">Spreadsheets & Docs</p></div>
             </div>
         </div>
     </div>
@@ -491,39 +454,48 @@
             <div class="nav-btn" id="nav-cap" style="color: #0077ff;" onclick="switchModule('cap')">📈</div>
             <div class="nav-btn" id="nav-thor" style="color: #ffaa00;" onclick="switchModule('thor')">🔨</div>
             <div class="nav-btn" id="nav-spidey" style="color: #ff0055;" onclick="switchModule('spidey')">🕸️</div>
+            <div class="nav-btn" style="color: #00ffaa;" onclick="openModal('calculator-modal')">🧮</div>
             <div class="nav-btn" style="color: #fff;" onclick="openModal('jarvis-terminal-overlay')">💬</div>
         </div>
         <div class="content-area" id="main-content"></div>
     </div>
 
     <script>
-        // --- SMART PRELOADER LOGIC (Marvel Theme) ---
+        // --- SMART BOOT SEQUENCE ---
         window.addEventListener('load', function() {
             const preloader = document.getElementById('premium-preloader');
+            const progress = document.getElementById('boot-progress');
+            const status = document.getElementById('boot-status');
+            
             if (!sessionStorage.getItem('kk_preloader_shown')) {
-                setTimeout(function() {
-                    preloader.classList.add('hide-preloader');
-                    setTimeout(function() {
-                        preloader.style.display = 'none';
-                        sessionStorage.setItem('kk_preloader_shown', 'true');
-                    }, 1500); 
-                }, 4000); // Wait for typing animation
+                let pct = 0;
+                let bootInterval = setInterval(() => {
+                    pct += Math.floor(Math.random() * 15) + 5;
+                    if(pct >= 100) {
+                        pct = 100; clearInterval(bootInterval);
+                        progress.innerText = "100%";
+                        status.innerText = "SYSTEM ONLINE.";
+                        status.style.color = "#fff";
+                        
+                        setTimeout(function() {
+                            preloader.classList.add('hide-preloader');
+                            setTimeout(() => { preloader.style.display = 'none'; sessionStorage.setItem('kk_preloader_shown', 'true'); }, 1200); 
+                        }, 800);
+                    } else {
+                        progress.innerText = pct + "%";
+                        if(pct > 30) status.innerText = "LOADING PROTOCOLS...";
+                        if(pct > 70) status.innerText = "SYNCING VAULT DATA...";
+                    }
+                }, 150);
             } else {
                 preloader.style.display = 'none';
             }
         });
 
-        let currentModule = ''; let engineInstance; let jarvisActive = false;
-        let globalTimerInterval; let secondsLeft = 0; let customTimetable = []; let notifiedTasks = new Set();
-        let isFocusMode = true; 
-        let voiceSpeed = 1.0;
-        let assistVolume = 1.0; 
-
+        let currentModule = ''; 
         let totalCoins = parseFloat(localStorage.getItem('kk_coins')) || 10000; 
         let activeTrades = JSON.parse(localStorage.getItem('kk_trades')) || [];
         let customIronmanSubjects = JSON.parse(localStorage.getItem('kk_ironman_subjects')) || [];
-        let thorNotesList = JSON.parse(localStorage.getItem('kk_thor_notes')) || [];
-        
         let currentVaultFiles = [];
         let db; 
 
@@ -538,7 +510,6 @@
                 }
             };
             request.onsuccess = (event) => { db = event.target.result; };
-            request.onerror = (event) => { console.error("IndexedDB Error: ", event.target.errorCode); };
         };
         initDB();
 
@@ -546,10 +517,7 @@
             document.getElementById('user-vault-coins').innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
             localStorage.setItem('kk_coins', totalCoins);
             localStorage.setItem('kk_trades', JSON.stringify(activeTrades));
-            
-            if(currentModule === 'cap' && document.getElementById('positions-table-body')) {
-                renderTradePositions();
-            }
+            if(currentModule === 'cap' && document.getElementById('positions-table-body')) { renderTradePositions(); }
         }
 
         const modules = {
@@ -558,10 +526,9 @@
                 html: `
                     <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                         <button class="action-btn" onclick="alert('Timer module triggered')">⏱️ SET FOCUS TIMER</button>
-                        <button class="action-btn" onclick="alert('Timetable triggered')">📅 STUDY TIMETABLE</button>
-                        <button class="action-btn" style="border-color:#00ffaa;" onclick="createNewSubject()">➕ ADD SUBJECT FOLDER</button>
+                        <button class="action-btn" onclick="createNewSubject()">➕ ADD SUBJECT FOLDER</button>
                         <button class="action-btn" style="border-color:#00ffaa; background: rgba(0, 255, 170, 0.1);" onclick="openModal('anatomy-3d-modal')">🧬 3D ANATOMY</button>
-                        <button class="action-btn" style="border-color:#ff2a2a; color:#ff2a2a; box-shadow: 0 0 15px rgba(255,42,42,0.3);" onclick="openModal('shloka-matrix-modal')">🔴 JARVIS SHLOKA ARCHIVE</button>
+                        <button class="action-btn" style="border-color:#00ffaa; color:#00ffaa; box-shadow: 0 0 15px rgba(0,255,170,0.2);" onclick="openModal('shloka-matrix-modal')">📖 MASTER SHLOKA ARCHIVE</button>
                     </div>
                     <h3>Your Custom Subject Vaults</h3>
                     <div class="grid-layout" id="ironman-dynamic-grid" style="margin-top:15px;"></div>`
@@ -572,82 +539,36 @@
                     <div class="tradingview-widget-container" style="margin-bottom: 15px;">
                       <div class="tradingview-widget-container__widget"></div>
                       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-                      {
-                      "symbols": [{"proName": "BINANCE:BTCUSDT", "title": "Bitcoin"}, {"proName": "BINANCE:ETHUSDT", "title": "Ethereum"}, {"proName": "NSE:NIFTY", "title": "Nifty 50"}],
-                      "showSymbolLogo": true, "isTransparent": true, "displayMode": "adaptive", "colorTheme": "dark", "locale": "en"
-                      }
+                      {"symbols": [{"proName": "BINANCE:BTCUSDT", "title": "Bitcoin"}, {"proName": "NSE:NIFTY", "title": "Nifty 50"}], "colorTheme": "dark", "isTransparent": true, "displayMode": "adaptive"}
                       <\/script>
                     </div>
-
                     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                         <div style="flex: 2; min-width: 500px;">
                             <div style="display:flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Any Global Symbol (e.g. NSE:RELIANCE)" style="margin: 0; width: 60%;">
+                                <input type="text" id="tv-symbol-input" class="custom-input" value="BINANCE:BTCUSDT" placeholder="Enter Any Global Symbol" style="margin: 0; width: 60%;">
                                 <button class="action-btn" onclick="updateTVSymbol()">LOAD CHART</button>
-                                <button class="action-btn" style="border-color: #ffaa00; margin-left:auto;" onclick="toggleLearnerMode()">🎓 LEARNER MODE</button>
-                                <button class="action-btn" style="border-color: #00ffaa;" onclick="openModal('candle-modal')">🕯️ CANDLE CHEATSHEET</button>
+                                <button class="action-btn" style="border-color: #00ffaa; margin-left:auto;" onclick="openModal('candle-modal')">🕯️ CANDLES</button>
                             </div>
                             <div id="tradingview_cap" style="height:55vh; border-radius:15px; overflow:hidden; border:1px solid rgba(0,119,255,0.4);"></div>
                         </div>
-
                         <div style="flex: 1; min-width: 300px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(0,119,255,0.2);">
-                            <h3 style="margin-top:0; color:#00ffaa; display:flex; justify-content:space-between;">
-                                <span>ORDER BOOK</span> 
-                                <span style="font-size:0.9rem; color:#fff;">🪙 <span id="panel-coins"></span></span>
-                            </h3>
-                            
-                            <div style="margin-bottom: 15px; font-size: 0.8rem; color: #ddd;">
-                                Live Bullish Pressure (Simulated):
-                                <div class="sentiment-bar">
-                                    <div class="sentiment-fill" id="sentiment-fill-bar"></div>
-                                </div>
-                            </div>
-
-                            <label style="font-size:0.85rem; color:#aaa;">Instrument (e.g., BTCUSDT)</label>
-                            <div style="display:flex; gap:5px;">
-                                <input type="text" id="order-symbol" class="custom-input" placeholder="e.g. BTCUSDT" value="BTCUSDT">
-                                <button class="action-btn" onclick="fetchLivePriceUI()" style="padding: 10px;">📡</button>
-                            </div>
-                            
+                            <h3 style="margin-top:0; color:#00ffaa; display:flex; justify-content:space-between;"><span>ORDER BOOK</span> <span style="font-size:0.9rem; color:#fff;">🪙 <span id="panel-coins"></span></span></h3>
+                            <label style="font-size:0.85rem; color:#aaa;">Instrument</label>
+                            <div style="display:flex; gap:5px;"><input type="text" id="order-symbol" class="custom-input" value="BTCUSDT"><button class="action-btn" onclick="fetchLivePriceUI()" style="padding: 10px;">📡</button></div>
                             <div style="display: flex; gap: 10px;">
-                                <div style="flex:1;">
-                                    <label style="font-size:0.85rem; color:#aaa;">Qty</label>
-                                    <input type="number" id="order-qty" class="custom-input" placeholder="0.00" step="0.01" oninput="liveRiskCalculator()">
-                                </div>
-                                <div style="flex:1;">
-                                    <label style="font-size:0.85rem; color:#aaa;">Price</label>
-                                    <input type="number" id="order-price" class="custom-input" placeholder="Market/Live" step="0.1" oninput="liveRiskCalculator()">
-                                </div>
+                                <div style="flex:1;"><label style="font-size:0.85rem; color:#aaa;">Qty</label><input type="number" id="order-qty" class="custom-input" placeholder="0.00" oninput="liveRiskCalculator()"></div>
+                                <div style="flex:1;"><label style="font-size:0.85rem; color:#aaa;">Price</label><input type="number" id="order-price" class="custom-input" placeholder="Market/Live" oninput="liveRiskCalculator()"></div>
                             </div>
-                            
                             <div id="auto-risk-display" style="text-align:center; font-size:0.85rem; font-weight:bold; margin-bottom: 10px; min-height: 15px;"></div>
-
                             <div style="display:flex; justify-content:space-between; margin-top: 5px;">
                                 <button class="trade-btn buy" onclick="executeTrade('BUY')">BUY / LONG</button>
                                 <button class="trade-btn sell" onclick="executeTrade('SELL')">SELL / SHORT</button>
                             </div>
-
-                            <div id="learner-mode-panel" class="learner-panel">
-                                <h4>📚 AI Learner Analysis</h4>
-                                <ul>
-                                    <li><b>Trend:</b> Check if the current price is above the Moving Average lines.</li>
-                                    <li><b>RSI Strategy:</b> If RSI is below 30, it might be oversold (buying opportunity). Above 70 is overbought.</li>
-                                    <li><b>Risk Mgmt:</b> Never risk more than 2% of your K.K. Coins on a single trade.</li>
-                                </ul>
-                            </div>
-
                             <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin:20px 0;">
-                            
                             <h4 style="margin: 0 0 10px 0;">OPEN POSITIONS</h4>
                             <div style="max-height: 150px; overflow-y: auto;">
                                 <table style="width: 100%; text-align: left; font-size: 0.85rem; border-collapse: collapse;">
-                                    <thead>
-                                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
-                                            <th style="padding-bottom:5px;">Sym</th>
-                                            <th style="padding-bottom:5px;">Type</th>
-                                            <th style="padding-bottom:5px;">Live Action</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr style="border-bottom: 1px solid rgba(255,255,255,0.2);"><th style="padding-bottom:5px;">Sym</th><th style="padding-bottom:5px;">Type</th><th style="padding-bottom:5px;">Action</th></tr></thead>
                                     <tbody id="positions-table-body"></tbody>
                                 </table>
                             </div>
@@ -661,188 +582,113 @@
                         <textarea id="thor-note-content" class="custom-input" style="height: 70%; font-family: monospace; resize: none;" placeholder="Write your text, scripts, or ideas here..."></textarea>
                         <button class="action-btn" style="width: 100%;" onclick="alert('Note logic preserved')">💾 SAVE TO FORGE</button>
                     </div>
-                    <div style="flex: 1; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,170,0,0.2); overflow-y: auto;">
-                        <h3 style="margin-top:0; color:#ffaa00;">Saved Manuscripts</h3>
-                        <div id="thor-notes-list" style="display:flex; flex-direction:column; gap:10px;"></div>
-                    </div>
-                </div>
-            ` },
-            /* UPGRADED SPIDERMAN MODULE - 7 FEATURES */
+                </div>` 
+            },
             spidey: { color: '#ff0055', title: 'Agency Web Ledger Control', html: `
                 <div class="grid-layout">
-                    <div class="tool-card" onclick="window.open('https://docs.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📄</div><h3>Google Docs</h3><p style="font-size:0.75rem; color:#aaa;">Word Processing</p></div>
-                    <div class="tool-card" onclick="window.open('https://sheets.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📊</div><h3>Google Sheets</h3><p style="font-size:0.75rem; color:#aaa;">Data & Spreadsheets</p></div>
-                    <div class="tool-card" onclick="window.open('https://notion.so')"><div style="font-size:2rem; margin-bottom:10px;">📓</div><h3>Notion Workspace</h3><p style="font-size:0.75rem; color:#aaa;">Knowledge Base</p></div>
-                    <div class="tool-card" onclick="window.open('https://github.com')"><div style="font-size:2rem; margin-bottom:10px;">🐙</div><h3>GitHub Repositories</h3><p style="font-size:0.75rem; color:#aaa;">Version Control</p></div>
-                    <div class="tool-card" onclick="window.open('https://trello.com')"><div style="font-size:2rem; margin-bottom:10px;">📋</div><h3>Trello Board</h3><p style="font-size:0.75rem; color:#aaa;">Task Kanban</p></div>
-                    <div class="tool-card" onclick="window.open('https://codepen.io')"><div style="font-size:2rem; margin-bottom:10px;">💻</div><h3>CodePen Sandbox</h3><p style="font-size:0.75rem; color:#aaa;">Live UI Testing</p></div>
-                    <div class="tool-card" onclick="window.open('https://slack.com')"><div style="font-size:2rem; margin-bottom:10px;">💬</div><h3>Slack Comms</h3><p style="font-size:0.75rem; color:#aaa;">Agency Chat</p></div>
+                    <div class="tool-card" onclick="window.open('https://docs.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📄</div><h3>Google Docs</h3></div>
+                    <div class="tool-card" onclick="window.open('https://sheets.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📊</div><h3>Google Sheets</h3></div>
+                    <div class="tool-card" onclick="window.open('https://github.com')"><div style="font-size:2rem; margin-bottom:10px;">🐙</div><h3>GitHub Repositories</h3></div>
                 </div>
                 <div style="margin-top: 25px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,0,85,0.2);">
                     <h3 style="color:#ff0055; margin-top:0;">Web-Slinger Quick Ledger</h3>
-                    <textarea id="spidey-ledger" class="custom-input" style="height: 120px; resize:none;" placeholder="Drop your daily To-Do list, quick expenses, or agency notes here..." oninput="localStorage.setItem('kk_spidey_ledger', this.value)"></textarea>
-                </div>
-            ` }
+                    <textarea id="spidey-ledger" class="custom-input" style="height: 120px; resize:none;" placeholder="Drop your daily To-Do list or quick notes here..." oninput="localStorage.setItem('kk_spidey_ledger', this.value)"></textarea>
+                </div>` 
+            }
         };
 
         window.onload = function() {
             let savedBg = localStorage.getItem('bg-url');
-            if(savedBg) {
-                applyBackground(savedBg);
-                document.getElementById('bg-selector').value = savedBg;
-            }
+            if(savedBg) { applyBackground(savedBg); document.getElementById('bg-selector').value = savedBg; }
             if(localStorage.getItem('glass-opacity')) {
                 document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${localStorage.getItem('glass-opacity')})`);
                 document.getElementById('opacity-slider').value = localStorage.getItem('glass-opacity');
-            }
-            if(localStorage.getItem('voice-speed')) {
-                voiceSpeed = parseFloat(localStorage.getItem('voice-speed'));
-                document.getElementById('voice-speed-slider').value = voiceSpeed;
-            }
-            if(localStorage.getItem('assist-volume')) {
-                assistVolume = parseFloat(localStorage.getItem('assist-volume'));
-                document.getElementById('volume-slider').value = assistVolume;
             }
             if(localStorage.getItem('theme-color')) {
                 document.documentElement.style.setProperty('--theme-color', localStorage.getItem('theme-color'));
                 document.getElementById('theme-color-picker').value = localStorage.getItem('theme-color');
             }
-            if(localStorage.getItem('scanline')) {
-                document.documentElement.style.setProperty('--scanline-opacity', localStorage.getItem('scanline'));
-                document.getElementById('scanline-slider').value = localStorage.getItem('scanline');
+            if(localStorage.getItem('default-currency')) {
+                let curr = localStorage.getItem('default-currency');
+                document.getElementById('currency-selector').value = curr;
+                document.getElementById('currency-label').innerText = curr === 'INR' ? '₹' : (curr === 'USD' ? '$' : 'COINS');
             }
-            
-            if(localStorage.getItem('myTimetable')) customTimetable = JSON.parse(localStorage.getItem('myTimetable'));
             refreshHUDTokens();
         }
 
-        /* --- TRADING VIEW AND API LOGIC (Preserved) --- */
+        // Trading Logic
         function loadTV(symbol) {
             if(typeof TradingView !== "undefined") {
                 document.getElementById('tradingview_cap').innerHTML = '';
-                new TradingView.widget({
-                    "autosize": true, "symbol": symbol, "interval": "D", "timezone": "Etc/UTC", "theme": "dark", "style": "1",
-                    "locale": "en", "enable_publishing": false, "backgroundColor": "rgba(0, 0, 0, 0.4)",
-                    "gridColor": "rgba(255, 255, 255, 0.05)", "hide_top_toolbar": false, "hide_legend": false,
-                    "save_image": false, "container_id": "tradingview_cap", "studies": ["RSI@tv-basicstudies", "MASimple@tv-basicstudies"]
-                });
+                new TradingView.widget({ "autosize": true, "symbol": symbol, "interval": "D", "theme": "dark", "style": "1", "container_id": "tradingview_cap" });
             }
         }
         function updateTVSymbol() {
             let sym = document.getElementById('tv-symbol-input').value;
             document.getElementById('order-symbol').value = sym.split(':')[1] || sym; 
             loadTV(sym);
-            if(document.getElementById('sentiment-fill-bar')) {
-                document.getElementById('sentiment-fill-bar').style.width = Math.floor(Math.random() * 80 + 10) + '%';
-            }
-        }
-        function toggleLearnerMode() {
-            const panel = document.getElementById('learner-mode-panel');
-            if (panel.style.display === 'block') { panel.style.display = 'none'; } 
-            else { panel.style.display = 'block'; showSilentNotification("Learner Mode Activated. Reading chart data..."); }
         }
         function liveRiskCalculator() {
             const qty = parseFloat(document.getElementById('order-qty').value);
             const price = parseFloat(document.getElementById('order-price').value);
             const displayBox = document.getElementById('auto-risk-display');
-            if (!isNaN(qty) && !isNaN(price) && qty > 0 && price > 0 && totalCoins > 0) {
+            if (!isNaN(qty) && !isNaN(price) && qty > 0 && price > 0) {
                 const totalValue = qty * price;
-                const riskPct = (totalValue / totalCoins) * 100;
-                displayBox.innerText = `Capital Utilization: ${riskPct.toFixed(2)}% (${totalValue.toFixed(2)} Coins)`;
-                if(riskPct > 100) { displayBox.style.color = '#ff4757'; displayBox.innerText += " ⚠️ INSUFFICIENT FUNDS"; }
-                else if (riskPct > 30) { displayBox.style.color = '#ffaa00'; }
-                else { displayBox.style.color = '#00ffaa'; }
+                displayBox.innerText = `Trade Value: ${totalValue.toFixed(2)}`;
+                displayBox.style.color = (totalValue > totalCoins) ? '#ff4757' : '#00ffaa';
             } else { displayBox.innerText = ''; }
         }
-        async function getLiveBinancePrice(sym) {
-            try {
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym.toUpperCase()}`);
-                const data = await res.json();
-                return data.price ? parseFloat(data.price) : null;
-            } catch (error) { return null; }
-        }
         async function fetchLivePriceUI() {
-            const sym = document.getElementById('order-symbol').value;
-            const price = await getLiveBinancePrice(sym);
-            if (price) {
-                document.getElementById('order-price').value = price;
-                liveRiskCalculator();
-                showSilentNotification(`Live price fetched for ${sym}: $${price}`);
-            }
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${document.getElementById('order-symbol').value.toUpperCase()}`);
+                const data = await res.json();
+                if(data.price) { document.getElementById('order-price').value = parseFloat(data.price); liveRiskCalculator(); showNotification("Price Fetched"); }
+            } catch(e) {}
         }
-        async function executeTrade(type) {
+        function executeTrade(type) {
             const sym = document.getElementById('order-symbol').value.toUpperCase();
             const qty = parseFloat(document.getElementById('order-qty').value);
             let price = parseFloat(document.getElementById('order-price').value);
-            if(isNaN(price) || price <= 0) {
-                price = await getLiveBinancePrice(sym);
-                if (!price) { showSilentNotification("Cannot fetch price. Enter manually."); return; }
-            }
-            if(!sym || isNaN(qty) || qty <= 0) { showSilentNotification("Invalid Order!"); return; }
-            const tradeValue = qty * price;
-            if (totalCoins < tradeValue) { showSilentNotification("Insufficient K.K. Coins!"); return; }
-            totalCoins -= tradeValue;
+            if(!sym || isNaN(qty) || qty <= 0 || isNaN(price) || price <= 0) { showNotification("Invalid Order!"); return; }
+            if (totalCoins < (qty * price)) { showNotification("Insufficient Balance!"); return; }
+            totalCoins -= (qty * price);
             activeTrades.push({ id: Date.now(), sym, type, qty, entryPrice: price });
-            showSilentNotification(`${type} Order Executed: ${qty} ${sym} at $${price}`);
-            document.getElementById('order-qty').value = ''; document.getElementById('order-price').value = '';
-            document.getElementById('auto-risk-display').innerText = ''; refreshHUDTokens();
+            showNotification(`${type} Order Executed`); refreshHUDTokens();
         }
-        async function closeTrade(id) {
-            const tradeIndex = activeTrades.findIndex(t => t.id === id);
-            if(tradeIndex === -1) return;
-            const trade = activeTrades[tradeIndex];
-            let exitPrice = await getLiveBinancePrice(trade.sym);
-            if (!exitPrice) {
-                 let manualPrice = prompt(`API failed. Enter EXIT PRICE manually for ${trade.sym}:`, trade.entryPrice);
-                 if(manualPrice === null || isNaN(manualPrice)) return; exitPrice = parseFloat(manualPrice);
-            }
-            let profitLoss = 0; let returnedMargin = trade.qty * trade.entryPrice;
-            if(trade.type === 'BUY') { profitLoss = (trade.qty * exitPrice) - returnedMargin; } 
-            else if (trade.type === 'SELL') { profitLoss = returnedMargin - (trade.qty * exitPrice); }
-            totalCoins += (returnedMargin + profitLoss);
-            activeTrades.splice(tradeIndex, 1);
-            showSilentNotification(`Closed @ $${exitPrice}. P&L: ${profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)}`);
-            refreshHUDTokens();
+        function closeTrade(id) {
+            const index = activeTrades.findIndex(t => t.id === id);
+            if(index === -1) return;
+            const t = activeTrades[index];
+            let manualPrice = prompt(`Enter EXIT PRICE for ${t.sym}:`, t.entryPrice);
+            if(manualPrice === null || isNaN(manualPrice)) return;
+            let exitPrice = parseFloat(manualPrice);
+            let profitLoss = t.type === 'BUY' ? (t.qty * exitPrice) - (t.qty * t.entryPrice) : (t.qty * t.entryPrice) - (t.qty * exitPrice);
+            totalCoins += ((t.qty * t.entryPrice) + profitLoss);
+            activeTrades.splice(index, 1);
+            showNotification(`Closed. P&L: ${profitLoss.toFixed(2)}`); refreshHUDTokens();
         }
         function renderTradePositions() {
             const tbody = document.getElementById('positions-table-body');
-            const panelCoins = document.getElementById('panel-coins');
-            if(!tbody || !panelCoins) return;
-            panelCoins.innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+            document.getElementById('panel-coins').innerText = totalCoins.toLocaleString();
             tbody.innerHTML = '';
-            if(activeTrades.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="padding-top:10px; color:#aaa; text-align:center;">No open positions</td></tr>'; return; }
             activeTrades.forEach(t => {
-                const color = t.type === 'BUY' ? '#00b894' : '#d63031';
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="padding: 8px 0; font-weight:bold;">${t.sym}<br><span style="font-size:0.7rem; color:#aaa;">Qty: ${t.qty}</span></td>
-                        <td style="padding: 8px 0; color: ${color}; font-weight:bold;">${t.type}<br><span style="font-size:0.7rem; color:#aaa;">@ ${t.entryPrice}</span></td>
-                        <td style="padding: 8px 0;"><button class="action-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="closeTrade(${t.id})">CLOSE</button></td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr><td>${t.sym}<br><small>Qty: ${t.qty}</small></td><td style="color:${t.type==='BUY'?'#00b894':'#d63031'}">${t.type}<br><small>@ ${t.entryPrice}</small></td><td><button class="action-btn" style="padding: 4px;" onclick="closeTrade(${t.id})">CLOSE</button></td></tr>`;
             });
         }
 
-        /* --- DYNAMIC IRONMAN SUBJECTS --- */
+        // Ironman Vault Logic
         function createNewSubject() {
             let name = prompt("Enter Subject Name:");
             if(!name) return;
-            let emoji = prompt("Enter an Emoji for this subject (e.g. 🧠):", "📁");
-            customIronmanSubjects.push({ name, emoji: emoji || '📁' });
+            customIronmanSubjects.push({ name, emoji: '📁' });
             localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
             renderIronmanSubjects();
         }
         function deleteSubject(event, name) {
             event.stopPropagation();
-            if(confirm(`Are you sure you want to delete the folder: ${name}?`)) {
+            if(confirm(`Delete ${name}?`)) {
                 customIronmanSubjects = customIronmanSubjects.filter(s => s.name !== name);
                 localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
-                localStorage.removeItem('note_' + name);
-                const tx = db.transaction("files", "readwrite");
-                const store = tx.objectStore("files");
-                const index = store.index("subject");
-                const request = index.getAll(name);
-                request.onsuccess = (e) => { e.target.result.forEach(file => store.delete(file.id)); };
                 renderIronmanSubjects();
             }
         }
@@ -850,168 +696,47 @@
             const grid = document.getElementById('ironman-dynamic-grid');
             if(!grid) return; grid.innerHTML = '';
             customIronmanSubjects.forEach(sub => {
-                grid.innerHTML += `
-                    <div class="tool-card" onclick="openVault('${sub.name}')">
-                        <span style="position:absolute; top:15px; right:15px; color:#ff4757; font-size:1.2rem; cursor:pointer;" onclick="deleteSubject(event, '${sub.name}')">🗑️</span>
-                        <div style="font-size:2rem; margin-bottom:10px;">${sub.emoji}</div>
-                        <h3 style="margin-right:20px;">${sub.name}</h3>
-                        <p style="font-size:0.8rem; color:#aaa;">Notes & Local Files</p>
-                    </div>
-                `;
+                grid.innerHTML += `<div class="tool-card" onclick="openVault('${sub.name}')"><span style="position:absolute; top:15px; right:15px; color:#ff4757; cursor:pointer;" onclick="deleteSubject(event, '${sub.name}')">🗑️</span><div style="font-size:2rem; margin-bottom:10px;">${sub.emoji}</div><h3>${sub.name}</h3></div>`;
             });
         }
-
-        /* --- MULTI-FILE DESKTOP VAULT --- */
         let currentVaultTitle = '';
         function openVault(title) {
-            currentVaultTitle = title;
-            document.getElementById('vault-title').innerText = title + " FOLDER";
+            currentVaultTitle = title; document.getElementById('vault-title').innerText = title + " FOLDER";
             document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
-            document.getElementById('vault-notes').style.display = 'block';
-            closeFileViewer(); 
             const tx = db.transaction("files", "readonly");
-            const store = tx.objectStore("files");
-            const index = store.index("subject");
-            const request = index.getAll(title);
-            request.onsuccess = (e) => {
-                currentVaultFiles = e.target.result || [];
-                renderVaultFiles();
-                openModal('vault-modal');
+            tx.objectStore("files").index("subject").getAll(title).onsuccess = (e) => {
+                currentVaultFiles = e.target.result || []; renderVaultFiles(); openModal('vault-modal');
             };
         }
-        function saveVaultData() {
-            localStorage.setItem('note_' + currentVaultTitle, document.getElementById('vault-notes').value);
-            showSilentNotification("Notes Saved!");
-        }
-        function handleMultipleFileUpload(event) {
-            const files = event.target.files;
-            if(!files || files.length === 0) return;
-            for(let i=0; i<files.length; i++) {
-                const file = files[i];
-                const fileObj = {
-                    id: Date.now() + Math.random(), subject: currentVaultTitle, name: file.name,
-                    type: file.type.includes('pdf') ? 'PDF' : 'IMG', blob: file 
-                };
-                const tx = db.transaction("files", "readwrite");
-                tx.objectStore("files").put(fileObj);
-                tx.oncomplete = () => {
-                    currentVaultFiles.push(fileObj);
-                    if(i === files.length - 1) { renderVaultFiles(); showSilentNotification("Files uploaded successfully."); }
-                };
-            }
-            document.getElementById('file-uploader').value = ''; 
-        }
-        function loadGDriveAsFile() {
-            let link = document.getElementById('gdrive-link').value;
-            if(link.includes('drive.google.com')) {
-                link = link.replace(/\/view.*$/, '/preview'); 
-                const fileObj = { id: Date.now(), subject: currentVaultTitle, name: 'Google Drive Doc', type: 'LINK', data: link };
-                const tx = db.transaction("files", "readwrite");
-                tx.objectStore("files").put(fileObj);
-                tx.oncomplete = () => { currentVaultFiles.push(fileObj); renderVaultFiles(); document.getElementById('gdrive-link').value = ''; };
-            } else { showSilentNotification("Invalid Google Drive Link!"); }
-        }
-        function deleteVaultFile(event, id) {
-            event.stopPropagation();
-            const tx = db.transaction("files", "readwrite");
-            tx.objectStore("files").delete(id);
-            tx.oncomplete = () => { currentVaultFiles = currentVaultFiles.filter(f => f.id !== id); renderVaultFiles(); };
-        }
+        function saveVaultData() { localStorage.setItem('note_' + currentVaultTitle, document.getElementById('vault-notes').value); showNotification("Notes Saved!"); }
         function renderVaultFiles() {
-            const grid = document.getElementById('vault-files-grid');
-            grid.innerHTML = '';
-            if(currentVaultFiles.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1 / -1; color: #666; font-size: 0.85rem; text-align: center; padding: 10px;">No files in this local vault. Upload unlimited files above.</div>`;
-                return;
-            }
+            const grid = document.getElementById('vault-files-grid'); grid.innerHTML = '';
             currentVaultFiles.forEach(f => {
-                let icon = f.type === 'PDF' ? '📕' : (f.type === 'IMG' ? '🖼️' : '🔗');
-                grid.innerHTML += `
-                    <div class="file-item" onclick="openFileViewer(${f.id})">
-                        <span class="file-item-delete" onclick="deleteVaultFile(event, ${f.id})">✕</span>
-                        <div class="file-item-icon">${icon}</div>
-                        <div class="file-item-name">${f.name}</div>
-                    </div>
-                `;
+                grid.innerHTML += `<div class="file-item"><div class="file-item-icon">📄</div><div class="file-item-name">${f.name}</div></div>`;
             });
         }
-        let currentObjUrl = null; 
-        function openFileViewer(id) {
-            const tx = db.transaction("files", "readonly");
-            const store = tx.objectStore("files");
-            const req = store.get(id);
-            req.onsuccess = (e) => {
-                const f = e.target.result;
-                document.getElementById('vault-files-grid').style.display = 'none';
-                document.getElementById('file-upload-container').style.display = 'none';
-                document.getElementById('file-display-area').style.display = 'block';
-                if (f.type === 'LINK') { document.getElementById('doc-iframe').src = f.data; } 
-                else {
-                    if(currentObjUrl) URL.revokeObjectURL(currentObjUrl);
-                    currentObjUrl = URL.createObjectURL(f.blob);
-                    document.getElementById('doc-iframe').src = currentObjUrl;
-                }
-            };
-        }
-        function closeFileViewer() {
-            document.getElementById('file-display-area').style.display = 'none';
-            document.getElementById('doc-iframe').src = '';
-            if(currentObjUrl) { URL.revokeObjectURL(currentObjUrl); currentObjUrl = null; }
-            document.getElementById('vault-files-grid').style.display = 'grid';
-            document.getElementById('file-upload-container').style.display = 'block';
-        }
 
-        /* --- UI NAVIGATION & ADVANCED SETTINGS MANAGER --- */
+        // Settings & Navigation
         function applyBackground(val) {
             const bgVideo = document.getElementById('bg-video');
-            if(val.startsWith('vid:')) {
-                bgVideo.src = val.substring(4);
-                bgVideo.style.display = 'block';
-                document.documentElement.style.setProperty('--bg-image', "none");
-            } else {
-                bgVideo.style.display = 'none';
-                bgVideo.src = '';
-                let imgUrl = val.startsWith('img:') ? val.substring(4) : val;
-                document.documentElement.style.setProperty('--bg-image', "url('" + imgUrl + "')");
-            }
+            if(val.startsWith('vid:')) { bgVideo.src = val.substring(4); bgVideo.style.display = 'block'; document.documentElement.style.setProperty('--bg-image', "none"); } 
+            else { bgVideo.style.display = 'none'; document.documentElement.style.setProperty('--bg-image', "url('" + (val.startsWith('img:') ? val.substring(4) : val) + "')"); }
         }
-
         function saveSettings() {
             const bgVal = document.getElementById('bg-selector').value;
             const opacity = document.getElementById('opacity-slider').value;
-            voiceSpeed = document.getElementById('voice-speed-slider').value;
-            assistVolume = document.getElementById('volume-slider').value;
-            
-            // New settings
             const customColor = document.getElementById('theme-color-picker').value;
-            const scanIntensity = document.getElementById('scanline-slider').value;
+            const curr = document.getElementById('currency-selector').value;
             const isPowerSaver = document.getElementById('power-saver').checked;
             
-            localStorage.setItem('bg-url', bgVal); 
-            applyBackground(bgVal);
-
-            localStorage.setItem('glass-opacity', opacity); 
-            document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${opacity})`);
+            localStorage.setItem('bg-url', bgVal); applyBackground(bgVal);
+            localStorage.setItem('glass-opacity', opacity); document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${opacity})`);
+            localStorage.setItem('theme-color', customColor); document.documentElement.style.setProperty('--theme-color', customColor);
+            localStorage.setItem('default-currency', curr);
+            document.getElementById('currency-label').innerText = curr === 'INR' ? '₹' : (curr === 'USD' ? '$' : 'COINS');
             
-            localStorage.setItem('voice-speed', voiceSpeed);
-            localStorage.setItem('assist-volume', assistVolume);
-
-            localStorage.setItem('theme-color', customColor);
-            document.documentElement.style.setProperty('--theme-color', customColor);
-
-            localStorage.setItem('scanline', scanIntensity);
-            document.documentElement.style.setProperty('--scanline-opacity', scanIntensity);
-            
-            if(isPowerSaver) {
-                document.getElementById('bg-canvas').style.display = 'none';
-                document.documentElement.style.setProperty('--glass-bg', `rgba(5, 5, 5, 0.95)`);
-                document.querySelector('.bg-mesh').style.backdropFilter = 'none';
-            } else {
-                document.getElementById('bg-canvas').style.display = 'block';
-            }
-
-            showSilentNotification(`Settings Applied! Protocol Updated.`);
-            closeModal('settings-overlay');
+            if(isPowerSaver) { document.getElementById('bg-canvas').style.display = 'none'; } else { document.getElementById('bg-canvas').style.display = 'block'; }
+            showNotification(`Settings Applied!`); closeModal('settings-overlay');
         }
 
         function initProtocol(id, color) {
@@ -1020,106 +745,61 @@
             document.getElementById('dashboard-stage').style.display = 'flex';
             setTimeout(() => { document.getElementById('dashboard-stage').style.opacity = '1'; renderModule(id); }, 50);
         }
-        
         function returnToHome() {
             document.getElementById('dashboard-stage').style.opacity = '0';
             setTimeout(() => { document.getElementById('dashboard-stage').style.display = 'none'; document.getElementById('landing-stage').style.display = 'flex'; }, 400);
         }
-
         function renderModule(id) {
             const mod = modules[id]; const contentArea = document.getElementById('main-content');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             if(document.getElementById('nav-'+id)) document.getElementById('nav-'+id).classList.add('active');
-            contentArea.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${mod.title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SYSTEM CONFIG</button></div><div>${mod.html}</div>`;
-            
+            contentArea.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;"><h2>${mod.title}</h2><button class="action-btn" onclick="openModal('settings-overlay')">⚙️ SETTINGS</button></div><div>${mod.html}</div>`;
             if(id === 'cap') { loadTV("BINANCE:BTCUSDT"); renderTradePositions(); }
             if(id === 'ironman') renderIronmanSubjects();
             if(id === 'spidey') { document.getElementById('spidey-ledger').value = localStorage.getItem('kk_spidey_ledger') || ''; }
         }
-        
         function switchModule(id) { renderModule(id); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; setTimeout(()=>document.getElementById(id).style.opacity='1',10); }
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
-
-        function showSilentNotification(msg) {
-            if(assistVolume == 0) return; 
+        function showNotification(msg) {
             let toast = document.createElement('div'); toast.className = 'hud-toast'; toast.innerText = "🔔 " + msg;
             document.getElementById('toast-container').appendChild(toast);
-            setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 8000);
+            setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 3000);
         }
 
-        /* --- 3D DYNAMIC SMART WALLPAPER ENGINE --- */
+        // Particle Background
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
-        let lines = []; 
-        let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
-        
+        let lines = []; let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
         window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
-        
         class DigitalNode {
-            constructor() { 
-                this.x = Math.random() * canvas.width; 
-                this.y = Math.random() * canvas.height; 
-                this.z = Math.random() * 2 + 0.1; 
-                this.vy = (Math.random() * 1.5) + 0.5; 
-                this.size = Math.random() * 2.5 + 1; 
-                this.alpha = Math.random() * 0.5 + 0.2; 
-            }
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.z = Math.random() * 2 + 0.1; this.vy = (Math.random() * 1.5) + 0.5; this.size = Math.random() * 2.5 + 1; this.alpha = Math.random() * 0.5 + 0.2; }
             update() { 
-                let dx = (mouse.x - canvas.width/2) * (this.z * 0.005);
-                let dy = (mouse.y - canvas.height/2) * (this.z * 0.005);
-                this.y += this.vy - dy; this.x -= dx;
+                this.y += this.vy - ((mouse.y - canvas.height/2) * (this.z * 0.005)); this.x -= ((mouse.x - canvas.width/2) * (this.z * 0.005));
                 if (this.y > canvas.height + 10) { this.y = -10; this.x = Math.random() * canvas.width; } 
                 if (this.y < -10) { this.y = canvas.height + 10; }
                 if (this.x > canvas.width + 10) { this.x = -10; }
                 if (this.x < -10) { this.x = canvas.width + 10; }
             }
-            draw() { 
-                ctx.fillStyle = modules[currentModule]?.color || '#00e5ff'; 
-                ctx.globalAlpha = this.alpha; 
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); 
-            }
+            draw() { ctx.fillStyle = modules[currentModule]?.color || '#00ffaa'; ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
-        for(let i=0; i<80; i++) lines.push(new DigitalNode()); 
-        
+        for(let i=0; i<60; i++) lines.push(new DigitalNode()); 
         function animate() {
-            if(document.getElementById('power-saver') && document.getElementById('power-saver').checked) {
-                requestAnimationFrame(animate); return; // skip drawing
-            }
-            ctx.clearRect(0,0,canvas.width,canvas.height); 
-            ctx.strokeStyle = modules[currentModule]?.color || '#00e5ff'; 
-            ctx.lineWidth = 0.2;
-            
+            if(document.getElementById('power-saver') && document.getElementById('power-saver').checked) { requestAnimationFrame(animate); return; }
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = modules[currentModule]?.color || '#00ffaa'; ctx.lineWidth = 0.2;
             for(let a=0; a<lines.length; a++) {
                 lines[a].update(); lines[a].draw();
                 for(let b=a+1; b<lines.length; b++) {
                     let dist = Math.hypot(lines[a].x - lines[b].x, lines[a].y - lines[b].y);
-                    if(dist < 100) { 
-                        ctx.globalAlpha = (100 - dist) / 500; 
-                        ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke(); 
-                    }
+                    if(dist < 100) { ctx.globalAlpha = (100 - dist) / 500; ctx.beginPath(); ctx.moveTo(lines[a].x, lines[a].y); ctx.lineTo(lines[b].x, lines[b].y); ctx.stroke(); }
                 }
             } requestAnimationFrame(animate);
         } animate();
 
-        /* --- ADVANCED JARVIS SHLOKA MATRIX LOGIC --- */
+        // --- CLEAN SHLOKA LOGIC ---
         let starredShlokas = JSON.parse(localStorage.getItem('kk_starred_shlokas')) || [];
-
-        // Function to make specific BAMS terms look glowing like JARVIS scanning
-        function highlightTerms(text) {
-            const keywords = ['वात', 'पित्त', 'कफ', 'दोष', 'धातु', 'रोग', 'आयु', 'अग्नि'];
-            let modifiedText = text;
-            keywords.forEach(word => {
-                let regex = new RegExp(`(${word})`, 'g');
-                modifiedText = modifiedText.replace(regex, `<strong>$1</strong>`);
-            });
-            return modifiedText;
-        }
-
-        // Expanded Database with Multiple Samhitas
         const shlokaDatabase = [
-            // Ashtang Hridayam (Preserved ALL original 44)
             { id: "1_1", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "रागादिरोगान् सततानुषक्तानशेषकायप्रसृतानशेषान् । औत्सुक्यमोहारतिदान् जघान योऽपूर्ववैद्याय नमोऽस्तु तस्मै ॥" },
             { id: "1_2", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "आयुःकामयमानेन धर्मार्थसुखसाधनम् । आयुर्वेदोपदेशेषु विधेयः परमादरः ॥" },
             { id: "1_3", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "ब्रह्मा स्मृत्वाऽऽयुषो वेदं प्रजापतिमजिग्रहत् । सोऽश्विनौ तौ सहस्राक्षं सोऽत्रिपुत्रादिकान्मुनीन् ॥" },
@@ -1166,16 +846,10 @@
             { id: "1_43", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "आढ्यो रोगी भिषग्वश्यो ज्ञापकः सत्त्ववानपि ॥" },
             { id: "1_44", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "साध्योऽसाध्य इति व्याधिर्द्विधा ते तु पुनर्द्विधा । सुसाध्यः कृच्छ्रसाध्यश्च याप्यो यश्चानुपक्रमः ॥" },
             { id: "1_45", samhita: "Ashtang Hridayam", chapter: "दिनचर्या अध्याय", text: "ब्राह्मे मुहूर्ते उत्तिष्ठेत् स्वस्थो रक्षार्थमायुषः । शरीरचिन्तां निर्वर्त्य कृतशौचविधिस्ततः ॥" },
-            
-            // Charak Samhita
             { id: "c1_1", samhita: "Charak Samhita", chapter: "सूत्रस्थान (दीर्घञ्जीवितीयमध्याय)", text: "दीर्घञ्जीवितीयमध्यायं व्याख्यास्यामः । इति ह स्माह भगवानात्रेयः ॥" },
             { id: "c1_2", samhita: "Charak Samhita", chapter: "सूत्रस्थान (दीर्घञ्जीवितीयमध्याय)", text: "धर्मार्थकाममोक्षाणामारोग्यं मूलमुत्तमम् । रोगास्तस्यापहर्तारः श्रेयसो जीवितस्य च ॥" },
-            
-            // Sushruta Samhita
             { id: "s1_1", samhita: "Sushruta Samhita", chapter: "सूत्रस्थान (वेदोत्पत्ति)", text: "अथातो वेदोत्पत्तिमध्यायं व्याख्यास्यामः ।" },
             { id: "s1_2", samhita: "Sushruta Samhita", chapter: "सूत्रस्थान (वेदोत्पत्ति)", text: "आयुर्वेदं अष्टाङ्गं उपदिश्यते ।" },
-
-            // Padarth Vigyan
             { id: "p1_1", samhita: "Padarth Vigyan", chapter: "आयुर्वेद निरुपण", text: "हिताहितं सुखं दुःखमायुस्तस्य हिताहितम् । मानं च तच्च यत्रोक्तमायुर्वेदः स उच्यते ॥" }
         ];
 
@@ -1185,99 +859,62 @@
 
         function loadSamhita(samhitaName) {
             matrixCurrentSamhita = samhitaName;
-            
-            // UI Update for Top Tabs
-            const btns = document.querySelectorAll('.samhita-btn');
-            btns.forEach(b => {
-                b.classList.remove('active');
-                if(b.innerText === samhitaName) b.classList.add('active');
-            });
-
-            // Populate Chapters for selected Samhita
+            document.querySelectorAll('.samhita-btn').forEach(b => { b.classList.remove('active'); if(b.innerText === samhitaName) b.classList.add('active'); });
             const chaptersSet = new Set(shlokaDatabase.filter(s => s.samhita === samhitaName).map(s => s.chapter));
-            const chapterListDiv = document.getElementById('chapter-tab-list');
-            chapterListDiv.innerHTML = '';
-            
+            const chapterListDiv = document.getElementById('chapter-tab-list'); chapterListDiv.innerHTML = '';
             let isFirst = true;
             chaptersSet.forEach(chapter => {
                 const btn = document.createElement('button');
                 btn.className = isFirst ? 'chapter-btn active' : 'chapter-btn';
-                btn.innerText = chapter;
-                btn.onclick = () => loadChapter(chapter);
+                btn.innerText = chapter; btn.onclick = () => loadChapter(chapter);
                 chapterListDiv.appendChild(btn);
-                
                 if(isFirst) { loadChapter(chapter); isFirst = false; }
             });
-            
-            if(chaptersSet.size === 0) {
-                chapterListDiv.innerHTML = '<div style="color:#aaa; padding:10px;">Data Vault Empty</div>';
-                document.getElementById('shloka-display-grid').innerHTML = '';
-            }
         }
-
         function loadChapter(chapterName) {
             matrixCurrentChapter = chapterName;
-            const btns = document.querySelectorAll('.chapter-btn');
-            btns.forEach(b => {
-                b.classList.remove('active');
-                if(b.innerText === chapterName) b.classList.add('active');
-            });
+            document.querySelectorAll('.chapter-btn').forEach(b => { b.classList.remove('active'); if(b.innerText === chapterName) b.classList.add('active'); });
             renderShlokaMatrix();
         }
-
         function setStarFilter(onlyStarred) {
             matrixShowStarredOnly = onlyStarred;
-            document.getElementById('filter-all').style.color = onlyStarred ? '#888' : '#fff';
-            document.getElementById('filter-all').style.borderColor = onlyStarred ? 'transparent' : '#ff2a2a';
-            document.getElementById('filter-starred').style.color = onlyStarred ? '#ffaa00' : '#888';
-            document.getElementById('filter-starred').style.borderColor = onlyStarred ? '#ffaa00' : 'transparent';
+            document.getElementById('filter-all').style.background = onlyStarred ? 'transparent' : 'rgba(0,255,170,0.1)';
+            document.getElementById('filter-starred').style.background = onlyStarred ? 'rgba(255,170,0,0.1)' : 'transparent';
             renderShlokaMatrix();
         }
-
         function toggleMatrixStar(shlokaId) {
-            if (starredShlokas.includes(shlokaId)) { starredShlokas = starredShlokas.filter(id => id !== shlokaId); } 
-            else { starredShlokas.push(shlokaId); }
-            localStorage.setItem('kk_starred_shlokas', JSON.stringify(starredShlokas));
-            renderShlokaMatrix();
+            if (starredShlokas.includes(shlokaId)) { starredShlokas = starredShlokas.filter(id => id !== shlokaId); } else { starredShlokas.push(shlokaId); }
+            localStorage.setItem('kk_starred_shlokas', JSON.stringify(starredShlokas)); renderShlokaMatrix();
         }
-
         function renderShlokaMatrix() {
-            const displayGrid = document.getElementById('shloka-display-grid');
-            if(!displayGrid) return; 
-            displayGrid.innerHTML = '';
-            
+            const displayGrid = document.getElementById('shloka-display-grid'); if(!displayGrid) return; displayGrid.innerHTML = '';
             let filteredShlokas = shlokaDatabase.filter(s => s.samhita === matrixCurrentSamhita && s.chapter === matrixCurrentChapter);
             if (matrixShowStarredOnly) { filteredShlokas = filteredShlokas.filter(s => starredShlokas.includes(s.id)); }
-            
-            if (filteredShlokas.length === 0) {
-                displayGrid.innerHTML = `<div style="text-align:center; color:#aaa; margin-top:50px;">No shlokas found in JARVIS Archives.</div>`;
-                return;
-            }
+            if (filteredShlokas.length === 0) { displayGrid.innerHTML = `<div style="text-align:center; color:#aaa; margin-top:50px;">No shlokas found here.</div>`; return; }
             
             filteredShlokas.forEach((s, index) => {
                 const isStarred = starredShlokas.includes(s.id);
-                const starClass = isStarred ? "star-btn active" : "star-btn";
-                const starSymbol = isStarred ? "⭐" : "☆";
-                
-                // Highlight important keywords like JARVIS scanning
-                const formattedText = highlightTerms(s.text);
-
                 displayGrid.innerHTML += `
                     <div class="shloka-card">
-                        <div style="color: #ff2a2a; font-size: 1.2rem; margin-right: 20px; font-weight: 900; opacity: 0.8; font-family: 'Orbitron', sans-serif;">[${index + 1}]</div>
-                        <div class="shloka-text">${formattedText}</div>
-                        <div class="${starClass}" onclick="toggleMatrixStar('${s.id}')">${starSymbol}</div>
-                    </div>
-                `;
+                        <div style="color: #00ffaa; font-size: 1.2rem; margin-right: 20px; font-weight: bold;">[${index + 1}]</div>
+                        <div class="shloka-text">${s.text}</div>
+                        <div class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleMatrixStar('${s.id}')">${isStarred ? '⭐' : '☆'}</div>
+                    </div>`;
             });
         }
+        setTimeout(() => { if(document.getElementById('shloka-display-grid')) loadSamhita('Ashtang Hridayam'); }, 500);
 
-        setTimeout(() => {
-            if(document.getElementById('shloka-display-grid')) {
-                loadSamhita('Ashtang Hridayam'); // Initialize first tab
-            }
-        }, 500);
-        
+        // --- CALCULATOR LOGIC ---
+        let calcVal = "0";
+        function calcInput(val) {
+            const screen = document.getElementById('calc-screen');
+            if(val === 'C') { calcVal = "0"; }
+            else if(val === 'DEL') { calcVal = calcVal.length > 1 ? calcVal.slice(0, -1) : "0"; }
+            else if(val === '=') { try { calcVal = eval(calcVal).toString(); } catch(e) { calcVal = "Error"; } }
+            else { if(calcVal === "0" || calcVal === "Error") calcVal = val; else calcVal += val; }
+            screen.innerText = calcVal;
+        }
+
     </script>
 </body>
 </html>
