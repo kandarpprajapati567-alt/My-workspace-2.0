@@ -10,7 +10,7 @@
 
     <style>
         /* Google Font for Premium Tech Look - Preloader */
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap');
 
         :root {
             --theme-color: #00ffaa;
@@ -136,62 +136,99 @@
 
         .holo-viewport { flex: 1; position: relative; background: radial-gradient(circle at center, rgba(0, 255, 170, 0.15) 0%, rgba(2, 2, 5, 0.9) 75%); display: flex; justify-content: center; align-items: center; border-radius: 0 18px 18px 0; }
         
-        /* Candle Card Styles */
         .candle-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
         .candle-card h3 { margin-top: 0; color: #00ffaa; }
         .sentiment-bar { height: 10px; width: 100%; background: #d63031; border-radius: 5px; margin-top: 10px; overflow: hidden; position: relative; }
         .sentiment-fill { height: 100%; background: #00b894; width: 65%; transition: 1s ease-in-out; }
 
-        /* --- PRELOADER STYLES --- */
+        /* --- MARVEL REALISTIC PRELOADER STYLES --- */
         #premium-preloader {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #030305; display: flex; justify-content: center; align-items: center;
-            z-index: 999999; overflow: hidden; perspective: 1000px;
+            flex-direction: column; z-index: 999999; overflow: hidden; perspective: 1000px;
             transition: opacity 1.5s cubic-bezier(0.77, 0, 0.175, 1), transform 1.5s ease-in-out;
         }
+        .jarvis-reactor {
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 4px solid rgba(0, 229, 255, 0.2); position: relative;
+            box-shadow: 0 0 50px rgba(0, 229, 255, 0.4), inset 0 0 50px rgba(0, 229, 255, 0.4);
+            animation: pulseReactor 2s infinite alternate; margin-bottom: 40px;
+        }
+        .jarvis-reactor::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border-radius: 50%; border: 2px dashed #00e5ff; animation: spinRotate 5s linear infinite;
+        }
+        .jarvis-reactor::after {
+            content: ''; position: absolute; top: 30px; left: 30px; right: 30px; bottom: 30px;
+            border-radius: 50%; background: rgba(0, 229, 255, 0.8);
+            box-shadow: 0 0 40px #00e5ff;
+        }
+        @keyframes pulseReactor { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; } }
+        @keyframes spinRotate { 100% { transform: rotate(360deg); } }
+        
         .preloader-content { text-align: center; transform-style: preserve-3d; animation: cinematicEnter 3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .title-3d {
-            font-family: 'Orbitron', sans-serif; font-size: 3.5rem; color: #ffffff; text-transform: uppercase;
-            letter-spacing: 4px; margin: 0; position: relative;
-            text-shadow: 0px 1px 0px #cccccc, 0px 2px 0px #b3b3b3, 0px 3px 0px #999999, 0px 4px 0px #808080, 0px 5px 15px rgba(0, 119, 255, 0.6);
-            background: linear-gradient(90deg, #fff, #888, #fff); -webkit-background-clip: text; background-clip: text; background-size: 200% auto; animation: shineText 3s linear infinite;
+            font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: #ffffff; text-transform: uppercase;
+            letter-spacing: 6px; margin: 0; position: relative;
+            text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff;
         }
-        .version-badge { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; color: #0088ff; letter-spacing: 6px; margin-top: 20px; opacity: 0; transform: translateY(20px); animation: fadeUp 1s ease-out 1.5s forwards; }
-        .loading-bar-container { width: 300px; height: 2px; background: rgba(255, 255, 255, 0.1); margin: 40px auto 0; position: relative; overflow: hidden; border-radius: 2px; }
-        .loading-bar { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: #0088ff; box-shadow: 0 0 10px #0088ff; animation: loadProgress 3.5s cubic-bezier(0.77, 0, 0.175, 1) forwards; }
+        .jarvis-typing {
+            font-family: monospace; color: #00e5ff; font-size: 1rem; margin-top: 15px;
+            white-space: nowrap; overflow: hidden; border-right: 2px solid #00e5ff;
+            width: 0; animation: typing 2.5s steps(30, end) forwards, blinkCursor 0.75s step-end infinite;
+        }
+        .loading-bar-container { width: 400px; height: 3px; background: rgba(0, 229, 255, 0.1); margin: 30px auto 0; position: relative; overflow: hidden; border-radius: 2px; }
+        .loading-bar { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: #00e5ff; box-shadow: 0 0 15px #00e5ff; animation: loadProgress 3.5s cubic-bezier(0.77, 0, 0.175, 1) forwards; }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blinkCursor { from, to { border-color: transparent } 50% { border-color: #00e5ff } }
         @keyframes cinematicEnter { 0% { transform: translateZ(-500px) rotateX(20deg); opacity: 0; filter: blur(10px); } 100% { transform: translateZ(0) rotateX(0); opacity: 1; filter: blur(0); } }
-        @keyframes shineText { to { background-position: 200% center; } }
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
         @keyframes loadProgress { 0% { width: 0%; } 50% { width: 60%; } 100% { width: 100%; } }
         .hide-preloader { opacity: 0 !important; pointer-events: none; transform: scale(1.1); }
 
-        /* --- HIGH-TECH PREMIUM SHLOKA MATRIX STYLES --- */
-        .shloka-matrix-container { display: flex; height: 75vh; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 15px; background: linear-gradient(180deg, rgba(0,255,170,0.02) 0%, transparent 100%); position: relative; }
-        .shloka-matrix-container::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background-image: radial-gradient(rgba(0, 255, 170, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3; pointer-events: none; }
+        /* --- ADVANCED IRONMAN SHLOKA MATRIX STYLES --- */
+        .shloka-matrix-container { display: flex; height: 75vh; border-top: 1px solid rgba(255, 42, 42, 0.3); margin-top: 15px; background: linear-gradient(180deg, rgba(255, 42, 42, 0.05) 0%, transparent 100%); position: relative; border-radius: 10px; box-shadow: inset 0 0 30px rgba(255, 42, 42, 0.05);}
+        .shloka-matrix-container::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background-image: radial-gradient(rgba(255, 42, 42, 0.15) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3; pointer-events: none; }
         
-        .chapter-tabs { width: 260px; border-right: 1px solid rgba(0, 255, 170, 0.2); overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 12px; z-index: 1; }
+        .samhita-tabs { display: flex; gap: 10px; padding: 15px; border-bottom: 1px solid rgba(255, 42, 42, 0.2); overflow-x: auto; scrollbar-width: none;}
+        .samhita-btn { background: rgba(0,0,0,0.6); border: 1px solid rgba(255, 42, 42, 0.3); color: #888; padding: 10px 20px; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; transition: 0.3s; white-space: nowrap;}
+        .samhita-btn.active, .samhita-btn:hover { background: rgba(255, 42, 42, 0.15); color: #fff; border-color: #ff2a2a; box-shadow: 0 0 15px rgba(255, 42, 42, 0.4); }
+
+        .matrix-body { display: flex; flex: 1; overflow: hidden; }
+        .chapter-tabs { width: 260px; border-right: 1px solid rgba(255, 42, 42, 0.2); overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; z-index: 1; }
         .chapter-tabs::-webkit-scrollbar { width: 4px; }
-        .chapter-tabs::-webkit-scrollbar-thumb { background: var(--theme-color); border-radius: 4px; }
+        .chapter-tabs::-webkit-scrollbar-thumb { background: #ff2a2a; border-radius: 4px; }
         
         .chapter-btn { background: rgba(5, 10, 15, 0.6); border: 1px solid rgba(255,255,255,0.08); color: #888; padding: 15px 20px; border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); font-weight: bold; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
-        .chapter-btn::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--theme-color); transition: 0.4s ease; z-index: -1; opacity: 0.1; }
-        .chapter-btn.active, .chapter-btn:hover { border-color: var(--theme-color); color: #fff; box-shadow: 0 0 20px rgba(0, 255, 170, 0.15); transform: translateX(5px); }
+        .chapter-btn::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #ff2a2a; transition: 0.4s ease; z-index: -1; opacity: 0.1; }
+        .chapter-btn.active, .chapter-btn:hover { border-color: #ff2a2a; color: #fff; box-shadow: 0 0 20px rgba(255, 42, 42, 0.15); transform: translateX(5px); }
         .chapter-btn.active::before { width: 100%; }
-        .chapter-btn.active { border-left: 4px solid var(--theme-color); }
+        .chapter-btn.active { border-left: 4px solid #ff2a2a; }
         
-        .shloka-content-area { flex: 1; padding-left: 25px; display: flex; flex-direction: column; z-index: 1; }
+        .shloka-content-area { flex: 1; padding: 20px; display: flex; flex-direction: column; z-index: 1; position: relative;}
+        
+        /* JARVIS Scanning Animation Overlay */
+        .shloka-content-area::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 10px;
+            background: rgba(255, 42, 42, 0.5); box-shadow: 0 0 20px #ff2a2a;
+            animation: jarvisScan 4s linear infinite; pointer-events: none; opacity: 0.5;
+        }
+        @keyframes jarvisScan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+
         .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         
         #shloka-display-grid { overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 15px; }
         #shloka-display-grid::-webkit-scrollbar { width: 4px; }
-        #shloka-display-grid::-webkit-scrollbar-thumb { background: var(--theme-color); border-radius: 4px;}
+        #shloka-display-grid::-webkit-scrollbar-thumb { background: #ff2a2a; border-radius: 4px;}
         
-        .shloka-card { background: rgba(10, 15, 20, 0.7); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; transition: all 0.4s ease; backdrop-filter: blur(15px); position: relative; overflow: hidden; }
-        .shloka-card::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--theme-color); opacity: 0; transition: 0.4s ease; }
-        .shloka-card:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,255,170,0.05); border-color: rgba(0,255,170,0.3); }
+        .shloka-card { background: rgba(20, 5, 5, 0.7); padding: 25px; border-radius: 16px; border: 1px solid rgba(255, 42, 42, 0.2); display: flex; justify-content: space-between; align-items: center; transition: all 0.4s ease; backdrop-filter: blur(15px); position: relative; overflow: hidden; }
+        .shloka-card::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #ff2a2a; opacity: 0; transition: 0.4s ease; }
+        .shloka-card:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 42, 42, 0.1); border-color: rgba(255, 42, 42, 0.5); }
         .shloka-card:hover::after { opacity: 1; }
         
+        /* Highlight styling for specific words (JARVIS UI feel) */
         .shloka-text { font-size: 1.3rem; color: #e0e0e0; flex: 1; line-height: 1.6; font-weight: 500; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 0.5px; }
+        .shloka-text strong { color: #ff2a2a; text-shadow: 0 0 10px rgba(255, 42, 42, 0.8); }
+
         .star-btn { font-size: 1.8rem; cursor: pointer; color: rgba(255,255,255,0.1); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; padding: 10px; }
         .star-btn:hover { transform: scale(1.2); color: rgba(255, 170, 0, 0.5); }
         .star-btn.active { color: #ffaa00; text-shadow: 0 0 20px rgba(255, 170, 0, 0.8), 0 0 40px rgba(255, 170, 0, 0.4); transform: scale(1.1); }
@@ -201,11 +238,10 @@
 <body>
 
     <div id="premium-preloader">
+        <div class="jarvis-reactor"></div>
         <div class="preloader-content">
-            <h1 class="title-3d" data-text="k.k.master integrated environment">
-                k.k.master integrated environment
-            </h1>
-            <div class="version-badge">v. 12.6</div>
+            <h1 class="title-3d">K.K. Master Interface</h1>
+            <div class="jarvis-typing">> INITIALIZING SYSTEM PROTOCOLS... v12.6 PRO MAX</div>
             <div class="loading-bar-container">
                 <div class="loading-bar"></div>
             </div>
@@ -309,30 +345,54 @@
     </div>
 
     <div class="overlay-modal" id="settings-overlay">
-        <div class="modal-box" style="width: 500px;">
+        <div class="modal-box" style="width: 600px;">
             <span class="close-btn" onclick="closeModal('settings-overlay')">✕</span>
-            <h2 style="color: var(--theme-color);">⚙️ COGNITIVE HUB MANAGER</h2>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px;">
-                <label>Main Background Cinematic</label>
-                <select id="bg-selector" class="custom-input">
-                    <option value="img:https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600">Image: Cyber City Lights</option>
-                    <option value="img:https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600">Image: Earth Orbital View</option>
-                    <option value="img:https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=1600">Image: Quantum Neon 3D</option>
-                    <option value="vid:https://cdn.pixabay.com/video/2021/08/04/83866-584742637_tiny.mp4">Video: Matrix Digital Rain</option>
-                    <option value="vid:https://cdn.pixabay.com/video/2020/05/24/40096-424694939_tiny.mp4">Video: Hyperspace Travel</option>
-                    <option value="vid:https://cdn.pixabay.com/video/2022/10/24/136262-764516315_tiny.mp4">Video: Cyberpunk Grid Pulse</option>
-                </select>
-
-                <label style="margin-top: 10px;">HUD Glass Opacity</label>
-                <input type="range" id="opacity-slider" min="0.2" max="0.95" step="0.05" value="0.65" style="width: 100%;">
-
-                <label style="margin-top: 10px;">Jarvis Voice Speed</label>
-                <input type="range" id="voice-speed-slider" min="0.7" max="1.5" step="0.1" value="1.0" style="width: 100%;">
+            <h2 style="color: var(--theme-color);">⚙️ COGNITIVE HUB MANAGER (PRO)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
                 
-                <label style="margin-top: 10px;">Assist Volume / Mute (Focus Mode)</label>
-                <input type="range" id="volume-slider" min="0.0" max="1.0" step="0.1" value="1.0" style="width: 100%;">
+                <div>
+                    <label>1. Main Background Cinematic</label>
+                    <select id="bg-selector" class="custom-input">
+                        <option value="img:https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1600">Image: Cyber City</option>
+                        <option value="img:https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600">Image: Earth Orbital</option>
+                        <option value="img:https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=1600">Image: Quantum Neon</option>
+                        <option value="vid:https://cdn.pixabay.com/video/2021/08/04/83866-584742637_tiny.mp4">Video: Matrix Rain</option>
+                        <option value="vid:https://cdn.pixabay.com/video/2020/05/24/40096-424694939_tiny.mp4">Video: Hyperspace</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>2. HUD Glass Opacity</label>
+                    <input type="range" id="opacity-slider" min="0.2" max="0.95" step="0.05" value="0.65" style="width: 100%; margin-top:10px;">
+                </div>
+
+                <div>
+                    <label>3. Jarvis Voice Speed</label>
+                    <input type="range" id="voice-speed-slider" min="0.7" max="1.5" step="0.1" value="1.0" style="width: 100%; margin-top:10px;">
+                </div>
+                
+                <div>
+                    <label>4. Assist Volume / Mute</label>
+                    <input type="range" id="volume-slider" min="0.0" max="1.0" step="0.1" value="1.0" style="width: 100%; margin-top:10px;">
+                </div>
+
+                <div>
+                    <label>5. Primary HUD Color Override</label>
+                    <input type="color" id="theme-color-picker" class="custom-input" value="#00ffaa" style="height: 40px; padding: 2px;">
+                </div>
+
+                <div>
+                    <label>6. Scanline Matrix Intensity</label>
+                    <input type="range" id="scanline-slider" min="0.0" max="0.3" step="0.02" value="0.08" style="width: 100%; margin-top:10px;">
+                </div>
+
+                <div style="grid-column: 1 / -1; display:flex; align-items:center; gap: 10px; margin-top: 10px;">
+                    <input type="checkbox" id="power-saver" style="width: 20px; height: 20px;">
+                    <label>7. Power Saver Mode (Disable 3D Particles & Blur)</label>
+                </div>
+
             </div>
-            <button class="action-btn" style="margin-top: 25px; width:100%; padding:12px;" onclick="saveSettings()">APPLY HUD CONFIG</button>
+            <button class="action-btn" style="margin-top: 25px; width:100%; padding:12px;" onclick="saveSettings()">APPLY PROTOCOLS</button>
         </div>
     </div>
 
@@ -366,23 +426,33 @@
     </div>
 
     <div class="overlay-modal" id="shloka-matrix-modal">
-        <div class="modal-box" style="width: 1000px; max-width: 95%;">
-            <span class="close-btn" onclick="closeModal('shloka-matrix-modal')">✕</span>
-            <h2 style="color: var(--theme-color); margin-top:0;">📚 SHLOKA MATRIX: RATTA MODE</h2>
+        <div class="modal-box" style="width: 1100px; max-width: 95%; border-color: #ff2a2a; box-shadow: 0 0 50px rgba(255, 42, 42, 0.2);">
+            <span class="close-btn" onclick="closeModal('shloka-matrix-modal')" style="color: #ff2a2a;">✕</span>
+            <h2 style="color: #ff2a2a; margin-top:0; font-family: 'Orbitron', sans-serif;">🔴 JARVIS SHLOKA ARCHIVE</h2>
             
             <div class="shloka-matrix-container">
-                <div class="chapter-tabs" id="chapter-tab-list">
-                    <button class="chapter-btn active" onclick="loadChapter('अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)')">अष्टांग हृदयम् - सूत्रस्थान</button>
-                </div>
-                
-                <div class="shloka-content-area">
-                    <div class="filter-bar">
-                        <button class="action-btn" id="filter-all" onclick="setStarFilter(false)" style="border-color: var(--theme-color);">ALL SHLOKAS</button>
-                        <button class="action-btn" id="filter-starred" onclick="setStarFilter(true)" style="color: #ffaa00; border-color: #ffaa00;">⭐ STARRED ONLY</button>
+                <div style="position: absolute; top: 0; left: 0; width: 100%; z-index: 5; background: rgba(10,5,5,0.9);">
+                    <div class="samhita-tabs" id="samhita-tab-list">
+                        <button class="samhita-btn active" onclick="loadSamhita('Ashtang Hridayam')">Ashtang Hridayam</button>
+                        <button class="samhita-btn" onclick="loadSamhita('Charak Samhita')">Charak Samhita</button>
+                        <button class="samhita-btn" onclick="loadSamhita('Sushruta Samhita')">Sushruta Samhita</button>
+                        <button class="samhita-btn" onclick="loadSamhita('Padarth Vigyan')">Padarth Vigyan</button>
                     </div>
-                    
-                    <div id="shloka-display-grid">
+                </div>
+
+                <div class="matrix-body" style="margin-top: 60px; width: 100%;">
+                    <div class="chapter-tabs" id="chapter-tab-list">
                         </div>
+                    
+                    <div class="shloka-content-area">
+                        <div class="filter-bar">
+                            <button class="action-btn" id="filter-all" onclick="setStarFilter(false)" style="border-color: #ff2a2a; background: rgba(255,42,42,0.1);">ALL SHLOKAS</button>
+                            <button class="action-btn" id="filter-starred" onclick="setStarFilter(true)" style="color: #ffaa00; border-color: #ffaa00;">⭐ STARRED ONLY</button>
+                        </div>
+                        
+                        <div id="shloka-display-grid">
+                            </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -395,7 +465,7 @@
         </div>
         
         <div class="carousel-container">
-            <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('1000568725.jpg');" onclick="initProtocol('ironman', '#ff2a2a')">
+            <div class="avenger-card" id="card-ironman" style="color: #ff2a2a; background-image: url('https://images.unsplash.com/photo-1508675801648-96f3bbccf351?q=80&w=600');" onclick="initProtocol('ironman', '#ff2a2a')">
                 <div class="card-icon">🦾</div>
                 <div class="card-content"><h3>BAMS COMMAND</h3><p style="color:#aaa; font-size:0.8rem;">Ayurvedic Studies & Local Vault Hub</p></div>
             </div>
@@ -403,7 +473,7 @@
                 <div class="card-icon">📈</div>
                 <div class="card-content"><h3>TRADE TERMINAL</h3><p style="color:#aaa; font-size:0.8rem;">Live Smart Virtual Trading</p></div>
             </div>
-            <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('1000568730.jpg');" onclick="initProtocol('thor', '#ffaa00')">
+            <div class="avenger-card" id="card-thor" style="color: #ffaa00; background-image: url('https://images.unsplash.com/photo-1601646271926-258055627772?q=80&w=600');" onclick="initProtocol('thor', '#ffaa00')">
                 <div class="card-icon">🔨</div>
                 <div class="card-content"><h3>CREATIVE FORGE</h3><p style="color:#aaa; font-size:0.8rem;">Scripting & Notes Management</p></div>
             </div>
@@ -427,21 +497,18 @@
     </div>
 
     <script>
-        // --- SMART PRELOADER LOGIC (Runs only once per session) ---
+        // --- SMART PRELOADER LOGIC (Marvel Theme) ---
         window.addEventListener('load', function() {
             const preloader = document.getElementById('premium-preloader');
-            
-            // Check if user has already seen preloader in this session
             if (!sessionStorage.getItem('kk_preloader_shown')) {
                 setTimeout(function() {
                     preloader.classList.add('hide-preloader');
                     setTimeout(function() {
                         preloader.style.display = 'none';
-                        sessionStorage.setItem('kk_preloader_shown', 'true'); // Save to memory
+                        sessionStorage.setItem('kk_preloader_shown', 'true');
                     }, 1500); 
-                }, 3500); 
+                }, 4000); // Wait for typing animation
             } else {
-                // If already seen, hide instantly
                 preloader.style.display = 'none';
             }
         });
@@ -460,7 +527,7 @@
         let currentVaultFiles = [];
         let db; 
 
-        // Initialize IndexedDB for unlimited local storage files
+        // Initialize IndexedDB
         const initDB = () => {
             const request = indexedDB.open("KK_Vault_DB", 1);
             request.onupgradeneeded = (event) => {
@@ -494,7 +561,7 @@
                         <button class="action-btn" onclick="alert('Timetable triggered')">📅 STUDY TIMETABLE</button>
                         <button class="action-btn" style="border-color:#00ffaa;" onclick="createNewSubject()">➕ ADD SUBJECT FOLDER</button>
                         <button class="action-btn" style="border-color:#00ffaa; background: rgba(0, 255, 170, 0.1);" onclick="openModal('anatomy-3d-modal')">🧬 3D ANATOMY</button>
-                        <button class="action-btn" style="border-color:#ffaa00;" onclick="openModal('shloka-matrix-modal')">📚 SHLOKA MATRIX</button>
+                        <button class="action-btn" style="border-color:#ff2a2a; color:#ff2a2a; box-shadow: 0 0 15px rgba(255,42,42,0.3);" onclick="openModal('shloka-matrix-modal')">🔴 JARVIS SHLOKA ARCHIVE</button>
                     </div>
                     <h3>Your Custom Subject Vaults</h3>
                     <div class="grid-layout" id="ironman-dynamic-grid" style="margin-top:15px;"></div>`
@@ -600,16 +667,20 @@
                     </div>
                 </div>
             ` },
+            /* UPGRADED SPIDERMAN MODULE - 7 FEATURES */
             spidey: { color: '#ff0055', title: 'Agency Web Ledger Control', html: `
                 <div class="grid-layout">
-                    <div class="tool-card" onclick="window.open('https://docs.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📄</div><h3>Google Docs</h3></div>
-                    <div class="tool-card" onclick="window.open('https://sheets.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📊</div><h3>Google Sheets</h3></div>
-                    <div class="tool-card" onclick="window.open('https://notion.so')"><div style="font-size:2rem; margin-bottom:10px;">📓</div><h3>Notion Workspace</h3></div>
-                    <div class="tool-card" onclick="window.open('https://github.com')"><div style="font-size:2rem; margin-bottom:10px;">🐙</div><h3>GitHub Repositories</h3></div>
+                    <div class="tool-card" onclick="window.open('https://docs.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📄</div><h3>Google Docs</h3><p style="font-size:0.75rem; color:#aaa;">Word Processing</p></div>
+                    <div class="tool-card" onclick="window.open('https://sheets.google.com')"><div style="font-size:2rem; margin-bottom:10px;">📊</div><h3>Google Sheets</h3><p style="font-size:0.75rem; color:#aaa;">Data & Spreadsheets</p></div>
+                    <div class="tool-card" onclick="window.open('https://notion.so')"><div style="font-size:2rem; margin-bottom:10px;">📓</div><h3>Notion Workspace</h3><p style="font-size:0.75rem; color:#aaa;">Knowledge Base</p></div>
+                    <div class="tool-card" onclick="window.open('https://github.com')"><div style="font-size:2rem; margin-bottom:10px;">🐙</div><h3>GitHub Repositories</h3><p style="font-size:0.75rem; color:#aaa;">Version Control</p></div>
+                    <div class="tool-card" onclick="window.open('https://trello.com')"><div style="font-size:2rem; margin-bottom:10px;">📋</div><h3>Trello Board</h3><p style="font-size:0.75rem; color:#aaa;">Task Kanban</p></div>
+                    <div class="tool-card" onclick="window.open('https://codepen.io')"><div style="font-size:2rem; margin-bottom:10px;">💻</div><h3>CodePen Sandbox</h3><p style="font-size:0.75rem; color:#aaa;">Live UI Testing</p></div>
+                    <div class="tool-card" onclick="window.open('https://slack.com')"><div style="font-size:2rem; margin-bottom:10px;">💬</div><h3>Slack Comms</h3><p style="font-size:0.75rem; color:#aaa;">Agency Chat</p></div>
                 </div>
                 <div style="margin-top: 25px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,0,85,0.2);">
-                    <h3 style="color:#ff0055; margin-top:0;">Ledger & Quick Notes</h3>
-                    <textarea id="spidey-ledger" class="custom-input" style="height: 120px; resize:none;" placeholder="Drop your quick expense details or agency notes here..." oninput="localStorage.setItem('kk_spidey_ledger', this.value)"></textarea>
+                    <h3 style="color:#ff0055; margin-top:0;">Web-Slinger Quick Ledger</h3>
+                    <textarea id="spidey-ledger" class="custom-input" style="height: 120px; resize:none;" placeholder="Drop your daily To-Do list, quick expenses, or agency notes here..." oninput="localStorage.setItem('kk_spidey_ledger', this.value)"></textarea>
                 </div>
             ` }
         };
@@ -632,11 +703,20 @@
                 assistVolume = parseFloat(localStorage.getItem('assist-volume'));
                 document.getElementById('volume-slider').value = assistVolume;
             }
+            if(localStorage.getItem('theme-color')) {
+                document.documentElement.style.setProperty('--theme-color', localStorage.getItem('theme-color'));
+                document.getElementById('theme-color-picker').value = localStorage.getItem('theme-color');
+            }
+            if(localStorage.getItem('scanline')) {
+                document.documentElement.style.setProperty('--scanline-opacity', localStorage.getItem('scanline'));
+                document.getElementById('scanline-slider').value = localStorage.getItem('scanline');
+            }
+            
             if(localStorage.getItem('myTimetable')) customTimetable = JSON.parse(localStorage.getItem('myTimetable'));
             refreshHUDTokens();
         }
 
-        /* --- TRADING VIEW AND LEARNER MODE --- */
+        /* --- TRADING VIEW AND API LOGIC (Preserved) --- */
         function loadTV(symbol) {
             if(typeof TradingView !== "undefined") {
                 document.getElementById('tradingview_cap').innerHTML = '';
@@ -648,46 +728,32 @@
                 });
             }
         }
-
         function updateTVSymbol() {
             let sym = document.getElementById('tv-symbol-input').value;
-            document.getElementById('order-symbol').value = sym.split(':')[1] || sym; // sync order book
+            document.getElementById('order-symbol').value = sym.split(':')[1] || sym; 
             loadTV(sym);
             if(document.getElementById('sentiment-fill-bar')) {
                 document.getElementById('sentiment-fill-bar').style.width = Math.floor(Math.random() * 80 + 10) + '%';
             }
         }
-
         function toggleLearnerMode() {
             const panel = document.getElementById('learner-mode-panel');
             if (panel.style.display === 'block') { panel.style.display = 'none'; } 
-            else { 
-                panel.style.display = 'block'; 
-                showSilentNotification("Learner Mode Activated. Reading chart data...");
-            }
+            else { panel.style.display = 'block'; showSilentNotification("Learner Mode Activated. Reading chart data..."); }
         }
-
-        /* --- LIVE RISK CALCULATOR --- */
         function liveRiskCalculator() {
             const qty = parseFloat(document.getElementById('order-qty').value);
             const price = parseFloat(document.getElementById('order-price').value);
             const displayBox = document.getElementById('auto-risk-display');
-
             if (!isNaN(qty) && !isNaN(price) && qty > 0 && price > 0 && totalCoins > 0) {
                 const totalValue = qty * price;
                 const riskPct = (totalValue / totalCoins) * 100;
-                
                 displayBox.innerText = `Capital Utilization: ${riskPct.toFixed(2)}% (${totalValue.toFixed(2)} Coins)`;
-                
                 if(riskPct > 100) { displayBox.style.color = '#ff4757'; displayBox.innerText += " ⚠️ INSUFFICIENT FUNDS"; }
                 else if (riskPct > 30) { displayBox.style.color = '#ffaa00'; }
                 else { displayBox.style.color = '#00ffaa'; }
-            } else {
-                displayBox.innerText = '';
-            }
+            } else { displayBox.innerText = ''; }
         }
-
-        /* --- REALISTIC PAPER TRADING --- */
         async function getLiveBinancePrice(sym) {
             try {
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym.toUpperCase()}`);
@@ -695,7 +761,6 @@
                 return data.price ? parseFloat(data.price) : null;
             } catch (error) { return null; }
         }
-
         async function fetchLivePriceUI() {
             const sym = document.getElementById('order-symbol').value;
             const price = await getLiveBinancePrice(sym);
@@ -705,66 +770,47 @@
                 showSilentNotification(`Live price fetched for ${sym}: $${price}`);
             }
         }
-
         async function executeTrade(type) {
             const sym = document.getElementById('order-symbol').value.toUpperCase();
             const qty = parseFloat(document.getElementById('order-qty').value);
             let price = parseFloat(document.getElementById('order-price').value);
-
             if(isNaN(price) || price <= 0) {
                 price = await getLiveBinancePrice(sym);
                 if (!price) { showSilentNotification("Cannot fetch price. Enter manually."); return; }
             }
             if(!sym || isNaN(qty) || qty <= 0) { showSilentNotification("Invalid Order!"); return; }
-
             const tradeValue = qty * price;
             if (totalCoins < tradeValue) { showSilentNotification("Insufficient K.K. Coins!"); return; }
-
             totalCoins -= tradeValue;
             activeTrades.push({ id: Date.now(), sym, type, qty, entryPrice: price });
-            
             showSilentNotification(`${type} Order Executed: ${qty} ${sym} at $${price}`);
-            document.getElementById('order-qty').value = '';
-            document.getElementById('order-price').value = '';
-            document.getElementById('auto-risk-display').innerText = '';
-            refreshHUDTokens();
+            document.getElementById('order-qty').value = ''; document.getElementById('order-price').value = '';
+            document.getElementById('auto-risk-display').innerText = ''; refreshHUDTokens();
         }
-
         async function closeTrade(id) {
             const tradeIndex = activeTrades.findIndex(t => t.id === id);
             if(tradeIndex === -1) return;
             const trade = activeTrades[tradeIndex];
-            
             let exitPrice = await getLiveBinancePrice(trade.sym);
             if (!exitPrice) {
                  let manualPrice = prompt(`API failed. Enter EXIT PRICE manually for ${trade.sym}:`, trade.entryPrice);
                  if(manualPrice === null || isNaN(manualPrice)) return; exitPrice = parseFloat(manualPrice);
             }
-
             let profitLoss = 0; let returnedMargin = trade.qty * trade.entryPrice;
-
             if(trade.type === 'BUY') { profitLoss = (trade.qty * exitPrice) - returnedMargin; } 
             else if (trade.type === 'SELL') { profitLoss = returnedMargin - (trade.qty * exitPrice); }
-
             totalCoins += (returnedMargin + profitLoss);
             activeTrades.splice(tradeIndex, 1);
-            
             showSilentNotification(`Closed @ $${exitPrice}. P&L: ${profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)}`);
             refreshHUDTokens();
         }
-
         function renderTradePositions() {
             const tbody = document.getElementById('positions-table-body');
             const panelCoins = document.getElementById('panel-coins');
             if(!tbody || !panelCoins) return;
-
             panelCoins.innerText = totalCoins.toLocaleString('en-IN', { maximumFractionDigits: 2 });
             tbody.innerHTML = '';
-
-            if(activeTrades.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="padding-top:10px; color:#aaa; text-align:center;">No open positions</td></tr>'; return;
-            }
-
+            if(activeTrades.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="padding-top:10px; color:#aaa; text-align:center;">No open positions</td></tr>'; return; }
             activeTrades.forEach(t => {
                 const color = t.type === 'BUY' ? '#00b894' : '#d63031';
                 tbody.innerHTML += `
@@ -786,25 +832,20 @@
             localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
             renderIronmanSubjects();
         }
-
         function deleteSubject(event, name) {
             event.stopPropagation();
             if(confirm(`Are you sure you want to delete the folder: ${name}?`)) {
                 customIronmanSubjects = customIronmanSubjects.filter(s => s.name !== name);
                 localStorage.setItem('kk_ironman_subjects', JSON.stringify(customIronmanSubjects));
                 localStorage.removeItem('note_' + name);
-                
                 const tx = db.transaction("files", "readwrite");
                 const store = tx.objectStore("files");
                 const index = store.index("subject");
                 const request = index.getAll(name);
-                request.onsuccess = (e) => {
-                    e.target.result.forEach(file => store.delete(file.id));
-                };
+                request.onsuccess = (e) => { e.target.result.forEach(file => store.delete(file.id)); };
                 renderIronmanSubjects();
             }
         }
-
         function renderIronmanSubjects() {
             const grid = document.getElementById('ironman-dynamic-grid');
             if(!grid) return; grid.innerHTML = '';
@@ -822,100 +863,67 @@
 
         /* --- MULTI-FILE DESKTOP VAULT --- */
         let currentVaultTitle = '';
-        
         function openVault(title) {
             currentVaultTitle = title;
             document.getElementById('vault-title').innerText = title + " FOLDER";
-            
             document.getElementById('vault-notes').value = localStorage.getItem('note_'+title) || '';
             document.getElementById('vault-notes').style.display = 'block';
-
             closeFileViewer(); 
-
             const tx = db.transaction("files", "readonly");
             const store = tx.objectStore("files");
             const index = store.index("subject");
             const request = index.getAll(title);
-            
             request.onsuccess = (e) => {
                 currentVaultFiles = e.target.result || [];
                 renderVaultFiles();
                 openModal('vault-modal');
             };
         }
-
         function saveVaultData() {
             localStorage.setItem('note_' + currentVaultTitle, document.getElementById('vault-notes').value);
             showSilentNotification("Notes Saved!");
         }
-
         function handleMultipleFileUpload(event) {
             const files = event.target.files;
             if(!files || files.length === 0) return;
-
             for(let i=0; i<files.length; i++) {
                 const file = files[i];
                 const fileObj = {
-                    id: Date.now() + Math.random(),
-                    subject: currentVaultTitle,
-                    name: file.name,
-                    type: file.type.includes('pdf') ? 'PDF' : 'IMG',
-                    blob: file 
+                    id: Date.now() + Math.random(), subject: currentVaultTitle, name: file.name,
+                    type: file.type.includes('pdf') ? 'PDF' : 'IMG', blob: file 
                 };
-                
                 const tx = db.transaction("files", "readwrite");
                 tx.objectStore("files").put(fileObj);
                 tx.oncomplete = () => {
                     currentVaultFiles.push(fileObj);
-                    if(i === files.length - 1) { 
-                        renderVaultFiles(); 
-                        showSilentNotification("Files uploaded successfully."); 
-                    }
+                    if(i === files.length - 1) { renderVaultFiles(); showSilentNotification("Files uploaded successfully."); }
                 };
             }
             document.getElementById('file-uploader').value = ''; 
         }
-
         function loadGDriveAsFile() {
             let link = document.getElementById('gdrive-link').value;
             if(link.includes('drive.google.com')) {
                 link = link.replace(/\/view.*$/, '/preview'); 
-                const fileObj = {
-                    id: Date.now(),
-                    subject: currentVaultTitle,
-                    name: 'Google Drive Doc',
-                    type: 'LINK',
-                    data: link 
-                };
+                const fileObj = { id: Date.now(), subject: currentVaultTitle, name: 'Google Drive Doc', type: 'LINK', data: link };
                 const tx = db.transaction("files", "readwrite");
                 tx.objectStore("files").put(fileObj);
-                tx.oncomplete = () => {
-                    currentVaultFiles.push(fileObj);
-                    renderVaultFiles();
-                    document.getElementById('gdrive-link').value = '';
-                };
+                tx.oncomplete = () => { currentVaultFiles.push(fileObj); renderVaultFiles(); document.getElementById('gdrive-link').value = ''; };
             } else { showSilentNotification("Invalid Google Drive Link!"); }
         }
-
         function deleteVaultFile(event, id) {
             event.stopPropagation();
             const tx = db.transaction("files", "readwrite");
             tx.objectStore("files").delete(id);
-            tx.oncomplete = () => {
-                currentVaultFiles = currentVaultFiles.filter(f => f.id !== id);
-                renderVaultFiles();
-            };
+            tx.oncomplete = () => { currentVaultFiles = currentVaultFiles.filter(f => f.id !== id); renderVaultFiles(); };
         }
-
         function renderVaultFiles() {
             const grid = document.getElementById('vault-files-grid');
             grid.innerHTML = '';
-            
             if(currentVaultFiles.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1 / -1; color: #666; font-size: 0.85rem; text-align: center; padding: 10px;">No files in this local vault. Upload unlimited files above.</div>`;
                 return;
             }
-
             currentVaultFiles.forEach(f => {
                 let icon = f.type === 'PDF' ? '📕' : (f.type === 'IMG' ? '🖼️' : '🔗');
                 grid.innerHTML += `
@@ -927,30 +935,24 @@
                 `;
             });
         }
-
         let currentObjUrl = null; 
-
         function openFileViewer(id) {
             const tx = db.transaction("files", "readonly");
             const store = tx.objectStore("files");
             const req = store.get(id);
-            
             req.onsuccess = (e) => {
                 const f = e.target.result;
                 document.getElementById('vault-files-grid').style.display = 'none';
                 document.getElementById('file-upload-container').style.display = 'none';
                 document.getElementById('file-display-area').style.display = 'block';
-                
-                if (f.type === 'LINK') {
-                    document.getElementById('doc-iframe').src = f.data;
-                } else {
+                if (f.type === 'LINK') { document.getElementById('doc-iframe').src = f.data; } 
+                else {
                     if(currentObjUrl) URL.revokeObjectURL(currentObjUrl);
                     currentObjUrl = URL.createObjectURL(f.blob);
                     document.getElementById('doc-iframe').src = currentObjUrl;
                 }
             };
         }
-
         function closeFileViewer() {
             document.getElementById('file-display-area').style.display = 'none';
             document.getElementById('doc-iframe').src = '';
@@ -959,7 +961,7 @@
             document.getElementById('file-upload-container').style.display = 'block';
         }
 
-        /* --- UI NAVIGATION & SETTINGS MANAGER --- */
+        /* --- UI NAVIGATION & ADVANCED SETTINGS MANAGER --- */
         function applyBackground(val) {
             const bgVideo = document.getElementById('bg-video');
             if(val.startsWith('vid:')) {
@@ -980,6 +982,11 @@
             voiceSpeed = document.getElementById('voice-speed-slider').value;
             assistVolume = document.getElementById('volume-slider').value;
             
+            // New settings
+            const customColor = document.getElementById('theme-color-picker').value;
+            const scanIntensity = document.getElementById('scanline-slider').value;
+            const isPowerSaver = document.getElementById('power-saver').checked;
+            
             localStorage.setItem('bg-url', bgVal); 
             applyBackground(bgVal);
 
@@ -988,8 +995,22 @@
             
             localStorage.setItem('voice-speed', voiceSpeed);
             localStorage.setItem('assist-volume', assistVolume);
+
+            localStorage.setItem('theme-color', customColor);
+            document.documentElement.style.setProperty('--theme-color', customColor);
+
+            localStorage.setItem('scanline', scanIntensity);
+            document.documentElement.style.setProperty('--scanline-opacity', scanIntensity);
             
-            showSilentNotification(`Settings Applied! Volume: ${assistVolume*100}%`);
+            if(isPowerSaver) {
+                document.getElementById('bg-canvas').style.display = 'none';
+                document.documentElement.style.setProperty('--glass-bg', `rgba(5, 5, 5, 0.95)`);
+                document.querySelector('.bg-mesh').style.backdropFilter = 'none';
+            } else {
+                document.getElementById('bg-canvas').style.display = 'block';
+            }
+
+            showSilentNotification(`Settings Applied! Protocol Updated.`);
             closeModal('settings-overlay');
         }
 
@@ -1021,7 +1042,7 @@
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
 
         function showSilentNotification(msg) {
-            if(assistVolume === 0) return; 
+            if(assistVolume == 0) return; 
             let toast = document.createElement('div'); toast.className = 'hud-toast'; toast.innerText = "🔔 " + msg;
             document.getElementById('toast-container').appendChild(toast);
             setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 8000);
@@ -1048,10 +1069,7 @@
             update() { 
                 let dx = (mouse.x - canvas.width/2) * (this.z * 0.005);
                 let dy = (mouse.y - canvas.height/2) * (this.z * 0.005);
-                
-                this.y += this.vy - dy; 
-                this.x -= dx;
-
+                this.y += this.vy - dy; this.x -= dx;
                 if (this.y > canvas.height + 10) { this.y = -10; this.x = Math.random() * canvas.width; } 
                 if (this.y < -10) { this.y = canvas.height + 10; }
                 if (this.x > canvas.width + 10) { this.x = -10; }
@@ -1066,6 +1084,9 @@
         for(let i=0; i<80; i++) lines.push(new DigitalNode()); 
         
         function animate() {
+            if(document.getElementById('power-saver') && document.getElementById('power-saver').checked) {
+                requestAnimationFrame(animate); return; // skip drawing
+            }
             ctx.clearRect(0,0,canvas.width,canvas.height); 
             ctx.strokeStyle = modules[currentModule]?.color || '#00e5ff'; 
             ctx.lineWidth = 0.2;
@@ -1082,59 +1103,117 @@
             } requestAnimationFrame(animate);
         } animate();
 
-        /* --- BAMS SHLOKA MATRIX: RATTA MODE LOGIC --- */
+        /* --- ADVANCED JARVIS SHLOKA MATRIX LOGIC --- */
         let starredShlokas = JSON.parse(localStorage.getItem('kk_starred_shlokas')) || [];
 
+        // Function to make specific BAMS terms look glowing like JARVIS scanning
+        function highlightTerms(text) {
+            const keywords = ['वात', 'पित्त', 'कफ', 'दोष', 'धातु', 'रोग', 'आयु', 'अग्नि'];
+            let modifiedText = text;
+            keywords.forEach(word => {
+                let regex = new RegExp(`(${word})`, 'g');
+                modifiedText = modifiedText.replace(regex, `<strong>$1</strong>`);
+            });
+            return modifiedText;
+        }
+
+        // Expanded Database with Multiple Samhitas
         const shlokaDatabase = [
-            { id: "1_1", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रागादिरोगान् सततानुषक्तानशेषकायप्रसृतानशेषान् । औत्सुक्यमोहारतिदान् जघान योऽपूर्ववैद्याय नमोऽस्तु तस्मै ॥" },
-            { id: "1_2", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "आयुःकामयमानेन धर्मार्थसुखसाधनम् । आयुर्वेदोपदेशेषु विधेयः परमादरः ॥" },
-            { id: "1_3", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "ब्रह्मा स्मृत्वाऽऽयुषो वेदं प्रजापतिमजिग्रहत् । सोऽश्विनौ तौ सहस्राक्षं सोऽत्रिपुत्रादिकान्मुनीन् ॥" },
-            { id: "1_4", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तेऽग्निवेशादिकांस्ते तु पृथक्तन्त्राणि तेनिरे । तेभ्योऽतिविप्रकीर्णेभ्यः प्रायः सारतरोच्चयः ॥" },
-            { id: "1_5", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "क्रियतेऽष्टाङ्गहृदयमनाकुलमविस्तरम् ।" },
-            { id: "1_5a", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "कायबालग्रहोर्ध्वाङ्गशल्यदंष्ट्राजरावृषान् ।" },
-            { id: "1_6", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "अष्टावङ्गानि तस्याहुश्चिकित्सा येषु संश्रिता ॥" },
-            { id: "1_7", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "वायुः पित्तं कफश्चेति त्रयो दोषाः समासतः । विकृताऽविकृता देहं घ्नन्ति ते वर्तयन्ति च ॥" },
-            { id: "1_8", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "ते व्यापिनोऽपि हृन्नाभ्योरधोमध्योर्ध्वसंश्रयाः ।" },
-            { id: "1_9", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "वयोऽहोरात्रिभुक्तानां तेऽन्तमध्यादिगाः क्रमात् ।" },
-            { id: "1_10", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तैर्भवेद्विषमस्तीक्ष्णो मन्दश्चाग्निः समैः समः ।" },
-            { id: "1_11", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "कोष्ठः क्रूरो मृदुर्मध्यो मध्यः स्यात्तैः समैरपि ॥" },
-            { id: "1_12", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "शुक्रार्तवस्थैर्जन्मादौ विषेणेव विषकृमेः । तैश्च तिस्रः प्रकृतयो हीनमध्योत्तमाः पृथक् ॥" },
-            { id: "1_13", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "समधातुः समस्तासु श्रेष्ठा निन्द्या द्विदोषजाः ।" },
-            { id: "1_14", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तत्र रूक्षो लघुः शीतः खरः सूक्ष्मश्चलोऽनिलः ।" },
-            { id: "1_15", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "पित्तं सस्नेहतीक्ष्णोष्णं लघु विस्रं सरं द्रवम् ।" },
-            { id: "1_16", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "स्निग्धः शीतो गुरुर्मन्दः श्लक्ष्णो मृत्स्नः स्थिरः कफः ॥" },
-            { id: "1_17", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "संसर्गः सन्निपातश्च तद्द्वित्रिक्षयकोपतः ।" },
-            { id: "1_18", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रसासृङ्मांसमेदोऽस्थिमज्जशुक्राणि धातवः । सप्त दूष्याः मला मूत्रशकृत्स्वेदादयोऽपि च ॥" },
-            { id: "1_19", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "वृद्धिः समानैः सर्वेषां विपरीतैर्विपर्ययः ।" },
-            { id: "1_20", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रसाः स्वाद्वम्ललवणतिक्तोषणकषायकाः । षड् द्रव्यमाश्रितास्ते च यथापूर्वं बलावहाः ॥" },
-            { id: "1_21", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तत्राद्या मारुतं घ्नन्ति त्रयस्तिक्तादयः कफम् ।" },
-            { id: "1_22", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "कषायतिक्तमधुराः पित्तमन्ये तु कुर्वते ॥" },
-            { id: "1_23", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "शमनं कोपनं स्वस्थहितं द्रव्यमिति त्रिधा ।" },
-            { id: "1_24", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "उष्णशीतगुणोत्कर्षात्तत्र वीर्यं द्विधा स्मृतम् ॥" },
-            { id: "1_25", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "त्रिधा विपाको द्रव्यस्य स्वाद्वम्लकटुकात्मकः ।" },
-            { id: "1_26", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "गुरुमन्दहिमस्निग्धश्लक्ष्णसान्द्रमृदुस्थिराः । गुणाः ससूक्ष्मविशदा विंशतिः सविपर्ययाः ॥" },
-            { id: "1_27", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रोगस्तु दोषवैषम्यं दोषसाम्यमरोगता ।" },
-            { id: "1_28", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "निजागन्तुविभागेन तत्र रोगो द्विधा स्मृतः ॥" },
-            { id: "1_29", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तेषां कायमनोभेदादधिष्ठानमपि द्विधा ।" },
-            { id: "1_30", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रजस्तमश्च मनसो द्वौ च दोषावुदाहृतौ ।" },
-            { id: "1_31", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "दर्शनस्पर्शनप्रश्नैः परीक्षेत रोगिणम् ।" },
-            { id: "1_32", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रोगं निदानप्राग्रूपलक्षणोपशयाप्तिभिः ॥" },
-            { id: "1_33", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "भूमिदेहप्रभेदेन देशमाहुर्द्विधा पुनः । जाङ्गलं वातभूयिष्ठमनूपं तु कफोल्बणम् ॥" },
-            { id: "1_34", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "साधारणं सममलं त्रिधा भूदेशमादिशेत् । क्षणादिर्व्याध्यवस्था च कालो द्विधा प्रकीर्तितः ॥" },
-            { id: "1_35", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "शोधनं शमनं चेति समासादौषधं द्विधा ।" },
-            { id: "1_36", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "बस्तिर्विरेको वमनं तथा तैलं घृतं मधु ॥" },
-            { id: "1_37", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "वातपित्तकफानां च क्रमेण परमौषधम् ।" },
-            { id: "1_38", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "धीधैर्यात्मादिविज्ञानं मनोदोषौषधं परम् ॥" },
-            { id: "1_39", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "भिषग्द्रव्यान्युपस्थाता रोगी पादचतुष्टयम् । चिकित्सितस्य निर्दिष्टं प्रत्येकं तच्चतुर्गुणम् ॥" },
-            { id: "1_40", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "दक्षस्तीर्थात्तशास्त्रार्थो दृष्टकर्मा शुचिर्भिषक् ।" },
-            { id: "1_41", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "बहुकल्पं बहुगुणं सम्पन्नं योग्यमौषधम् ॥" },
-            { id: "1_42", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "अनुरक्तः शुचिर्दक्षो बुद्धिमान् परिचारकः ।" },
-            { id: "1_43", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "आढ्यो रोगी भिषग्वश्यो ज्ञापकः सत्त्ववानपि ॥" },
-            { id: "1_44", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "साध्योऽसाध्य इति व्याधिर्द्विधा ते तु पुनर्द्विधा । सुसाध्यः कृच्छ्रसाध्यश्च याप्यो यश्चानुपक्रमः ॥" }
+            // Ashtang Hridayam (Preserved ALL original 44)
+            { id: "1_1", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "रागादिरोगान् सततानुषक्तानशेषकायप्रसृतानशेषान् । औत्सुक्यमोहारतिदान् जघान योऽपूर्ववैद्याय नमोऽस्तु तस्मै ॥" },
+            { id: "1_2", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "आयुःकामयमानेन धर्मार्थसुखसाधनम् । आयुर्वेदोपदेशेषु विधेयः परमादरः ॥" },
+            { id: "1_3", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "ब्रह्मा स्मृत्वाऽऽयुषो वेदं प्रजापतिमजिग्रहत् । सोऽश्विनौ तौ सहस्राक्षं सोऽत्रिपुत्रादिकान्मुनीन् ॥" },
+            { id: "1_4", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "तेऽग्निवेशादिकांस्ते तु पृथक्तन्त्राणि तेनिरे । तेभ्योऽतिविप्रकीर्णेभ्यः प्रायः सारतरोच्चयः ॥" },
+            { id: "1_5", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "क्रियतेऽष्टाङ्गहृदयमनाकुलमविस्तरम् ।" },
+            { id: "1_5a", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "कायबालग्रहोर्ध्वाङ्गशल्यदंष्ट्राजरावृषान् ।" },
+            { id: "1_6", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "अष्टावङ्गानि तस्याहुश्चिकित्सा येषु संश्रिता ॥" },
+            { id: "1_7", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "वायुः पित्तं कफश्चेति त्रयो दोषाः समासतः । विकृताऽविकृता देहं घ्नन्ति ते वर्तयन्ति च ॥" },
+            { id: "1_8", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "ते व्यापिनोऽपि हृन्नाभ्योरधोमध्योर्ध्वसंश्रयाः ।" },
+            { id: "1_9", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "वयोऽहोरात्रिभुक्तानां तेऽन्तमध्यादिगाः क्रमात् ।" },
+            { id: "1_10", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "तैर्भवेद्विषमस्तीक्ष्णो मन्दश्चाग्निः समैः समः ।" },
+            { id: "1_11", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "कोष्ठः क्रूरो मृदुर्मध्यो मध्यः स्यात्तैः समैरपि ॥" },
+            { id: "1_12", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "शुक्रार्तवस्थैर्जन्मादौ विषेणेव विषकृमेः । तैश्च तिस्रः प्रकृतयो हीनमध्योत्तमाः पृथक् ॥" },
+            { id: "1_13", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "समधातुः समस्तासु श्रेष्ठा निन्द्या द्विदोषजाः ।" },
+            { id: "1_14", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "तत्र रूक्षो लघुः शीतः खरः सूक्ष्मश्चलोऽनिलः ।" },
+            { id: "1_15", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "पित्तं सस्नेहतीक्ष्णोष्णं लघु विस्रं सरं द्रवम् ।" },
+            { id: "1_16", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "स्निग्धः शीतो गुरुर्मन्दः श्लक्ष्णो मृत्स्नः स्थिरः कफः ॥" },
+            { id: "1_17", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "संसर्गः सन्निपातश्च तद्द्वित्रिक्षयकोपतः ।" },
+            { id: "1_18", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "रसासृङ्मांसमेदोऽस्थिमज्जशुक्राणि धातवः । सप्त दूष्याः मला मूत्रशकृत्स्वेदादयोऽपि च ॥" },
+            { id: "1_19", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "वृद्धिः समानैः सर्वेषां विपरीतैर्विपर्ययः ।" },
+            { id: "1_20", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "रसाः स्वाद्वम्ललवणतिक्तोषणकषायकाः । षड् द्रव्यमाश्रितास्ते च यथापूर्वं बलावहाः ॥" },
+            { id: "1_21", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "तत्राद्या मारुतं घ्नन्ति त्रयस्तिक्तादयः कफम् ।" },
+            { id: "1_22", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "कषायतिक्तमधुराः पित्तमन्ये तु कुर्वते ॥" },
+            { id: "1_23", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "शमनं कोपनं स्वस्थहितं द्रव्यमिति त्रिधा ।" },
+            { id: "1_24", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "उष्णशीतगुणोत्कर्षात्तत्र वीर्यं द्विधा स्मृतम् ॥" },
+            { id: "1_25", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "त्रिधा विपाको द्रव्यस्य स्वाद्वम्लकटुकात्मकः ।" },
+            { id: "1_26", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "गुरुमन्दहिमस्निग्धश्लक्ष्णसान्द्रमृदुस्थिराः । गुणाः ससूक्ष्मविशदा विंशतिः सविपर्ययाः ॥" },
+            { id: "1_27", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "रोगस्तु दोषवैषम्यं दोषसाम्यमरोगता ।" },
+            { id: "1_28", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "निजागन्तुविभागेन तत्र रोगो द्विधा स्मृतः ॥" },
+            { id: "1_29", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "तेषां कायमनोभेदादधिष्ठानमपि द्विधा ।" },
+            { id: "1_30", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "रजस्तमश्च मनसो द्वौ च दोषावुदाहृतौ ।" },
+            { id: "1_31", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "दर्शनस्पर्शनप्रश्नैः परीक्षेत रोगिणम् ।" },
+            { id: "1_32", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "रोगं निदानप्राग्रूपलक्षणोपशयाप्तिभिः ॥" },
+            { id: "1_33", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "भूमिदेहप्रभेदेन देशमाहुर्द्विधा पुनः । जाङ्गलं वातभूयिष्ठमनूपं तु कफोल्बणम् ॥" },
+            { id: "1_34", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "साधारणं सममलं त्रिधा भूदेशमादिशेत् । क्षणादिर्व्याध्यवस्था च कालो द्विधा प्रकीर्तितः ॥" },
+            { id: "1_35", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "शोधनं शमनं चेति समासादौषधं द्विधा ।" },
+            { id: "1_36", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "बस्तिर्विरेको वमनं तथा तैलं घृतं मधु ॥" },
+            { id: "1_37", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "वातपित्तकफानां च क्रमेण परमौषधम् ।" },
+            { id: "1_38", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "धीधैर्यात्मादिविज्ञानं मनोदोषौषधं परम् ॥" },
+            { id: "1_39", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "भिषग्द्रव्यान्युपस्थाता रोगी पादचतुष्टयम् । चिकित्सितस्य निर्दिष्टं प्रत्येकं तच्चतुर्गुणम् ॥" },
+            { id: "1_40", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "दक्षस्तीर्थात्तशास्त्रार्थो दृष्टकर्मा शुचिर्भिषक् ।" },
+            { id: "1_41", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "बहुकल्पं बहुगुणं सम्पन्नं योग्यमौषधम् ॥" },
+            { id: "1_42", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "अनुरक्तः शुचिर्दक्षो बुद्धिमान् परिचारकः ।" },
+            { id: "1_43", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "आढ्यो रोगी भिषग्वश्यो ज्ञापकः सत्त्ववानपि ॥" },
+            { id: "1_44", samhita: "Ashtang Hridayam", chapter: "सूत्रस्थान (आयुषकामीय अध्याय)", text: "साध्योऽसाध्य इति व्याधिर्द्विधा ते तु पुनर्द्विधा । सुसाध्यः कृच्छ्रसाध्यश्च याप्यो यश्चानुपक्रमः ॥" },
+            { id: "1_45", samhita: "Ashtang Hridayam", chapter: "दिनचर्या अध्याय", text: "ब्राह्मे मुहूर्ते उत्तिष्ठेत् स्वस्थो रक्षार्थमायुषः । शरीरचिन्तां निर्वर्त्य कृतशौचविधिस्ततः ॥" },
+            
+            // Charak Samhita
+            { id: "c1_1", samhita: "Charak Samhita", chapter: "सूत्रस्थान (दीर्घञ्जीवितीयमध्याय)", text: "दीर्घञ्जीवितीयमध्यायं व्याख्यास्यामः । इति ह स्माह भगवानात्रेयः ॥" },
+            { id: "c1_2", samhita: "Charak Samhita", chapter: "सूत्रस्थान (दीर्घञ्जीवितीयमध्याय)", text: "धर्मार्थकाममोक्षाणामारोग्यं मूलमुत्तमम् । रोगास्तस्यापहर्तारः श्रेयसो जीवितस्य च ॥" },
+            
+            // Sushruta Samhita
+            { id: "s1_1", samhita: "Sushruta Samhita", chapter: "सूत्रस्थान (वेदोत्पत्ति)", text: "अथातो वेदोत्पत्तिमध्यायं व्याख्यास्यामः ।" },
+            { id: "s1_2", samhita: "Sushruta Samhita", chapter: "सूत्रस्थान (वेदोत्पत्ति)", text: "आयुर्वेदं अष्टाङ्गं उपदिश्यते ।" },
+
+            // Padarth Vigyan
+            { id: "p1_1", samhita: "Padarth Vigyan", chapter: "आयुर्वेद निरुपण", text: "हिताहितं सुखं दुःखमायुस्तस्य हिताहितम् । मानं च तच्च यत्रोक्तमायुर्वेदः स उच्यते ॥" }
         ];
 
-        let matrixCurrentChapter = 'अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)';
+        let matrixCurrentSamhita = 'Ashtang Hridayam';
+        let matrixCurrentChapter = 'सूत्रस्थान (आयुषकामीय अध्याय)';
         let matrixShowStarredOnly = false;
+
+        function loadSamhita(samhitaName) {
+            matrixCurrentSamhita = samhitaName;
+            
+            // UI Update for Top Tabs
+            const btns = document.querySelectorAll('.samhita-btn');
+            btns.forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText === samhitaName) b.classList.add('active');
+            });
+
+            // Populate Chapters for selected Samhita
+            const chaptersSet = new Set(shlokaDatabase.filter(s => s.samhita === samhitaName).map(s => s.chapter));
+            const chapterListDiv = document.getElementById('chapter-tab-list');
+            chapterListDiv.innerHTML = '';
+            
+            let isFirst = true;
+            chaptersSet.forEach(chapter => {
+                const btn = document.createElement('button');
+                btn.className = isFirst ? 'chapter-btn active' : 'chapter-btn';
+                btn.innerText = chapter;
+                btn.onclick = () => loadChapter(chapter);
+                chapterListDiv.appendChild(btn);
+                
+                if(isFirst) { loadChapter(chapter); isFirst = false; }
+            });
+            
+            if(chaptersSet.size === 0) {
+                chapterListDiv.innerHTML = '<div style="color:#aaa; padding:10px;">Data Vault Empty</div>';
+                document.getElementById('shloka-display-grid').innerHTML = '';
+            }
+        }
 
         function loadChapter(chapterName) {
             matrixCurrentChapter = chapterName;
@@ -1148,45 +1227,30 @@
 
         function setStarFilter(onlyStarred) {
             matrixShowStarredOnly = onlyStarred;
-            
             document.getElementById('filter-all').style.color = onlyStarred ? '#888' : '#fff';
-            document.getElementById('filter-all').style.borderColor = onlyStarred ? 'transparent' : 'var(--theme-color)';
-            
+            document.getElementById('filter-all').style.borderColor = onlyStarred ? 'transparent' : '#ff2a2a';
             document.getElementById('filter-starred').style.color = onlyStarred ? '#ffaa00' : '#888';
             document.getElementById('filter-starred').style.borderColor = onlyStarred ? '#ffaa00' : 'transparent';
-            
             renderShlokaMatrix();
         }
 
         function toggleMatrixStar(shlokaId) {
-            if (starredShlokas.includes(shlokaId)) {
-                starredShlokas = starredShlokas.filter(id => id !== shlokaId);
-            } else {
-                starredShlokas.push(shlokaId);
-            }
-            
+            if (starredShlokas.includes(shlokaId)) { starredShlokas = starredShlokas.filter(id => id !== shlokaId); } 
+            else { starredShlokas.push(shlokaId); }
             localStorage.setItem('kk_starred_shlokas', JSON.stringify(starredShlokas));
             renderShlokaMatrix();
-            
-            if(typeof showSilentNotification === "function") {
-                showSilentNotification("Ratta Library Updated!");
-            }
         }
 
         function renderShlokaMatrix() {
             const displayGrid = document.getElementById('shloka-display-grid');
             if(!displayGrid) return; 
-            
             displayGrid.innerHTML = '';
             
-            let filteredShlokas = shlokaDatabase.filter(s => s.chapter === matrixCurrentChapter);
-            
-            if (matrixShowStarredOnly) {
-                filteredShlokas = filteredShlokas.filter(s => starredShlokas.includes(s.id));
-            }
+            let filteredShlokas = shlokaDatabase.filter(s => s.samhita === matrixCurrentSamhita && s.chapter === matrixCurrentChapter);
+            if (matrixShowStarredOnly) { filteredShlokas = filteredShlokas.filter(s => starredShlokas.includes(s.id)); }
             
             if (filteredShlokas.length === 0) {
-                displayGrid.innerHTML = `<div style="text-align:center; color:#aaa; margin-top:50px;">No shlokas found here.</div>`;
+                displayGrid.innerHTML = `<div style="text-align:center; color:#aaa; margin-top:50px;">No shlokas found in JARVIS Archives.</div>`;
                 return;
             }
             
@@ -1195,10 +1259,13 @@
                 const starClass = isStarred ? "star-btn active" : "star-btn";
                 const starSymbol = isStarred ? "⭐" : "☆";
                 
+                // Highlight important keywords like JARVIS scanning
+                const formattedText = highlightTerms(s.text);
+
                 displayGrid.innerHTML += `
                     <div class="shloka-card">
-                        <div style="color: var(--theme-color); font-size: 1.2rem; margin-right: 20px; font-weight: 900; opacity: 0.8;">${index + 1}.</div>
-                        <div class="shloka-text">${s.text}</div>
+                        <div style="color: #ff2a2a; font-size: 1.2rem; margin-right: 20px; font-weight: 900; opacity: 0.8; font-family: 'Orbitron', sans-serif;">[${index + 1}]</div>
+                        <div class="shloka-text">${formattedText}</div>
                         <div class="${starClass}" onclick="toggleMatrixStar('${s.id}')">${starSymbol}</div>
                     </div>
                 `;
@@ -1207,7 +1274,7 @@
 
         setTimeout(() => {
             if(document.getElementById('shloka-display-grid')) {
-                renderShlokaMatrix();
+                loadSamhita('Ashtang Hridayam'); // Initialize first tab
             }
         }, 500);
         
