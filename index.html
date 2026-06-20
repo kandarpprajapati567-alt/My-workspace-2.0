@@ -9,6 +9,9 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
+        /* Google Font for Premium Tech Look - Preloader */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500&display=swap');
+
         :root {
             --theme-color: #00ffaa;
             --bg-color: #020205;
@@ -47,7 +50,7 @@
             z-index: 99999; background-size: 100% 4px, 6px 100%; pointer-events: none; opacity: var(--scanline-opacity);
         }
 
-        /* NEW: Video Background Support */
+        /* Video Background Support */
         #bg-video {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             object-fit: cover; z-index: -5; display: none; opacity: 0.8;
@@ -127,13 +130,6 @@
         .msg.user { background: rgba(255,255,255,0.1); align-self: flex-end; border-bottom-right-radius: 0; }
         .msg.ai { background: rgba(0, 255, 170, 0.1); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--theme-color); color: var(--theme-color);}
 
-        #mic-status { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; background: rgba(5, 5, 8, 0.85); border: 1px solid var(--theme-color); border-radius: 30px; z-index: 20000; color: var(--theme-color); font-weight: bold; backdrop-filter: blur(15px); font-size: 0.85rem; transition: 0.4s; display: flex; align-items: center; gap: 15px; }
-        .pulse-active { animation: jarvisBreathe 1.4s infinite alternate ease-in-out; }
-        @keyframes jarvisBreathe { 0% { box-shadow: 0 0 15px rgba(0, 255, 170, 0.2); } 100% { box-shadow: 0 0 30px var(--theme-color); transform: translateX(-50%) scale(1.02); } }
-        
-        .manual-mic-toggle { background: var(--theme-color); color: #000; border: none; padding: 4px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
-        .manual-mic-toggle.off { background: #ff2a2a; color: #fff; }
-
         #landing-stage, #dashboard-stage { height: 100vh; width: 100vw; display: flex; transition: all 0.5s ease; }
         #landing-stage { flex-direction: column; justify-content: center; align-items: center; }
         #dashboard-stage { display: none; opacity: 0; flex-direction: column; }
@@ -146,22 +142,75 @@
         .sentiment-bar { height: 10px; width: 100%; background: #d63031; border-radius: 5px; margin-top: 10px; overflow: hidden; position: relative; }
         .sentiment-fill { height: 100%; background: #00b894; width: 65%; transition: 1s ease-in-out; }
 
-        /* --- SHLOKA MATRIX STYLES --- */
-        .shloka-matrix-container { display: flex; height: 75vh; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px; }
-        .chapter-tabs { width: 250px; border-right: 1px solid var(--glass-border); overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .chapter-btn { background: rgba(0,0,0,0.4); border: 1px solid transparent; color: #fff; padding: 12px 15px; border-radius: 10px; cursor: pointer; text-align: left; transition: 0.3s; font-weight: bold; }
-        .chapter-btn.active, .chapter-btn:hover { background: rgba(255, 42, 42, 0.2); border-color: var(--theme-color); color: var(--theme-color); }
-        .shloka-content-area { flex: 1; padding-left: 20px; display: flex; flex-direction: column; }
-        .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; }
-        .shloka-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
-        .shloka-card:hover { border-color: var(--theme-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .shloka-text { font-size: 1.2rem; color: #ddd; flex: 1; line-height: 1.5; }
-        .star-btn { font-size: 1.5rem; cursor: pointer; color: #555; transition: 0.3s; user-select: none; padding: 10px; }
-        .star-btn.active { color: #ffaa00; text-shadow: 0 0 15px rgba(255, 170, 0, 0.6); }
+        /* --- PRELOADER STYLES --- */
+        #premium-preloader {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #030305; display: flex; justify-content: center; align-items: center;
+            z-index: 999999; overflow: hidden; perspective: 1000px;
+            transition: opacity 1.5s cubic-bezier(0.77, 0, 0.175, 1), transform 1.5s ease-in-out;
+        }
+        .preloader-content { text-align: center; transform-style: preserve-3d; animation: cinematicEnter 3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .title-3d {
+            font-family: 'Orbitron', sans-serif; font-size: 3.5rem; color: #ffffff; text-transform: uppercase;
+            letter-spacing: 4px; margin: 0; position: relative;
+            text-shadow: 0px 1px 0px #cccccc, 0px 2px 0px #b3b3b3, 0px 3px 0px #999999, 0px 4px 0px #808080, 0px 5px 15px rgba(0, 119, 255, 0.6);
+            background: linear-gradient(90deg, #fff, #888, #fff); -webkit-background-clip: text; background-clip: text; background-size: 200% auto; animation: shineText 3s linear infinite;
+        }
+        .version-badge { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; color: #0088ff; letter-spacing: 6px; margin-top: 20px; opacity: 0; transform: translateY(20px); animation: fadeUp 1s ease-out 1.5s forwards; }
+        .loading-bar-container { width: 300px; height: 2px; background: rgba(255, 255, 255, 0.1); margin: 40px auto 0; position: relative; overflow: hidden; border-radius: 2px; }
+        .loading-bar { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: #0088ff; box-shadow: 0 0 10px #0088ff; animation: loadProgress 3.5s cubic-bezier(0.77, 0, 0.175, 1) forwards; }
+        @keyframes cinematicEnter { 0% { transform: translateZ(-500px) rotateX(20deg); opacity: 0; filter: blur(10px); } 100% { transform: translateZ(0) rotateX(0); opacity: 1; filter: blur(0); } }
+        @keyframes shineText { to { background-position: 200% center; } }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes loadProgress { 0% { width: 0%; } 50% { width: 60%; } 100% { width: 100%; } }
+        .hide-preloader { opacity: 0 !important; pointer-events: none; transform: scale(1.1); }
+
+        /* --- HIGH-TECH PREMIUM SHLOKA MATRIX STYLES --- */
+        .shloka-matrix-container { display: flex; height: 75vh; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 15px; background: linear-gradient(180deg, rgba(0,255,170,0.02) 0%, transparent 100%); position: relative; }
+        .shloka-matrix-container::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background-image: radial-gradient(rgba(0, 255, 170, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3; pointer-events: none; }
+        
+        .chapter-tabs { width: 260px; border-right: 1px solid rgba(0, 255, 170, 0.2); overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 12px; z-index: 1; }
+        .chapter-tabs::-webkit-scrollbar { width: 4px; }
+        .chapter-tabs::-webkit-scrollbar-thumb { background: var(--theme-color); border-radius: 4px; }
+        
+        .chapter-btn { background: rgba(5, 10, 15, 0.6); border: 1px solid rgba(255,255,255,0.08); color: #888; padding: 15px 20px; border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); font-weight: bold; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
+        .chapter-btn::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--theme-color); transition: 0.4s ease; z-index: -1; opacity: 0.1; }
+        .chapter-btn.active, .chapter-btn:hover { border-color: var(--theme-color); color: #fff; box-shadow: 0 0 20px rgba(0, 255, 170, 0.15); transform: translateX(5px); }
+        .chapter-btn.active::before { width: 100%; }
+        .chapter-btn.active { border-left: 4px solid var(--theme-color); }
+        
+        .shloka-content-area { flex: 1; padding-left: 25px; display: flex; flex-direction: column; z-index: 1; }
+        .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        #shloka-display-grid { overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 15px; }
+        #shloka-display-grid::-webkit-scrollbar { width: 4px; }
+        #shloka-display-grid::-webkit-scrollbar-thumb { background: var(--theme-color); border-radius: 4px;}
+        
+        .shloka-card { background: rgba(10, 15, 20, 0.7); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; transition: all 0.4s ease; backdrop-filter: blur(15px); position: relative; overflow: hidden; }
+        .shloka-card::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--theme-color); opacity: 0; transition: 0.4s ease; }
+        .shloka-card:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,255,170,0.05); border-color: rgba(0,255,170,0.3); }
+        .shloka-card:hover::after { opacity: 1; }
+        
+        .shloka-text { font-size: 1.3rem; color: #e0e0e0; flex: 1; line-height: 1.6; font-weight: 500; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 0.5px; }
+        .star-btn { font-size: 1.8rem; cursor: pointer; color: rgba(255,255,255,0.1); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; padding: 10px; }
+        .star-btn:hover { transform: scale(1.2); color: rgba(255, 170, 0, 0.5); }
+        .star-btn.active { color: #ffaa00; text-shadow: 0 0 20px rgba(255, 170, 0, 0.8), 0 0 40px rgba(255, 170, 0, 0.4); transform: scale(1.1); }
 
     </style>
 </head>
 <body>
+
+    <div id="premium-preloader">
+        <div class="preloader-content">
+            <h1 class="title-3d" data-text="k.k.master integrated environment">
+                k.k.master integrated environment
+            </h1>
+            <div class="version-badge">v. 12.6</div>
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+        </div>
+    </div>
 
     <video id="bg-video" autoplay loop muted playsinline></video>
     <div class="bg-mesh"></div>
@@ -170,11 +219,6 @@
     <div id="kk-token-bar">
         <div class="token-hud-pill">🪙 <span id="user-vault-coins">1,250</span> KK COINS</div>
         <div class="token-hud-pill" style="--theme-color: #ffaa00;">🏆 Portfolio Health: <span id="portfolio-status">STABLE</span></div>
-    </div>
-
-    <div id="mic-status">
-        <span id="mic-text">🔴 AI ENGINE STANDBY</span>
-        <button id="mic-toggle-btn" class="manual-mic-toggle off" onclick="handleMicManualSwitch()">ACTIVATE MIC</button>
     </div>
 
     <div id="global-timer-widget">
@@ -245,22 +289,22 @@
             <div class="candle-card">
                 <h3>1. Bullish Hammer (हथौड़ा)</h3>
                 <p style="font-size: 0.9rem; color: #ddd;">Forms at the bottom of a downtrend. It shows sellers pushed the price down, but strong buyers rejected the low and pushed the price back up. Wait for the next candle to confirm a bullish reversal before entering.</p>
-                <br>            </div>
+            </div>
 
             <div class="candle-card">
                 <h3>2. Bearish Engulfing</h3>
                 <p style="font-size: 0.9rem; color: #ddd;">Forms at the top of an uptrend. A small green candle is completely 'engulfed' or swallowed by a massive red candle. This indicates that sellers have violently taken control of the market.</p>
-                <br>            </div>
+            </div>
 
             <div class="candle-card">
                 <h3>3. The Doji (Indecision)</h3>
                 <p style="font-size: 0.9rem; color: #ddd;">Looks like a cross or a plus sign. The open and close prices are exactly the same. It means a brutal war between buyers and sellers resulted in a tie. Often signals a major trend reversal is coming.</p>
-                <br>            </div>
+            </div>
             
             <div class="candle-card">
                 <h3>4. Morning Star Reversal</h3>
                 <p style="font-size: 0.9rem; color: #ddd;">A powerful 3-candle pattern. 1) A strong red candle. 2) A small gap-down Doji (indecision). 3) A massive green candle pushing up. This is your green light for a trend flip!</p>
-                <br>            </div>
+            </div>
         </div>
     </div>
 
@@ -329,7 +373,7 @@
             <div class="shloka-matrix-container">
                 <div class="chapter-tabs" id="chapter-tab-list">
                     <button class="chapter-btn active" onclick="loadChapter('अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)')">अष्टांग हृदयम् - सूत्रस्थान</button>
-                    </div>
+                </div>
                 
                 <div class="shloka-content-area">
                     <div class="filter-bar">
@@ -337,7 +381,7 @@
                         <button class="action-btn" id="filter-starred" onclick="setStarFilter(true)" style="color: #ffaa00; border-color: #ffaa00;">⭐ STARRED ONLY</button>
                     </div>
                     
-                    <div id="shloka-display-grid" style="overflow-y: auto; padding-right: 10px;">
+                    <div id="shloka-display-grid">
                         </div>
                 </div>
             </div>
@@ -383,11 +427,30 @@
     </div>
 
     <script>
+        // --- SMART PRELOADER LOGIC (Runs only once per session) ---
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('premium-preloader');
+            
+            // Check if user has already seen preloader in this session
+            if (!sessionStorage.getItem('kk_preloader_shown')) {
+                setTimeout(function() {
+                    preloader.classList.add('hide-preloader');
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                        sessionStorage.setItem('kk_preloader_shown', 'true'); // Save to memory
+                    }, 1500); 
+                }, 3500); 
+            } else {
+                // If already seen, hide instantly
+                preloader.style.display = 'none';
+            }
+        });
+
         let currentModule = ''; let engineInstance; let jarvisActive = false;
         let globalTimerInterval; let secondsLeft = 0; let customTimetable = []; let notifiedTasks = new Set();
         let isFocusMode = true; 
         let voiceSpeed = 1.0;
-        let assistVolume = 1.0; // NEW VOLUME VARIABLE
+        let assistVolume = 1.0; 
 
         let totalCoins = parseFloat(localStorage.getItem('kk_coins')) || 10000; 
         let activeTrades = JSON.parse(localStorage.getItem('kk_trades')) || [];
@@ -395,7 +458,7 @@
         let thorNotesList = JSON.parse(localStorage.getItem('kk_thor_notes')) || [];
         
         let currentVaultFiles = [];
-        let db; // IndexedDB instance
+        let db; 
 
         // Initialize IndexedDB for unlimited local storage files
         const initDB = () => {
@@ -552,7 +615,6 @@
         };
 
         window.onload = function() {
-            // Updated Boot Sequence for Video/Image Backgrounds
             let savedBg = localStorage.getItem('bg-url');
             if(savedBg) {
                 applyBackground(savedBg);
@@ -591,8 +653,6 @@
             let sym = document.getElementById('tv-symbol-input').value;
             document.getElementById('order-symbol').value = sym.split(':')[1] || sym; // sync order book
             loadTV(sym);
-            
-            // Randomize sentiment bar for dynamic creative feel
             if(document.getElementById('sentiment-fill-bar')) {
                 document.getElementById('sentiment-fill-bar').style.width = Math.floor(Math.random() * 80 + 10) + '%';
             }
@@ -658,9 +718,7 @@
             if(!sym || isNaN(qty) || qty <= 0) { showSilentNotification("Invalid Order!"); return; }
 
             const tradeValue = qty * price;
-            if (totalCoins < tradeValue) {
-                showSilentNotification("Insufficient K.K. Coins!"); return;
-            }
+            if (totalCoins < tradeValue) { showSilentNotification("Insufficient K.K. Coins!"); return; }
 
             totalCoins -= tradeValue;
             activeTrades.push({ id: Date.now(), sym, type, qty, entryPrice: price });
@@ -762,7 +820,7 @@
             });
         }
 
-        /* --- MULTI-FILE DESKTOP VAULT (UPGRADED RAW BLOB FIX) --- */
+        /* --- MULTI-FILE DESKTOP VAULT --- */
         let currentVaultTitle = '';
         
         function openVault(title) {
@@ -774,7 +832,6 @@
 
             closeFileViewer(); 
 
-            // Load files from IndexedDB
             const tx = db.transaction("files", "readonly");
             const store = tx.objectStore("files");
             const index = store.index("subject");
@@ -798,13 +855,12 @@
 
             for(let i=0; i<files.length; i++) {
                 const file = files[i];
-                // UPGRADE: Store actual File Blobs instead of Base64 strings to prevent memory crashes
                 const fileObj = {
                     id: Date.now() + Math.random(),
                     subject: currentVaultTitle,
                     name: file.name,
                     type: file.type.includes('pdf') ? 'PDF' : 'IMG',
-                    blob: file // <-- Storing raw file object!
+                    blob: file 
                 };
                 
                 const tx = db.transaction("files", "readwrite");
@@ -813,7 +869,7 @@
                     currentVaultFiles.push(fileObj);
                     if(i === files.length - 1) { 
                         renderVaultFiles(); 
-                        showSilentNotification("Files uploaded to Local Database successfully."); 
+                        showSilentNotification("Files uploaded successfully."); 
                     }
                 };
             }
@@ -829,7 +885,7 @@
                     subject: currentVaultTitle,
                     name: 'Google Drive Doc',
                     type: 'LINK',
-                    data: link // links stay as text data
+                    data: link 
                 };
                 const tx = db.transaction("files", "readwrite");
                 tx.objectStore("files").put(fileObj);
@@ -862,7 +918,6 @@
 
             currentVaultFiles.forEach(f => {
                 let icon = f.type === 'PDF' ? '📕' : (f.type === 'IMG' ? '🖼️' : '🔗');
-                // Pass ID to load from Blob correctly instead of passing giant base64 text
                 grid.innerHTML += `
                     <div class="file-item" onclick="openFileViewer(${f.id})">
                         <span class="file-item-delete" onclick="deleteVaultFile(event, ${f.id})">✕</span>
@@ -873,7 +928,7 @@
             });
         }
 
-        let currentObjUrl = null; // Clean up memory when closing
+        let currentObjUrl = null; 
 
         function openFileViewer(id) {
             const tx = db.transaction("files", "readonly");
@@ -889,7 +944,6 @@
                 if (f.type === 'LINK') {
                     document.getElementById('doc-iframe').src = f.data;
                 } else {
-                    // Create secure local URL from Blob
                     if(currentObjUrl) URL.revokeObjectURL(currentObjUrl);
                     currentObjUrl = URL.createObjectURL(f.blob);
                     document.getElementById('doc-iframe').src = currentObjUrl;
@@ -933,7 +987,7 @@
             document.documentElement.style.setProperty('--glass-bg', `rgba(10, 10, 15, ${opacity})`);
             
             localStorage.setItem('voice-speed', voiceSpeed);
-            localStorage.setItem('assist-volume', assistVolume); // Save new volume
+            localStorage.setItem('assist-volume', assistVolume);
             
             showSilentNotification(`Settings Applied! Volume: ${assistVolume*100}%`);
             closeModal('settings-overlay');
@@ -967,7 +1021,7 @@
         function closeModal(id) { document.getElementById(id).style.opacity='0'; setTimeout(()=>document.getElementById(id).style.display='none',350); }
 
         function showSilentNotification(msg) {
-            if(assistVolume === 0) return; // Silent logic test
+            if(assistVolume === 0) return; 
             let toast = document.createElement('div'); toast.className = 'hud-toast'; toast.innerText = "🔔 " + msg;
             document.getElementById('toast-container').appendChild(toast);
             setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(), 400); }, 8000);
@@ -986,13 +1040,12 @@
             constructor() { 
                 this.x = Math.random() * canvas.width; 
                 this.y = Math.random() * canvas.height; 
-                this.z = Math.random() * 2 + 0.1; // Depth factor
+                this.z = Math.random() * 2 + 0.1; 
                 this.vy = (Math.random() * 1.5) + 0.5; 
                 this.size = Math.random() * 2.5 + 1; 
                 this.alpha = Math.random() * 0.5 + 0.2; 
             }
             update() { 
-                // Advanced parallax calculation
                 let dx = (mouse.x - canvas.width/2) * (this.z * 0.005);
                 let dy = (mouse.y - canvas.height/2) * (this.z * 0.005);
                 
@@ -1010,7 +1063,7 @@
                 ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); 
             }
         }
-        for(let i=0; i<80; i++) lines.push(new DigitalNode()); // Increased density
+        for(let i=0; i<80; i++) lines.push(new DigitalNode()); 
         
         function animate() {
             ctx.clearRect(0,0,canvas.width,canvas.height); 
@@ -1030,11 +1083,8 @@
         } animate();
 
         /* --- BAMS SHLOKA MATRIX: RATTA MODE LOGIC --- */
-
-        // 1. Load Starred IDs from Memory
         let starredShlokas = JSON.parse(localStorage.getItem('kk_starred_shlokas')) || [];
 
-        // 2. The Master Shloka Database
         const shlokaDatabase = [
             { id: "1_1", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रागादिरोगान् सततानुषक्तानशेषकायप्रसृतानशेषान् । औत्सुक्यमोहारतिदान् जघान योऽपूर्ववैद्याय नमोऽस्तु तस्मै ॥" },
             { id: "1_2", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "आयुःकामयमानेन धर्मार्थसुखसाधनम् । आयुर्वेदोपदेशेषु विधेयः परमादरः ॥" },
@@ -1083,32 +1133,26 @@
             { id: "1_44", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "साध्योऽसाध्य इति व्याधिर्द्विधा ते तु पुनर्द्विधा । सुसाध्यः कृच्छ्रसाध्यश्च याप्यो यश्चानुपक्रमः ॥" }
         ];
 
-        // 3. UI State Variables
         let matrixCurrentChapter = 'अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)';
         let matrixShowStarredOnly = false;
 
-        // 4. Core Logic Functions
         function loadChapter(chapterName) {
             matrixCurrentChapter = chapterName;
-            
-            // Update active state on Chapter buttons
             const btns = document.querySelectorAll('.chapter-btn');
             btns.forEach(b => {
                 b.classList.remove('active');
                 if(b.innerText === chapterName) b.classList.add('active');
             });
-            
             renderShlokaMatrix();
         }
 
         function setStarFilter(onlyStarred) {
             matrixShowStarredOnly = onlyStarred;
             
-            // Update UI Buttons
-            document.getElementById('filter-all').style.color = onlyStarred ? '#fff' : 'var(--theme-color)';
+            document.getElementById('filter-all').style.color = onlyStarred ? '#888' : '#fff';
             document.getElementById('filter-all').style.borderColor = onlyStarred ? 'transparent' : 'var(--theme-color)';
             
-            document.getElementById('filter-starred').style.color = onlyStarred ? '#ffaa00' : '#fff';
+            document.getElementById('filter-starred').style.color = onlyStarred ? '#ffaa00' : '#888';
             document.getElementById('filter-starred').style.borderColor = onlyStarred ? '#ffaa00' : 'transparent';
             
             renderShlokaMatrix();
@@ -1116,18 +1160,14 @@
 
         function toggleMatrixStar(shlokaId) {
             if (starredShlokas.includes(shlokaId)) {
-                // Remove from starred
                 starredShlokas = starredShlokas.filter(id => id !== shlokaId);
             } else {
-                // Add to starred
                 starredShlokas.push(shlokaId);
             }
             
-            // Save to permanent HUD memory
             localStorage.setItem('kk_starred_shlokas', JSON.stringify(starredShlokas));
             renderShlokaMatrix();
             
-            // Silent notification if available
             if(typeof showSilentNotification === "function") {
                 showSilentNotification("Ratta Library Updated!");
             }
@@ -1135,11 +1175,10 @@
 
         function renderShlokaMatrix() {
             const displayGrid = document.getElementById('shloka-display-grid');
-            if(!displayGrid) return; // Saftey check
+            if(!displayGrid) return; 
             
             displayGrid.innerHTML = '';
             
-            // Filter database based on Chapter and Star mode
             let filteredShlokas = shlokaDatabase.filter(s => s.chapter === matrixCurrentChapter);
             
             if (matrixShowStarredOnly) {
@@ -1151,7 +1190,6 @@
                 return;
             }
             
-            // Generate Cards
             filteredShlokas.forEach((s, index) => {
                 const isStarred = starredShlokas.includes(s.id);
                 const starClass = isStarred ? "star-btn active" : "star-btn";
@@ -1159,7 +1197,7 @@
                 
                 displayGrid.innerHTML += `
                     <div class="shloka-card">
-                        <div style="color: #666; font-size: 0.8rem; margin-right: 15px; font-weight: bold;">${index + 1}.</div>
+                        <div style="color: var(--theme-color); font-size: 1.2rem; margin-right: 20px; font-weight: 900; opacity: 0.8;">${index + 1}.</div>
                         <div class="shloka-text">${s.text}</div>
                         <div class="${starClass}" onclick="toggleMatrixStar('${s.id}')">${starSymbol}</div>
                     </div>
@@ -1167,7 +1205,6 @@
             });
         }
 
-        // Initial render call to populate the list when the script loads
         setTimeout(() => {
             if(document.getElementById('shloka-display-grid')) {
                 renderShlokaMatrix();
