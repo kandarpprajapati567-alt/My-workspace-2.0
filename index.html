@@ -145,6 +145,20 @@
         .candle-card h3 { margin-top: 0; color: #00ffaa; }
         .sentiment-bar { height: 10px; width: 100%; background: #d63031; border-radius: 5px; margin-top: 10px; overflow: hidden; position: relative; }
         .sentiment-fill { height: 100%; background: #00b894; width: 65%; transition: 1s ease-in-out; }
+
+        /* --- SHLOKA MATRIX STYLES --- */
+        .shloka-matrix-container { display: flex; height: 75vh; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px; }
+        .chapter-tabs { width: 250px; border-right: 1px solid var(--glass-border); overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .chapter-btn { background: rgba(0,0,0,0.4); border: 1px solid transparent; color: #fff; padding: 12px 15px; border-radius: 10px; cursor: pointer; text-align: left; transition: 0.3s; font-weight: bold; }
+        .chapter-btn.active, .chapter-btn:hover { background: rgba(255, 42, 42, 0.2); border-color: var(--theme-color); color: var(--theme-color); }
+        .shloka-content-area { flex: 1; padding-left: 20px; display: flex; flex-direction: column; }
+        .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; }
+        .shloka-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .shloka-card:hover { border-color: var(--theme-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .shloka-text { font-size: 1.2rem; color: #ddd; flex: 1; line-height: 1.5; }
+        .star-btn { font-size: 1.5rem; cursor: pointer; color: #555; transition: 0.3s; user-select: none; padding: 10px; }
+        .star-btn.active { color: #ffaa00; text-shadow: 0 0 15px rgba(255, 170, 0, 0.6); }
+
     </style>
 </head>
 <body>
@@ -307,6 +321,29 @@
         </div>
     </div>
 
+    <div class="overlay-modal" id="shloka-matrix-modal">
+        <div class="modal-box" style="width: 1000px; max-width: 95%;">
+            <span class="close-btn" onclick="closeModal('shloka-matrix-modal')">✕</span>
+            <h2 style="color: var(--theme-color); margin-top:0;">📚 SHLOKA MATRIX: RATTA MODE</h2>
+            
+            <div class="shloka-matrix-container">
+                <div class="chapter-tabs" id="chapter-tab-list">
+                    <button class="chapter-btn active" onclick="loadChapter('अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)')">अष्टांग हृदयम् - सूत्रस्थान</button>
+                    </div>
+                
+                <div class="shloka-content-area">
+                    <div class="filter-bar">
+                        <button class="action-btn" id="filter-all" onclick="setStarFilter(false)" style="border-color: var(--theme-color);">ALL SHLOKAS</button>
+                        <button class="action-btn" id="filter-starred" onclick="setStarFilter(true)" style="color: #ffaa00; border-color: #ffaa00;">⭐ STARRED ONLY</button>
+                    </div>
+                    
+                    <div id="shloka-display-grid" style="overflow-y: auto; padding-right: 10px;">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="landing-stage">
         <div style="text-align: center; margin-bottom: 4vh;">
             <h2 style="color: #777; font-size:0.85rem; letter-spacing:4px;">K.K. MASTER INTEGRATED ENVIRONMENT v12.6</h2>
@@ -394,6 +431,7 @@
                         <button class="action-btn" onclick="alert('Timetable triggered')">📅 STUDY TIMETABLE</button>
                         <button class="action-btn" style="border-color:#00ffaa;" onclick="createNewSubject()">➕ ADD SUBJECT FOLDER</button>
                         <button class="action-btn" style="border-color:#00ffaa; background: rgba(0, 255, 170, 0.1);" onclick="openModal('anatomy-3d-modal')">🧬 3D ANATOMY</button>
+                        <button class="action-btn" style="border-color:#ffaa00;" onclick="openModal('shloka-matrix-modal')">📚 SHLOKA MATRIX</button>
                     </div>
                     <h3>Your Custom Subject Vaults</h3>
                     <div class="grid-layout" id="ironman-dynamic-grid" style="margin-top:15px;"></div>`
@@ -990,6 +1028,152 @@
                 }
             } requestAnimationFrame(animate);
         } animate();
+
+        /* --- BAMS SHLOKA MATRIX: RATTA MODE LOGIC --- */
+
+        // 1. Load Starred IDs from Memory
+        let starredShlokas = JSON.parse(localStorage.getItem('kk_starred_shlokas')) || [];
+
+        // 2. The Master Shloka Database
+        const shlokaDatabase = [
+            { id: "1_1", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रागादिरोगान् सततानुषक्तानशेषकायप्रसृतानशेषान् । औत्सुक्यमोहारतिदान् जघान योऽपूर्ववैद्याय नमोऽस्तु तस्मै ॥" },
+            { id: "1_2", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "आयुःकामयमानेन धर्मार्थसुखसाधनम् । आयुर्वेदोपदेशेषु विधेयः परमादरः ॥" },
+            { id: "1_3", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "ब्रह्मा स्मृत्वाऽऽयुषो वेदं प्रजापतिमजिग्रहत् । सोऽश्विनौ तौ सहस्राक्षं सोऽत्रिपुत्रादिकान्मुनीन् ॥" },
+            { id: "1_4", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तेऽग्निवेशादिकांस्ते तु पृथक्तन्त्राणि तेनिरे । तेभ्योऽतिविप्रकीर्णेभ्यः प्रायः सारतरोच्चयः ॥" },
+            { id: "1_5", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "क्रियतेऽष्टाङ्गहृदयमनाकुलमविस्तरम् ।" },
+            { id: "1_5a", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "कायबालग्रहोर्ध्वाङ्गशल्यदंष्ट्राजरावृषान् ।" },
+            { id: "1_6", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "अष्टावङ्गानि तस्याहुश्चिकित्सा येषु संश्रिता ॥" },
+            { id: "1_7", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "वायुः पित्तं कफश्चेति त्रयो दोषाः समासतः । विकृताऽविकृता देहं घ्नन्ति ते वर्तयन्ति च ॥" },
+            { id: "1_8", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "ते व्यापिनोऽपि हृन्नाभ्योरधोमध्योर्ध्वसंश्रयाः ।" },
+            { id: "1_9", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "वयोऽहोरात्रिभुक्तानां तेऽन्तमध्यादिगाः क्रमात् ।" },
+            { id: "1_10", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तैर्भवेद्विषमस्तीक्ष्णो मन्दश्चाग्निः समैः समः ।" },
+            { id: "1_11", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "कोष्ठः क्रूरो मृदुर्मध्यो मध्यः स्यात्तैः समैरपि ॥" },
+            { id: "1_12", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "शुक्रार्तवस्थैर्जन्मादौ विषेणेव विषकृमेः । तैश्च तिस्रः प्रकृतयो हीनमध्योत्तमाः पृथक् ॥" },
+            { id: "1_13", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "समधातुः समस्तासु श्रेष्ठा निन्द्या द्विदोषजाः ।" },
+            { id: "1_14", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तत्र रूक्षो लघुः शीतः खरः सूक्ष्मश्चलोऽनिलः ।" },
+            { id: "1_15", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "पित्तं सस्नेहतीक्ष्णोष्णं लघु विस्रं सरं द्रवम् ।" },
+            { id: "1_16", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "स्निग्धः शीतो गुरुर्मन्दः श्लक्ष्णो मृत्स्नः स्थिरः कफः ॥" },
+            { id: "1_17", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "संसर्गः सन्निपातश्च तद्द्वित्रिक्षयकोपतः ।" },
+            { id: "1_18", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रसासृङ्मांसमेदोऽस्थिमज्जशुक्राणि धातवः । सप्त दूष्याः मला मूत्रशकृत्स्वेदादयोऽपि च ॥" },
+            { id: "1_19", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "वृद्धिः समानैः सर्वेषां विपरीतैर्विपर्ययः ।" },
+            { id: "1_20", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रसाः स्वाद्वम्ललवणतिक्तोषणकषायकाः । षड् द्रव्यमाश्रितास्ते च यथापूर्वं बलावहाः ॥" },
+            { id: "1_21", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तत्राद्या मारुतं घ्नन्ति त्रयस्तिक्तादयः कफम् ।" },
+            { id: "1_22", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "कषायतिक्तमधुराः पित्तमन्ये तु कुर्वते ॥" },
+            { id: "1_23", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "शमनं कोपनं स्वस्थहितं द्रव्यमिति त्रिधा ।" },
+            { id: "1_24", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "उष्णशीतगुणोत्कर्षात्तत्र वीर्यं द्विधा स्मृतम् ॥" },
+            { id: "1_25", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "त्रिधा विपाको द्रव्यस्य स्वाद्वम्लकटुकात्मकः ।" },
+            { id: "1_26", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "गुरुमन्दहिमस्निग्धश्लक्ष्णसान्द्रमृदुस्थिराः । गुणाः ससूक्ष्मविशदा विंशतिः सविपर्ययाः ॥" },
+            { id: "1_27", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रोगस्तु दोषवैषम्यं दोषसाम्यमरोगता ।" },
+            { id: "1_28", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "निजागन्तुविभागेन तत्र रोगो द्विधा स्मृतः ॥" },
+            { id: "1_29", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "तेषां कायमनोभेदादधिष्ठानमपि द्विधा ।" },
+            { id: "1_30", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रजस्तमश्च मनसो द्वौ च दोषावुदाहृतौ ।" },
+            { id: "1_31", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "दर्शनस्पर्शनप्रश्नैः परीक्षेत रोगिणम् ।" },
+            { id: "1_32", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "रोगं निदानप्राग्रूपलक्षणोपशयाप्तिभिः ॥" },
+            { id: "1_33", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "भूमिदेहप्रभेदेन देशमाहुर्द्विधा पुनः । जाङ्गलं वातभूयिष्ठमनूपं तु कफोल्बणम् ॥" },
+            { id: "1_34", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "साधारणं सममलं त्रिधा भूदेशमादिशेत् । क्षणादिर्व्याध्यवस्था च कालो द्विधा प्रकीर्तितः ॥" },
+            { id: "1_35", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "शोधनं शमनं चेति समासादौषधं द्विधा ।" },
+            { id: "1_36", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "बस्तिर्विरेको वमनं तथा तैलं घृतं मधु ॥" },
+            { id: "1_37", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "वातपित्तकफानां च क्रमेण परमौषधम् ।" },
+            { id: "1_38", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "धीधैर्यात्मादिविज्ञानं मनोदोषौषधं परम् ॥" },
+            { id: "1_39", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "भिषग्द्रव्यान्युपस्थाता रोगी पादचतुष्टयम् । चिकित्सितस्य निर्दिष्टं प्रत्येकं तच्चतुर्गुणम् ॥" },
+            { id: "1_40", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "दक्षस्तीर्थात्तशास्त्रार्थो दृष्टकर्मा शुचिर्भिषक् ।" },
+            { id: "1_41", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "बहुकल्पं बहुगुणं सम्पन्नं योग्यमौषधम् ॥" },
+            { id: "1_42", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "अनुरक्तः शुचिर्दक्षो बुद्धिमान् परिचारकः ।" },
+            { id: "1_43", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "आढ्यो रोगी भिषग्वश्यो ज्ञापकः सत्त्ववानपि ॥" },
+            { id: "1_44", chapter: "अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)", text: "साध्योऽसाध्य इति व्याधिर्द्विधा ते तु पुनर्द्विधा । सुसाध्यः कृच्छ्रसाध्यश्च याप्यो यश्चानुपक्रमः ॥" }
+        ];
+
+        // 3. UI State Variables
+        let matrixCurrentChapter = 'अष्टांग हृदयम् - सूत्रस्थान (आयुषकामीय अध्याय)';
+        let matrixShowStarredOnly = false;
+
+        // 4. Core Logic Functions
+        function loadChapter(chapterName) {
+            matrixCurrentChapter = chapterName;
+            
+            // Update active state on Chapter buttons
+            const btns = document.querySelectorAll('.chapter-btn');
+            btns.forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText === chapterName) b.classList.add('active');
+            });
+            
+            renderShlokaMatrix();
+        }
+
+        function setStarFilter(onlyStarred) {
+            matrixShowStarredOnly = onlyStarred;
+            
+            // Update UI Buttons
+            document.getElementById('filter-all').style.color = onlyStarred ? '#fff' : 'var(--theme-color)';
+            document.getElementById('filter-all').style.borderColor = onlyStarred ? 'transparent' : 'var(--theme-color)';
+            
+            document.getElementById('filter-starred').style.color = onlyStarred ? '#ffaa00' : '#fff';
+            document.getElementById('filter-starred').style.borderColor = onlyStarred ? '#ffaa00' : 'transparent';
+            
+            renderShlokaMatrix();
+        }
+
+        function toggleMatrixStar(shlokaId) {
+            if (starredShlokas.includes(shlokaId)) {
+                // Remove from starred
+                starredShlokas = starredShlokas.filter(id => id !== shlokaId);
+            } else {
+                // Add to starred
+                starredShlokas.push(shlokaId);
+            }
+            
+            // Save to permanent HUD memory
+            localStorage.setItem('kk_starred_shlokas', JSON.stringify(starredShlokas));
+            renderShlokaMatrix();
+            
+            // Silent notification if available
+            if(typeof showSilentNotification === "function") {
+                showSilentNotification("Ratta Library Updated!");
+            }
+        }
+
+        function renderShlokaMatrix() {
+            const displayGrid = document.getElementById('shloka-display-grid');
+            if(!displayGrid) return; // Saftey check
+            
+            displayGrid.innerHTML = '';
+            
+            // Filter database based on Chapter and Star mode
+            let filteredShlokas = shlokaDatabase.filter(s => s.chapter === matrixCurrentChapter);
+            
+            if (matrixShowStarredOnly) {
+                filteredShlokas = filteredShlokas.filter(s => starredShlokas.includes(s.id));
+            }
+            
+            if (filteredShlokas.length === 0) {
+                displayGrid.innerHTML = `<div style="text-align:center; color:#aaa; margin-top:50px;">No shlokas found here.</div>`;
+                return;
+            }
+            
+            // Generate Cards
+            filteredShlokas.forEach((s, index) => {
+                const isStarred = starredShlokas.includes(s.id);
+                const starClass = isStarred ? "star-btn active" : "star-btn";
+                const starSymbol = isStarred ? "⭐" : "☆";
+                
+                displayGrid.innerHTML += `
+                    <div class="shloka-card">
+                        <div style="color: #666; font-size: 0.8rem; margin-right: 15px; font-weight: bold;">${index + 1}.</div>
+                        <div class="shloka-text">${s.text}</div>
+                        <div class="${starClass}" onclick="toggleMatrixStar('${s.id}')">${starSymbol}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Initial render call to populate the list when the script loads
+        setTimeout(() => {
+            if(document.getElementById('shloka-display-grid')) {
+                renderShlokaMatrix();
+            }
+        }, 500);
+        
     </script>
 </body>
 </html>
